@@ -35,6 +35,7 @@
     <Content Include="images\Eros.jpg" />
     <Content Include="images\Eros.png" />
     <Content Include="images\favicon.ico" />
+    <Content Include="main.js" />
     <Content Include="models\batch.js" />
     <Content Include="models\inventory.js" />
     <Content Include="models\investors.js" />
@@ -43,10 +44,12 @@
     <Content Include="models\pon.js" />
     <Content Include="models\users.js" />
     <Content Include="params\params.js" />
+    <Content Include="preload.js" />
     <Content Include="routes\web\home.js" />
     <Content Include="routes\web\index.js" />
     <Content Include="routes\web\investors.js" />
     <Content Include="routes\web\po.js" />
+    <Content Include="routes\web\pos.js" />
     <Content Include="routes\web\products.js" />
     <Content Include="server.js" />
     <Content Include="package.json" />
@@ -58,6 +61,7 @@
     <Content Include="views\home\_partial\register.ejs" />
     <Content Include="views\investors\investor.ejs" />
     <Content Include="views\investors\investors.ejs" />
+    <Content Include="views\pos\pos.ejs" />
     <Content Include="views\products\products.ejs" />
     <Content Include="views\products\_partial\product-list.ejs" />
     <Content Include="views\purchased-order\create.ejs" />
@@ -77,6 +81,8 @@
     <Folder Include="views\home\" />
     <Folder Include="views\home\_partial\" />
     <Folder Include="views\investors\" />
+    <Folder Include="views\crm\" />
+    <Folder Include="views\pos\" />
     <Folder Include="views\products\" />
     <Folder Include="views\products\_partial\" />
     <Folder Include="views\purchased-order\" />
