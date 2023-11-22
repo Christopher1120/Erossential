@@ -1,0 +1,47 @@
+/* (X) NOT IMPORTANT */
+* {
+    font-family: Arial, Helvetica, sans-serif;
+    box-sizing: border-box;
+    font-size: 1rem;
+}
+
+body, input, #demoNFC, #demoMSG {
+    padding: 10px;
+}
+
+body {
+    max-width: 600px;
+}
+
+#demoNFC {
+    display: flex;
+    margin-bottom: 10px;
+    border: 1px solid #e7e7e7;
+    background: #f3f3f3;
+}
+
+#demoT {
+    flex-grow: 1;
+}
+
+input {
+    padding: 10px;
+    border: 0;
+}
+
+    input[type=button] {
+        margin: 0 1px;
+        color: #fff;
+        background: #225cc5;
+        cursor: pointer;
+    }
+
+        input[type=button]:disabled {
+            color: #7c7c7c;
+            background: #c3c3c3;
+        }
+
+#demoMSG {
+    border: 1px solid #e7e7e7;
+    background: #fff;
+}

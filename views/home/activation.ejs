@@ -1,0 +1,58 @@
+<!Doctype HMTL>
+<html lang="en">
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE-edge" />
+	<meta name="viewport" content="width=device-width initial-scale=1.0" />
+  <link rel="stylesheet" href="/css/loginpage.css" />
+	<title> Erossential Management </title>
+</head>
+
+<body>
+  
+  <div class="col-sm p-3">
+  
+  <h1> Account Activation </h1>
+	<form action="/activation" method="POST">
+	<div class="headingsContainer">
+		<h3> Account Activation </h3>
+
+    <div class="container-fluid">
+      <% if(error && error.length >0) { %>
+      <div class="alert" role="alert">
+        <div class="row">
+          <div class="col-auto w3-right">
+            <a href="#close" class="btn-close w3-right" data-bs-dismiss="alert" aria-label="Close"></a>
+          </div>
+          <div class="col-auto">
+            <div class="text-center">
+              <%= error %>
+            </div>
+          </div>
+        </div>
+      </div>
+      <% } %>
+    </div>
+    
+	</div>
+
+	<div class="mainContainer">
+	<label for="code"><b> Activation Code </b> </label>
+	<input type="text" name="code" id="code" placeholder="Please enter activation code" required="required" />
+
+
+    <br/>
+
+	<button type="submit">Submit Code</button>
+
+    <div class="subContainer">
+
+
+    </div>
+  
+  </div>
+
+	</form>
+</body>
+
+</html>

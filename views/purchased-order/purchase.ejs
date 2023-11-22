@@ -1,0 +1,56 @@
+<%- include("../_partials/_header") %>
+<h3> Purchased Order Management </h3>
+<a href="/purchase-order/create-po" type="button" class="btn btn-outline-success" > Create PO </a> 
+<hr>
+
+<table class="table text-center">
+<tr>
+<th> PO No. </th>
+<th> Batch No. </th>
+<th> Order Date </th>
+<th> Received Date </th>
+<th> Request By </th>
+</tr>
+<% po.forEach((po)=>{ %>
+<tr>
+<td><a href="../../invoices/<%-po.purchNo %>.pdf" target="_blank"> <%- po.purchNo %> </td>
+<td><%- po.batchNo %></td>
+<td><%- po.orderOn %></td>
+<td><%- po.receivedOn %></td>
+<td><%- po.requestBy %></td>
+</tr>
+<% }) %>
+
+
+<div class="modal fade" id="Frame" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-l">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Purchase Order Management</h1>
+        <button type="button" id="cls" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="frame">
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button"  id="close" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+function Click(r) {
+var xhttp = new XMLHttpRequest;
+xhttp.onload = function() {
+    document.getElementById("frame").innerHTML = this.responseText;
+}
+xhttp.open("GET", r.href);
+xhttp.send();
+}
+</script>

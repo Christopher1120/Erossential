@@ -1,0 +1,239 @@
+<%- include("../_partials/_header") %>
+<h3> Product Management </h3>
+<hr>
+
+
+<div class="row">
+
+<div class="col-md-4">
+<div class="card">
+<div class="card-header"> <b> PRODUCT LIST </b> </div>
+<div class="card-body">
+
+<div id="frame" style="height:500px">
+
+</div>
+
+</div>
+<div class="card-footer">
+<label>EROSSENTIAL</label>
+</div>
+</div>
+</div>
+
+<div class="col-md-4">
+<div class="card">
+<div class="card-header"><b> Product Management </b></div>
+<div class="card-body">
+
+<form class="form-signup" method="POST" id="form">
+<div class="row align-items-center">
+<div class="col-auto">
+<label for="batch"><b>Batch No.</b></label>
+<select class="form-select" name="batch" id="batch" onchange="Choice()">
+<option disabled selected> Batch No. </option>
+<% po.forEach((po)=>{ %>
+<% if (po.inventory != true && po.type == "Inventory") { %>
+<option value="<%- po.batchNo %>"><%- po.batchNo %></option>
+<% } %>
+<% }) %>
+</select>
+</div>
+<div class="col-auto">
+<label for="product"><b>Product Name</b></label>
+<select class="form-select" name="product" id="product" onchange="Choice()">
+<option disabled selected> Product Name </option>
+<option value="Roller Blends">Roller Blends</option>
+<option value="Diffuser"> Diffuser </option>
+</select>
+</div>
+<div class="col-auto">
+<label for="product"><b>Variant</b></label>
+<input type="text" class="form-control" name="variant" id="variant" list="variants" autocomplete="off">
+<datalist id="variants">
+</datalist>
+</div>
+</div>
+
+<br>
+
+<div class="row align-items-center">
+<div class="col-auto">
+<label for="qty"><b>Qty</b></label>
+<input type="text" class="form-control" name="qty" id="qty" placeholder="Quantity Of Product" required>
+</div>
+<div class="col-auto">
+<label for="price"><b>Pricing</b></label>
+<input type="text" class="form-control" name="price" id="price" placeholder="Price per item" required>
+</div>
+</div>
+<br>
+<button type="submit" class="btn btn-outline-success" id="btn"> Add </button>
+<button type="button" class="btn btn-outline-warning" onclick="Clear()"> Clear </button>
+
+</form>
+
+</div>
+</div>
+</div>
+
+
+
+<script>
+
+
+function Choice() {
+	var batch = $("#batch").val();
+	var product = $("#product").val();
+	var datalist = $("#variants");
+		
+		$.ajax({
+			type:"GET",
+			url:"/products/batch-search",
+			data:{
+				batch:batch,
+				product:product
+			},
+			success:function(e) {
+				datalist.empty();
+				e.forEach((item)=>{
+				var option = "<option value=" + item.variant + "></option>";
+
+				datalist.append(option);
+
+				});
+			},error:function(e) {
+				var x = document.getElementById("snackbar");
+				x.innerHTML = e.responseText;
+				x.className = "show";
+				setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+			}
+		})
+
+}
+
+var xhttp = new XMLHttpRequest;
+xhttp.onload = function() {
+	document.getElementById("frame").innerHTML = this.responseText;
+}
+xhttp.open("GET","/products/product-list");
+xhttp.send();
+
+
+$("#form").submit(function(event){
+
+	var batch = $("#batch").val();
+	var product = $("#product").val();
+	var qty = $("#qty").val();
+	var price = $("#price").val();
+	var variant = $("#variant").val();
+
+	event.preventDefault();
+
+	var con = confirm("Are you adding new products?");
+
+	if (con == true) {
+
+	$.ajax({
+		type:"POST",
+		url:"/products/add-products",
+		data:{
+			batch:batch,
+			product:product,
+			variant: variant,
+			qty:qty,
+			price:price,
+		},
+        success:function(e) {
+            var x = document.getElementById("snackbar");
+            x.innerHTML = "Product Added / Modified";
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+            var xhttp = new XMLHttpRequest;
+            xhttp.onload = function() {
+	            document.getElementById("frame").innerHTML = this.responseText;
+            }
+            xhttp.open("GET", "/products/product-list");
+            xhttp.send();
+			$("#batch").val("");
+			$("#product").val("");
+			$("#qty").val("");
+			$("#price").val("");
+
+        },
+        error:function(e){
+            var x = document.getElementById("snackbar");
+            x.innerHTML = e.responseText;
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+        }
+	})
+
+	} else {
+	
+		$.ajax({
+			type:"POST",
+			url:"/products/modify-product",
+			data:{
+				batch:batch,
+				product:product,
+				variant:variant,
+				qty:qty,
+				price:price,
+			},
+			success:function() {
+				var x = document.getElementById("snackbar");
+				x.innerHTML = "Product Added / Modified";
+				x.className = "show";
+				setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+				var xhttp = new XMLHttpRequest;
+				xhttp.onload = function() {
+					document.getElementById("frame").innerHTML = this.responseText;
+				}
+				xhttp.open("GET", "/products/product-list");
+				xhttp.send();
+				$("#batch").val("");
+				$("#product").val("");
+				$("#qty").val("");
+				$("#price").val("");
+			 },
+        error:function(e){
+            var x = document.getElementById("snackbar");
+            x.innerHTML = e.responseText;
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+        }
+			
+		})
+
+	}
+})
+
+function getData(i) {
+	var table = document.getElementById("table");
+	var rows = table.rows;
+	for (var i = 1; i < rows.length; i++) {
+		var row1 = rows[i].getElementsByTagName("TD")[0].innerHTML;
+		var row2 = rows[i].getElementsByTagName("TD")[1].innerHTML;
+		var row3 = rows[i].getElementsByTagName("TD")[2].innerHTML;
+		var row4 = rows[i].getElementsByTagName("TD")[3].innerHTML;
+		var row5 = rows[i].getElementsByTagName("TD")[4].innerHTML;
+
+		console.log(row1);
+		$("#batch").val(row1);
+		$("#product").val(row2);
+		$("#variant").val(row3);
+		$("#qty").val(row4);
+		$("#price").val(row5);
+	}
+}
+
+function Clear() {
+	$("#batch").val("");
+	$("#product").val("");
+	$("#qty").val("");
+	$("#price").val("");
+}
+</script>
+
+

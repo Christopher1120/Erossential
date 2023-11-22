@@ -1,0 +1,261 @@
+<%- include("../_partials/_header") %>
+<h3> Purchase Order Management </h3>
+<hr>
+
+
+<div class="col-md-6">
+<div class="alert alert-info">
+<div class="col-auto w3-right">
+<a href="#close" class="btn-close w3-right" data-bs-dismiss="alert" aria-label="Close"></a>
+</div>
+<div class="alert-header">IMPORTANT NOTICE</div>
+<hr>
+<p> Please be mindful when clicking assign batch, assign batch is only for inventory -sales </p>
+<p> Tag INVENTORY if for sales. Otherwise, select subscription </p>
+</div>
+</div>
+
+
+<div class="row">
+
+<div class="col-md-5">
+
+<div class="card">
+<div class="card-header"> <b> Items Ordering </b> </div>
+<div class="card-body">
+
+<div id="frame" style="height:500px">
+
+</div>
+
+</div>
+</div>
+</div>
+
+<div class="col-md-4">
+<div class="card">
+<div class="card-header"><b> Product Selector </b></div>
+<div class="card-body">
+
+<div style="height:500px">
+
+
+<form class="form-signup" method="POST" id="form">
+
+<div class="row align-items-center">
+
+<div class="col-auto">
+<label for="order"> <b> Product Name </b></label>
+<input type="text" class="form-control" name="product" id="product" required>
+</div>
+
+<div class="col-md-3">
+<label for="order"> <b> Variant </b></label>
+<input type="text" class="form-control" name="variant" id="variant" required>
+</div>
+
+<div class="col-md-3">
+<label for="order"> <b> Batch No. </b></label>
+<% if (purch.batchNo == "" || purch.batchNo == false || purch.batchNo == null) { %>
+<a href="/purchase-order/assign-batch/po=<%- purch.purchNo %>" class="btn btn-outline-success"> Assign Batch </a> 
+<% } else { %>
+<input type="text" class="form-control" name="batch" id="batch" value="<%- purch.batchNo %>" readOnly>
+<% } %>
+</div>
+</div>
+<br>
+<div class="row align-items-center">
+
+<div class="col-auto">
+<label for="order"> <b> Quantity </b></label>
+<input type="text" class="form-control" name="qty" id="qty" required>
+</div>
+
+<div class="col-md-3">
+<label for="order"> <b> Unit Price </b></label>
+<input type="text" class="form-control" name="unit" id="unit" required>
+</div>
+
+<div class="col-md-3">
+<label for="order"> <b> Amount </b></label>
+<input type="text" class="form-control" name="amount" id="amount" required>
+</div>
+</div>
+<br>
+<button type="submit" class="btn btn-outline-success"> Add Product </button>
+
+</div>
+
+</form>
+
+
+</div>
+</div>
+</div>
+
+<div class="col-md-3">
+<form class="form-signup" method="POST" id="final" action="/purchase-order/create-po/po=<%- purch.purchNo %>/add-info">
+<div class="card">
+<div class="card-header"><b> Purchased Order Details </b></div>
+<div class="card-body">
+
+<div class="row align-items-center g-3">
+
+<div class="col-auto">
+<label for="order"> <b> PO Type : </b></label>
+</div>
+<div class="col-auto">
+<% if (purch.type != null) { %>
+<input type="text" class="form-control" name="type" id="type" value="<%- purch.type %>" readOnly>
+<% } else { %>
+<select class="form-select" name="type" id="type" required>
+<option disabled selected> PO Type </option>
+<option value="Inventory">Inventory</option>
+<option value="Subscriptions">Subscriptions</option>
+</select>
+<% } %>
+</div>
+
+</div>
+<br>
+<div class="row align-items-center">
+
+<div class="col-auto">
+<label for="order"> <b> Order Date </b></label>
+<input type="date" class="form-control" name="order" id="order" required>
+</div>
+
+<div class="col-auto">
+<label for="order"> <b> Received Date </b></label>
+<input type="date" class="form-control" name="received" id="received" required>
+</div>
+
+</div>
+
+<br>
+
+<label for="supplier"><b> Supplier's Name </b></label>
+<% if (purch.supplier != null) { %>
+<input type="text" class="form-control" name="supplier" id="supplier" value="<%- purch.supplier %>" placeholder="Supplier's Name" readOnly>
+<% } else { %>
+<input type="text" class="form-control" name="supplier" id="supplier" placeholder="Supplier's Name" required>
+<% } %>
+<br>
+
+<div class="row align-items-center">
+<div class="col-md-4">
+
+<label for="delivery"><b> Delivery Fee </b></label>
+<% if (purch.delivery != null) { %>
+<input type="text" class="form-control" name="fee" id="fee" placeholder="Delivery Fee" value="<%- purch.delivery %>" readOnly>
+<% } else { %>
+<input type="text" class="form-control" name="fee" id="fee" placeholder="Delivery Fee" value="00.00" required>
+<% } %>
+</div>
+
+<div class="col-auto">
+<label for="delivery"><b> Total</b></label>
+<input type="text" class="form-control" name="total" id="total" placeholder="Total Amount Due" required>
+<input type="hidden" id="amountonly">
+</div>
+</div>
+<br>
+
+<button type="submit" class="btn btn-outline-success"> Submit </button>
+
+</form>
+
+</div>
+</div>
+
+</div>
+
+
+
+<script>
+var xhttp = new XMLHttpRequest;
+xhttp.onload = function() {
+	document.getElementById("frame").innerHTML = this.responseText;
+	$("#total").val("<%- purch.total %>");
+	$("#amountonly").val("<%- purch.total %>");
+}
+xhttp.open("GET", "/purchase-order/create-po/po=<%- purch.purchNo %>/list");
+xhttp.send();
+$("#unit").on("input",function() {
+	var unit = $("#unit").val();
+	var qty = $("#qty").val();
+
+	var cal = unit * qty;
+	var toF = cal.toFixed(2);
+	var tot = toF
+
+	$("#amount").val(toF);
+
+})
+
+$("#form").submit(function(event) {
+	event.preventDefault();
+
+	var order = $("#order").val();
+	var received = $("#received").val();
+	var product = $("#product").val();
+	var variant = $("#variant").val();
+	var qty = $("#qty").val();
+	var unit = $("#unit").val();
+	var amount = $("#amount").val();
+
+	$.ajax({
+		type:"POST",
+		url:"/purchase-order/create-po/po=<%- purch.purchNo %>",
+		data:{
+			order:order,
+			received:received,
+			product:product,
+			variant:variant,
+			qty:qty,
+			unit:unit,
+			amount:amount,
+		},
+		success:function(e) {
+            var x = document.getElementById("snackbar");
+            x.innerHTML = "Product Added / Modified";
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+            var xhttp = new XMLHttpRequest;
+            xhttp.onload = function() {
+	            document.getElementById("frame").innerHTML = this.responseText;
+            }
+			xhttp.open("GET","/purchase-order/create-po/po=<%- purch.purchNo %>/list");
+			xhttp.send();
+				var order = $("#order").val("");
+				var received = $("#received").val("");
+				var product = $("#product").val("");
+				var variant = $("#variant").val("");
+				var qty = $("#qty").val("");
+				var unit = $("#unit").val("");
+				var amount = $("#amount").val("");
+				$("#total").val(e.total);
+				$("#amountonly").val(e.total);
+				console.log(e);
+		},
+        error:function(e){
+            var x = document.getElementById("snackbar");
+            x.innerHTML = e.responseText;
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+        }
+	})
+
+})
+
+$("#fee").on("input",function() {
+	var total = $("#amountonly").val(); ;
+	var fee = $("#fee").val();
+
+	var cal = (fee * 1) + (total * 1);
+	var fix = cal.toFixed(2);
+
+	$("#total").val(fix);
+
+})
+</script>
