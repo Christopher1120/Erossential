@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+
+<table class="table text-center">
+<% prod.forEach((prod)=> { %>
+<td><a href="/pos/oid=<%- order.oid %>/add-to-cart=<%- prod._id %>" data-bs-toggle="modal" data-bs-target="#Frame" onclick="Click(this)"><i class="bi bi-plus-circle"></i></a></td>
+<td><%- prod.productName %></td>
+<td><%- prod.variant %></td>
+<td><%- prod.price %></tD>
+</tr>
+<% }) %>

@@ -1,0 +1,67 @@
+<!Doctype HMTL>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE-edge" />
+		<meta name="viewport" content="width=device-width initial-scale=1.0" />
+		<link rel="stylesheet" href="/css/loginpage.css" />
+		<title> Erossential Management </title>
+	</head>
+
+	<body>
+
+		<div class="col-sm p-3">
+
+			<h1> POINT-OF-SALES LOGIN </h1>
+			<form action="/pos/login" method="POST">
+				<div class="headingsContainer">
+					<img src="../../images/Eros.png"></img>
+
+					<div class="container-fluid">
+						<% if(error && error.length >0) { %>
+						<div class="alert" role="alert">
+							<div class="row">
+								<div class="col-auto w3-right">
+									<a href="#close" class="btn-close w3-right" data-bs-dismiss="alert" aria-label="Close"></a>
+								</div>
+								<div class="col-auto">
+									<div class="text-center">
+										<%= error %>
+									</div>
+								</div>
+							</div>
+						</div>
+						<% } %>
+					</div>
+
+				</div>
+
+				<div class="mainContainer">
+					<label for="username">
+						<b> Username </b>
+					</label>
+					<input type="text" name="username" id="username" placeholder="Please enter your username" required="required" />
+
+					<label for="password">
+						<b> Password </b>
+					</label>
+					<input type="password" name="password" id="password" placeholder="Please enter your password" required="required" />
+
+					<br/>
+
+					<button type="submit">Login</button>
+
+					<div class="subContainer">
+
+						<p class="forgotpsd">
+							<a href="#"> Forgot Password? </a>
+						</p>
+
+					</div>
+
+				</div>
+
+			</form>
+		</body>
+
+</html>

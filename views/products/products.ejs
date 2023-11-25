@@ -92,11 +92,13 @@ function Choice() {
 			url:"/products/batch-search",
 			data:{
 				batch:batch,
-				product:product
+				product:product,
 			},
 			success:function(e) {
 				datalist.empty();
+				console.log(e);
 				e.forEach((item)=>{
+				console.log(item)
 				var option = "<option value=" + item.variant + "></option>";
 
 				datalist.append(option);
@@ -107,6 +109,7 @@ function Choice() {
 				x.innerHTML = e.responseText;
 				x.className = "show";
 				setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+				console.log(e);
 			}
 		})
 
@@ -130,9 +133,6 @@ $("#form").submit(function(event){
 
 	event.preventDefault();
 
-	var con = confirm("Are you adding new products?");
-
-	if (con == true) {
 
 	$.ajax({
 		type:"POST",
@@ -168,45 +168,6 @@ $("#form").submit(function(event){
             setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
         }
 	})
-
-	} else {
-	
-		$.ajax({
-			type:"POST",
-			url:"/products/modify-product",
-			data:{
-				batch:batch,
-				product:product,
-				variant:variant,
-				qty:qty,
-				price:price,
-			},
-			success:function() {
-				var x = document.getElementById("snackbar");
-				x.innerHTML = "Product Added / Modified";
-				x.className = "show";
-				setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
-				var xhttp = new XMLHttpRequest;
-				xhttp.onload = function() {
-					document.getElementById("frame").innerHTML = this.responseText;
-				}
-				xhttp.open("GET", "/products/product-list");
-				xhttp.send();
-				$("#batch").val("");
-				$("#product").val("");
-				$("#qty").val("");
-				$("#price").val("");
-			 },
-        error:function(e){
-            var x = document.getElementById("snackbar");
-            x.innerHTML = e.responseText;
-            x.className = "show";
-            setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
-        }
-			
-		})
-
-	}
 })
 
 function getData(i) {

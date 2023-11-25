@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+
+<table class="table text-center">
+<tr>
+<th> Product </th>
+<th> Variant </th>
+<th> Qty </th>
+<th> Price </th>
+<th> Total </th>
+</tr>
+<% pur.forEach((pur)=> {%>
+<tr>
+<td><%- pur.productName %></td>
+<td><%- pur.variant %></tD>
+<td><%- pur.qty %></td>
+<td><%- pur.unit %></td>
+<td><%- pur.total %></td>
+</tr>
+<% }) %>
+<tr>
+<td><b> TOTAL </b></td>
+<td></td>
+<td></td>
+<td></td>
+<td><%- order.total %></td>
+</tr>
+</table>

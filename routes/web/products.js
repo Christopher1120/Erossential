@@ -25,26 +25,24 @@ router.get("/product-list", (req, res) => {
 // DATA Processing
 
 router.get("/batch-search", (req, res) => {
-    var batch = req.query.batch;
-    var product = req.query.product;
+    var ubatch = req.query.batch;
+    var prod = req.query.product;
 
-    PO.find({ batchNo: batch,product:product }).then(async (batch) => {
-        try {
-            res.send(batch);
-            console.log(batch);
-            return;
-        } catch (e) {
-            res.status(404);
-            res.send("An error has occured");
-            console.log(e);
-            return;
-        }
+    var product = prod.toLowerCase();
+
+
+    console.log(ubatch,product)
+
+    PO.find({ batchNo: ubatch, product: product }).then((batches) => {
+        res.status(202)
+        console.log(batches);
+        return res.send(batches);
     })
 })
 
 router.post("/modify-product", (req, res) => {
     var batch = req.body.batch;
-    var productN = req.body.product;
+    var i = req.body.product;
     var qty = req.body.qty;
     var variant = req.body.variant;
     var price = req.body.price;
@@ -52,7 +50,10 @@ router.post("/modify-product", (req, res) => {
     fix.toFixed(2);
     console.log(fix);
 
-    Inventory.findOne({ batchNo: batch, productName: productN }).then(async (prod) => {
+    var prod1 = productN.toLowerCase();
+    var prod2 = variant.toLowerCase();
+
+    Inventory.findOne({ batchNo: batch, productName: prod1 }).then(async (prod) => {
         if (!prod) {
             res.status(404);
             res.send("Product Not Found!");
@@ -60,44 +61,7 @@ router.post("/modify-product", (req, res) => {
         }
         if (prod) {
 
-            var product = await Inventory.findOne({ _id: prod._id });
-            var po = await PO.findOne({type:"Inventory", batchNo: batch, product: productN, variant: variant });
-            console.log("Pruchase Product", po);
-
-            if (!po) {
-                res.status(404);
-                res.send("Product Not Found!");
-                return;
-            }
-
-            else if (po.inventory == 0) {
-                res.status(404);
-                res.send("Product is out of stock : " + po.inventory);
-                return
-            } else {
-
-                var cal = po.inventory - qty;
-                var qtys = product.qty + qty;
-
-                product.qty = qtys;
-                product.price = price;
-                po.inventory = cal;
-                
-
-                try {
-                    let saveProd = await product.save();
-                    let savePO = await po.save();
-                    console.log("saveProduct", saveProd,"Save PO", savePO);
-                    res.status(200)
-                    res.send("Product Modified!");
-                    return;
-                } catch (e) {
-                    console.log(e);
-                    res.status(402);
-                    res.send("An error has occured!");
-                    return;
-                }
-            }
+            
         } else {
             res.status(502);
             res.send("An error has occured!");
@@ -119,23 +83,65 @@ router.post("/add-products", (req, res) => {
     fix.toFixed(2);
     console.log(fix);
 
-    Inventory.findOne({ batchNo: batch, productName: product, variant:variant }).then(async (prod) => {
+    var prod1 = product.toLowerCase();
+    var prod2 = variant.toLowerCase();
+
+    Inventory.findOne({ batchNo: batch, productName: prod1, variant: prod2 }).then(async (prod) => {
 
         if (prod) {
-            console.log(prod)
-            res.status(502);
-            res.send("Product Exist! Please modify instead!");
-            return;
+            var intv = await Inventory.findOne({ _id: prod._id });
+            var pos = await PO.findOne({ type: "Inventory", batchNo: batch, product: prod1, variant: prod2 });
+            console.log("Purchase Product", po);
+
+            if (!pos) {
+                res.status(404);
+                res.send("Product Not Found!");
+                return;
+            }
+
+            else if (pos.inventory <= 0) {
+                res.status(404);
+                res.send("Product is out of stock : " + pos.inventory);
+                return
+            } else if (pos.inventory < qty) {
+                res.status(502);
+                res.send("Stock Left : " + pos.inventory);
+
+            } else {
+
+                var cal = (pos.inventory * 1) - (qty * 1);
+                console.log(cal);
+                var qtys = (intv.qty * 1) + (qty * 1);
+
+                intv.qty = qtys;
+                intv.price = price;
+                pos.inventory = cal;
+
+
+                try {
+                    let saveProd = await intv.save();
+                    let savePO = await pos.save();
+                    console.log("saveProduct", saveProd, "Save PO", savePO);
+                    res.status(200)
+                    res.send("Product Modified!");
+                    return;
+                } catch (e) {
+                    console.log(e);
+                    res.status(402);
+                    res.send("An error has occured!");
+                    return;
+                }
+            }
         }
         if (!prod) {
-            var po = await PO.findOne({ type: "Inventory", batchNo: batch, variant: variant });
+            var po = await PO.findOne({ type: "Inventory", batchNo: batch, variant: prod2 });
             
             if (!po) {
                 res.status(404);
                 res.send("No product found on PO");
             }
 
-            else if (po.inventory == null) {
+            else if (po.inventory <= 0) {
                 res.status(404);
                 res.send("This product has been cleared already");
                 return
@@ -143,14 +149,14 @@ router.post("/add-products", (req, res) => {
             else {
                 var newProd = new Inventory({
                     batchNo: batch,
-                    productName: product,
+                    productName: prod1,
                     qty: qty,
                     price: fix,
                     sold: 0,
-                    variant:variant
+                    variant:prod2
                 });
 
-                var cal = po.inventory - qty;
+                var cal = (po.inventory * 1) - (qty * 1);
                 po.inventory = cal;
 
                 try {

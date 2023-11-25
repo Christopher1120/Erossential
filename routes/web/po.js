@@ -190,60 +190,97 @@ router.post("/create-po/po=:ident", (req, res) => {
     var amount = req.body.amount;
     var type = req.body.type;
 
+    var lower1 = product.toLowerCase();
+    var lower2 = variant.toLowerCase();
+
     PON.findOne({ purchNo: req.params.ident }).then((po) => {
-        PO.findOne({ purchNo: po.purchNo, batchNo: po.batchNo, variant: po.variant}).then((purch) => {
-            if (!purch) {
+        PO.findOne({ purchNo: po.purchNo, batchNo: po.batchNo, variant: lower2 }).then(async (purch) => {
+            console.log(purch);
+            if (purch) {
+                
+                var uPO = await PO.findById(purch._id);
 
-                var newPO = new PO({
-                    purchNo: po.purchNo,
-                    batchNo: po.batchNo,
-                    product: product,
-                    variant: variant,
-                    qty: qty,
-                    unit: unit,
-                    cost: amount,
-                    inventory: qty,
-                    type:type
+                var qqty = (purch.qty * 1) + (qty * 1);
+                console.log("M Quantity", qqty);
+                var cal = (purch.unit * 1) * (qqty * 1);
+                var fix = cal.toFixed(2);
+                console.log("M Cost", fix);
 
-                });
+                uPO.qty = qqty;
+                uPO.cost = fix;
 
-                newPO.save(async (err, save) => {
-                    if (err) {
-                        console.log(err);
-                        res.status(404);
-                        res.send("An error has occured!");
-                        return;
-                    }
 
-                    console.log(save);
+                var uPON = await PON.findById(po._id);
 
-                    var prod = await PON.findOne({ purchNo: req.params.ident });
-                    var initial = prod.total;
+                var initial = (uPON.total * 1) + (fix * 1);
 
-                    var cal = (initial * 1) + (amount * 1);
-                    var fix = cal.toFixed(2);
+                uPON.total = initial;
+                po.inventory = qqty
 
-                    prod.total = fix;
+                try {
+                    let savePO = await uPO.save();
+                    let savePON = await uPON.save();
+                    console.log("Saving PO", savePO, "Saving PON", savePON);
+                    res.status(200);
+                    res.send(savePON);
+                    return;
+                } catch (e) {
+                    console.log(e);
+                    res.send("An error occured on line 274");
+                    return;
+                }
 
-                    try {
-                        let saveProd = await prod.save();
-                        console.log("Added Product",saveProd);
-                        res.status(202);
-                        res.send(saveProd);
-                        return;
-                    } catch (e) {
-                        console.log(e);
-                        res.status(502);
-                        res.send("Internal Error!");
-                        return;
-                    }
-                })
+                
 
-            } else {
-                res.status(409);
-                res.send("Existing Product Found!");
-                return;
             }
+
+            var newPO = new PO({
+                purchNo: po.purchNo,
+                batchNo: po.batchNo,
+                product: lower1,
+                variant: lower2,
+                qty: qty,
+                unit: unit,
+                cost: amount,
+                inventory: qty,
+                type: type
+
+            });
+
+            newPO.save(async (err, save) => {
+                if (err) {
+                    console.log(err);
+                    res.status(404);
+                    res.send("An error has occured!");
+                    return;
+                }
+
+                console.log(save);
+
+                var prod = await PON.findOne({ purchNo: req.params.ident });
+                var initial = prod.total;
+
+                var cal = (initial * 1) + (amount * 1);
+                var fix = cal.toFixed(2);
+
+                prod.total = fix;
+
+                try {
+                    let saveProd = await prod.save();
+                    console.log("Added Product", saveProd);
+                    res.status(202);
+                    res.send(saveProd);
+                    return;
+                } catch (e) {
+                    console.log(e);
+                    res.status(502);
+                    res.send("Internal Error!");
+                    return;
+                }
+            })
+
+                
+        
         })
     })
 })

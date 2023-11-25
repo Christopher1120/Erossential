@@ -29,6 +29,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="auth\auth.js" />
+    <Content Include="auth\auth2.js" />
     <Content Include="css\0-dummy.css" />
     <Content Include="css\loginpage.css" />
     <Content Include="css\style.css" />
@@ -37,11 +38,14 @@
     <Content Include="images\favicon.ico" />
     <Content Include="main.js" />
     <Content Include="models\batch.js" />
+    <Content Include="models\customers.js" />
     <Content Include="models\inventory.js" />
     <Content Include="models\investors.js" />
     <Content Include="models\monthly-sales.js" />
+    <Content Include="models\orders.js" />
     <Content Include="models\po.js" />
     <Content Include="models\pon.js" />
+    <Content Include="models\purchased.js" />
     <Content Include="models\users.js" />
     <Content Include="params\params.js" />
     <Content Include="preload.js" />
@@ -61,13 +65,21 @@
     <Content Include="views\home\_partial\register.ejs" />
     <Content Include="views\investors\investor.ejs" />
     <Content Include="views\investors\investors.ejs" />
+    <Content Include="views\pos\create-order.ejs" />
+    <Content Include="views\pos\login.ejs" />
     <Content Include="views\pos\pos.ejs" />
+    <Content Include="views\pos\_partial\itm.ejs" />
+    <Content Include="views\pos\_partial\purchased.ejs" />
+    <Content Include="views\pos\_partial\qty.ejs" />
+    <Content Include="views\pos\_partial\register.ejs" />
+    <Content Include="views\pos\_partial\search.ejs" />
     <Content Include="views\products\products.ejs" />
     <Content Include="views\products\_partial\product-list.ejs" />
     <Content Include="views\purchased-order\create.ejs" />
     <Content Include="views\purchased-order\purchase.ejs" />
     <Content Include="views\purchased-order\_partial\item-list.ejs" />
     <Content Include="views\_partials\_header.ejs" />
+    <Content Include="views\_partials\_initial.ejs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="auth\" />
@@ -83,6 +95,7 @@
     <Folder Include="views\investors\" />
     <Folder Include="views\crm\" />
     <Folder Include="views\pos\" />
+    <Folder Include="views\pos\_partial\" />
     <Folder Include="views\products\" />
     <Folder Include="views\products\_partial\" />
     <Folder Include="views\purchased-order\" />

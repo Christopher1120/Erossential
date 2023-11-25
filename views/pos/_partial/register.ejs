@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+
+
+<form class="form-signup" method="POST" id="form" action="/pos/oid=<%- order.oid %>/assign">
+<label for="type"><b> Type </b></label>
+<select class="form-select" name="type" id="type" onchange="Change()" required>
+<option disabled selected> Please select type </option>
+<option value="New Customer">New Customer</option>
+<option value="Existing Customer">Existing Customer</option>
+</select>
+<label for="cx"><b> Customer's Name </b></label>
+<input type="text" class="form-control" name="cx" id="cx" placeholder="Customer's Full Name" required>
+<div class="row align-items-center">
+<div class="col-auto">
+<label for="street"><b> House No & Street </b></label>
+<input type="text" class="form-control" name="street" id="street" placeholder="Street name" required>
+</div>
+<div class="col-auto">
+<label for="city"><b> City </b></label>
+<input type="text" class="form-control" name="city" id="city" placeholder="Municipality / City" required>
+</div>
+</div>
+<label><b>Contact Number</b></label>
+<div id="new">
+<input type="text" class="form-control" name="contact" id="contact" placeholder="Contact Number">
+</div>
+<div id="existing" style="display:none">
+<br>
+<div class="row align-items-center g-2">
+<div class="col-sm-auto">
+<button type="button" onclick="SearchContact()" class="btn btn-outline-success">Search</button>
+</div>
+</div>
+</div>
+<br>
+
+<button type="submit" class="btn btn-outline-success"> Submit </button>
+
+</form>

@@ -1,0 +1,312 @@
+<%- include("../_partials/_initial") %>
+
+<script>
+$(document).ready(()=>{
+    var xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        $("#purchases").html(this.responseText);
+    };
+    xhttp.open("GET", "/pos/oid=<%- order.oid %>/purchased");
+    xhttp.send();
+})
+
+
+function Prod() {
+    var batch = document.getElementById("batch").value;
+
+    $.ajax({
+        type:"GET",
+        url:"/pos/oid=<%- order.oid %>/items",
+        data:{
+            batch:batch
+        },
+        success: function (e) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onload = function() {
+            document.getElementById("items").innerHTML = e;
+        }
+        xhttp.open("GET","/pos/oid=<%- order.oid %>/items");
+        xhttp.send();
+        console.log("Working");
+        console.log(e);
+        },
+        error: function(e) {
+            var x = document.getElementById("snackbar");
+            x.innerHTML = cx.responseText;
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+            var xhttp = new XMLHttpRequest;
+        }
+    })
+
+}
+
+function Click(r) {
+    console.log(r.href);
+    $("#setQty").attr("action", r.href);
+}
+
+$(document).on('submit', "#setQty", function(event) {
+    event.preventDefault();
+    var qty = document.getElementById("qty").value;
+    console.log("Quantity " + qty);
+    var action = $("#setQty").prop("action")
+
+    $.ajax({
+        type:"POST",
+        url: action,
+        data:{
+            qty:qty
+        },
+        success:function(e) {
+            var x = document.getElementById("snackbar");
+            x.innerHTML = e;
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+                var xhttp = new XMLHttpRequest();
+                xhttp.onload = function() {
+                    $("#purchases").html(this.responseText);
+                };
+                xhttp.open("GET", "/pos/oid=<%- order.oid %>/purchased");
+                xhttp.send();
+        },
+        error:function(e) {
+            var x = document.getElementById("snackbar");
+            x.innerHTML = e.responseText;
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+        }
+    })
+
+})
+</script>
+
+<% if (order.assigned == false) { %>
+
+<script>
+$(document).ready(function(){
+    $("#btn").click();
+    console.log("Clicked")
+    
+})
+
+var xhttp = new XMLHttpRequest();
+xhttp.onload = function() {
+	document.getElementById("frame").innerHTML = this.responseText;
+}
+xhttp.open("GET","/pos/oid=<%- order.oid %>/assign")
+xhttp.send();
+
+function Change() {
+    var type = $("#type").val();
+    if (type == "Existing Customer") {
+        $("#cx").prop("disabled",true);
+        $("#street").prop("disabled",true);
+        $("#city").prop("disabled",true);
+        $("#existing").show();
+        $("#contact2").attr("required",true);
+    } else {
+        $("#cx").prop("disabled",false);
+        $("#street").prop("disabled",false);
+        $("#city").prop("disabled",false);
+        $("#new").show();
+        $("#existing").hide();
+        $("#contact").attr("required",true);
+    }
+}
+
+function SearchContact() {
+
+    var contact = $("#contact").val();
+    console.log(contact);
+
+    $.ajax({
+        type:"POST",
+        url:"/pos/oid=<%- order.oid %>/search-contact=" + contact,
+        success: (cx) =>{
+            $("#cx").val(cx.name);
+            $("#street").val(cx.street);
+            $("#city").val(cx.city);
+            $("#cx").prop("disabled",true);
+            $("#street").prop("disabled",true);
+            $("#city").prop("disabled",true);
+            $("#contact2").prop("disabled",true)
+        },
+        error:(cx) =>{
+            var x = document.getElementById("snackbar");
+            x.innerHTML = cx.responseText;
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+            var xhttp = new XMLHttpRequest;
+        }
+    })
+}
+</script>
+
+<button type="button" style="display:none" data-bs-toggle="modal" data-bs-target="#Frame" id="btn">Toggle</button>
+ 
+<div class="modal fade " id="Frame" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-l">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Register Customer</h1>
+      </div>
+      <div class="modal-body">
+        <div id="frame">
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <p> Erossential 2023 </p>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<% } %>
+
+
+
+<div class="row">
+
+<div class="col-md-4">
+<div class="card">
+<div class="card-body" style="height:500px">
+
+<div id="purchases">
+
+</div>
+
+</div>
+</div>
+</div>
+
+<div class="col-md-4">
+<div class="card">
+<div class="card-body" style="height:500px">
+
+<div class="row align-items-center g-1">
+<div class="col-auto">
+<select class="form-select" name="batch" id="batch" onchange="Prod()">
+<option disabled selected> Product Batch </option>
+<% batch.forEach((batch)=>{ %>
+<option value="<%- batch.batchNo %>"><%- batch.batchNo %></option>
+<% }) %>
+</select>
+</div>
+
+<div class="col-auto">
+<input type="text" class="form-control" id="search" placeholder="Please input product name" name="search">
+</div>
+<div class="col-auto">
+<button type="submit" class="btn btn-outline-success"><i class="bi bi-search"></i></button>
+</div>
+</div>
+<hr>
+
+<div id="items">
+
+</div>
+
+</div>
+</div>
+</div>
+
+
+<div class="col-md-4">
+<div class="card">
+<div class="card-body" style="height:500px">
+
+<% order.customer.forEach((customer)=> { %>
+<div class="row align-items-center g-3">
+
+<div class="col-auto">
+<label><b> Name </b></label>
+</div>
+<div class="col-auto">
+<%- customer.name %>
+</div>
+
+<div class="col-auto">
+<label><b> Contact </b></label>
+</div>
+<div class="col-auto">
+<%- customer.contact %>
+</div>
+</div>
+
+<div class="row align-items-center g-3">
+<div class="col-auto">
+<label><b> Street </b></label>
+</div>
+<div class="col-auto">
+<%- customer.street %>
+</div>
+
+<div class="col-auto">
+<label><b> City </b></label>
+</div>
+<div class="col-auto">
+<%- customer.city %>
+</div>
+</div>
+
+<% }) %>
+
+<hr>
+
+<form class="form-signup" method="POST" action="/pos/oid=<%- order.oid %>/place-order">
+<div class="row align-items-center">
+<div class="col-auto">
+<label for="courier"><b> Courier </b></label>
+<input type="text" class="form-control" name="courier" id="courier" placeholder="Courier / Delivery Company" required>
+</div>
+<div class="col-md-3">
+<label for="courier"><b> Discount </b></label>
+<input type="text" class="form-control" name="courier" id="courier" placeholder="Discount" required>
+</div>
+</div>
+
+
+</form>
+
+
+<div class="modal fade l" id="Frame" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-l">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">EROSSENTIAL POINT-OF-SALES</h1>
+        <button type="button" id="cls" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <form class="form-signup" method="POST" id="setQty" class="setQty">
+            <div class="row align-items-center">
+            <div class="col-auto">
+            <label for="quantity"><b> Qty : </b></label>
+            </div>
+            <div class="col-auto">
+            <input type="number" min="0" class="form-control" name="qty" id="qty">
+            </div>
+            <div class="col-auto">
+            <button type="submit" class="btn btn-outline-success"> Set Quantity </button> 
+            </div>
+            </div>
+
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button"  id="close" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
