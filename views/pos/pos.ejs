@@ -17,6 +17,29 @@ xhttp.onload = function() {
 xhttp.open("GET", "/pos/assigned-orders");
 xhttp.send();
 
+function Assing(){
+
+var transfer = $("#transfer").val();
+
+if (transfer == "" || transfer == null ) {
+
+alert("Transfer field cant be empty!);
+
+} else {
+
+ $.ajax({
+type:"POST",
+url: "/pos/oid=<%- order.oid %>/transfer",
+data:{
+transfer : transfer
+},
+success: function(e) {},
+error: function(e) {}
+ })
+
+}
+
+}
 
 </script>
 
