@@ -90,6 +90,7 @@
     <Folder Include="css\" />
     <Folder Include="images\" />
     <Folder Include="models\" />
+    <Folder Include="logs\" />
     <Folder Include="params\" />
     <Folder Include="routes\" />
     <Folder Include="routes\web\" />
