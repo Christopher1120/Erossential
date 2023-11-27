@@ -1,0 +1,54 @@
+<%- include("../_partials/_initial") %>
+<h3> Order No : <%- order.oid %></h3>
+<div class="footer">
+<div class="row align-items-center">
+<div class="col-auto">
+<article class="text-secondary">Status : <%- order.status %></article>
+</div>
+<div class="col-auto">
+<% order.payment.forEach((payment)=>{ %>
+<% if (payment == true) { %>
+<article class="text-success">Payment : PAID</article>
+<% } else { %>
+<article class="text-secondary">Payment : PENDING</article>
+<% } %>
+<% }) %>
+</div>
+</div>
+</div>
+<hr>
+
+
+<% order.customer.forEach((cx)=> {%>
+<table class="table text-center">
+<tr>
+<th> Customer's Name </th>
+<td><%- cx.name %></td>
+<th> Contact Number </th>
+<td><%- cx.contact %></td>
+</tr>
+<tr>
+<th> Address </th>
+<td><%- cx.street %></td>
+<th> City </th>
+<td><%- cx.city %></td>
+</table>
+<% }) %>
+
+<div class="w3-container">
+
+<table class="table text-center">
+<tr class="border">
+<th> Qty </th>
+<th> Product Name </th>
+<th> Variant </th>
+<th> Unit </th>
+<th> Total </th>
+</tr>
+<% purch.forEach((purch)=>{ %>
+<td>PHP <%- purch.qty %></td>
+<td><%- purch.productName %></td>
+<td><%- purch.variant %></td>
+<td><%- purch.unit %></td>
+<td>PHP <%- purch.total %></td>
+<% }) %>

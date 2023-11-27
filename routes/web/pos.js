@@ -8,6 +8,7 @@ var Purchased = require("../../models/purchased");
 var Auth = require("../../auth/auth").ensureAuthenticated;
 var Auth2 = require("../../auth/auth2").ensureAuthenticated2;
 var passport = require("passport");
+const Inventory = require("../../models/inventory");
 
 
 var router = express.Router();
@@ -20,7 +21,9 @@ router.get("/login", (req, res) => {
 });
 
 router.get("/", (req, res) => {
-    res.render("pos/pos");
+    Order.find().then((order) => {
+        res.render("pos/pos", {order:order});
+    });
 })
 
 router.get("/oid=:ident", (req, res) => {
@@ -68,13 +71,130 @@ router.get("/oid=:ident/add-to-cart=:id", (req, res) => {
 })
 
 
+router.get("/oid=:ident/order-information", (req, res) => {
+    Order.findOne({ oid: req.params.ident }).then((order) => {
+        Purchased.find({ oid: req.params.ident }).then((purch) => {
+            res.render("pos/order-information", { order: order,purch:purch });
+        });
+    })
+})
+
+
+
+router.get("/oid=:ident/transfer", (req, res) => {
+    Order.findOne({ oid: req.params.ident }).then((order) => {
+        User.find().then((user) => {
+            res.render("pos/_partial/transfer", { order: order, user: user });
+        })
+    })
+})
+
+router.get("/assigned-orders", (req, res) => {
+    Order.find({ transferTo: req.user.full }).then((order) => {
+        res.render("pos/_partial/assign", { order: order });
+    })
+})
 
 // DATA Processing
+
+router.post("/oid=:ident/transfer", async (req, res) => {
+    var order = await Order.findOne({ oid: req.params.ident });
+    var transfer = req.body.transfer;
+
+    order.transferTo = transfer;
+
+    try {
+        let saveOrder = await order.save();
+        console.log("Transfer Order", saveOrder);
+        res.status(202);
+        res.send("Order Transferred To " + transfer);
+        return;
+    } catch (e) {
+        res.status(502);
+        res.send("Can't Transfer Job");
+        return;
+    }
+
+})
+
+router.post("/oid=:ident/check-out", async (req, res) => {
+
+
+
+    var courier = req.body.courier;
+    var fee = req.body.fee;
+    var discount = req.body.discount;
+    var payment = req.body.payment;
+    var notes = req.body.notes;
+
+    var order = await Order.findOne({ oid: req.params.ident });
+
+    var total = (order.total * 1) + (fee * 1);
+
+    var newtotal = Number(total);
+    console.log(newtotal)
+
+
+    if (payment == "Gcash") {
+
+        Order.updateOne({ oid: req.params.ident }, {$set:{type:payment,courier: courier,fee: fee,discount: 0,total: newtotal,notes: notes,payment: {paid: true,balance: 0,total: newtotal},status: "Created",}}).then(async (save) => {
+            console.log("Saving Order", save);
+            req.flash("info", "Order Created And Paid");
+            return res.redirect("/pos");
+        })
+    } else {
+        Order.updateOne({ oid: req.params.ident }, { $set: {type:payment, courier: courier, fee: fee, discount: 0, total: newtotal, notes: notes, payment: { paid: false, balance: newtotal, total: 0 }, status: "Created", } }).then(async (save) => {
+            console.log("Saving Order", save);
+            req.flash("info", "Order Created And Paid");
+            return res.redirect("/pos");
+        })
+    }
+
+})
+
+router.get("/oid=:ident/remove-product/pid=:pid", async (req, res) => {
+    var order = await Order.findOne({ oid: req.params.ident });
+    var purch = await Purchased.findById(req.params.pid);
+    var batch = await Batch.findOne({ batchNo: purch.batch });
+    var inventory = await Inventory.findOne({ productName: purch.productName, batchNo: purch.batch, variant: purch.variant });
+
+
+    var addinventory = (purch.qty * 1) + (inventory.qty * 1);
+    var sold = (inventory.sold * 1) - (purch.qty * 1);
+    var minussales = (batch.sales * 1) - (purch.total * 1);
+    var minusorder = (order.total * 1) - (purch.total * 1);
+
+    var fix1 = minussales.toFixed(2);
+    var fix2 = minusorder.toFixed(2);
+
+    inventory.qty = addinventory;
+    inventory.sold = sold
+    batch.sales = fix1;
+    order.total = fix2;
+
+
+    try {
+        let saveInv = await inventory.save();
+        let saveBatch = await batch.save();
+        let saveOrder = await order.save();
+        console.log("Saving Inventory", saveInv, "Saving Batch", saveBatch, "Saving Order", saveOrder);
+        Purchased.findByIdAndDelete(purch._id).then(function () {
+            res.status(202);
+            res.send("Product Removed from cart!");
+        })
+    } catch (e) {
+        console.log(e);
+        res.status(404);
+        res.send("Internal Error Occured!");
+        return;
+    }
+
+
+})
 
 router.post("/oid=:ident/add-to-cart=:id", async (req, res) => {
     var inventory = await Products.findOne({ _id: req.params.id });
     var order = await Order.findOne({ oid: req.params.ident });
-    var purch = await Purchased.findOne({ oid: req.params.oid, productName: inventory.productName,batch:inventory.batch, variant:inventory.variant, });
     var batched = await Batch.findOne({ batchNo: inventory.batchNo });
     var qty = req.body.qty;
     var cal = (inventory.price * 1) * (qty * 1);
@@ -82,13 +202,7 @@ router.post("/oid=:ident/add-to-cart=:id", async (req, res) => {
     var unit = inventory.price
     var u = unit.toFixed(2);
 
-
-    if (!inventory) {
-        res.status(404);
-        res.send("No product match!");
-        return;
-    }
-    else if (inventory.qty <= 0) {
+    if (inventory.qty <= 0) {
         res.status(502);
         res.send("Opps! No more stocks with " + inventory.productName + " " + inventory.variant);
         return;
@@ -97,100 +211,109 @@ router.post("/oid=:ident/add-to-cart=:id", async (req, res) => {
         res.status(502);
         res.send(inventory.productName + " " + inventory.variant + " stocks left : " + inventory.qty);
         return;
-    }
+    } else {
 
-    if (purch) {
-        var minus = (inventory.qty * 1) - (qty * 1);
-        var sold = (inventory.sold * 1) + (qty * 1);
+        var invname = await inventory.productName;
+        var invbatch = await inventory.batchNo;
+        var invar = await inventory.variant;
+        console.log("Product Details", invname, invbatch, invar);
 
-        var add = (purch.qty * 1) + (qty * 1) // Results of how many;
-        var ordertotal = (qty * 1) * (inventory.unit * 1) // Partial results for Order-total itself ;
-        var total = (add) * (inventory.unit * 1) // Calculation for purchase units;
-        var purchtotal = (total * 1) + (purch.total * 1) // total price of purchased unit;
+        var purch = await Purchased.findOne({ oid: req.params.ident, productName: inventory.productName, batch: inventory.batchNo, variant: inventory.variant });
+        console.log(purch);
+        if (purch) {
+            console.log(purch)
+            var minus = (inventory.qty * 1) - (qty * 1);
+            var sold = (inventory.sold * 1) + (qty * 1);
 
-        var fix = purchtotal.toFixed(2);
-        var tot = ordertotal.toFixed(2);
+            var add = (purch.qty * 1) + (qty * 1) // Results of how many;
+            var ordertotal = (qty * 1) * (inventory.price * 1) // Partial results for Order-total itself ;
+            var purchtotal = (add * 1) * (inventory.price * 1) // Calculation for purchase units; // total price of purchased unit;
 
-        var fin = (order.total) + (ordertotal * 1) // Final result for the total of the order;
-        var fixed = fin.toFixed(2);
+            var fix = purchtotal.toFixed(2);
+            var tot = ordertotal.toFixed(2);
 
-        var batchTotal = (batched.sales * 1) + (total * 1);
-        var batchFix = batchTotal.toFixed(2);
+            var fin = (order.total) + (tot * 1) // Final result for the total of the order;
+            var fixed = fin.toFixed(2);
 
-        inventory.qty = minus;
-        inventory.sold = sold;
-        purch.qty = add;
-        purch.total = fix;
-        order.total = tot;
-        batched.sales = batchFix
+            var batchTotal = (batched.sales * 1) + (tot * 1);
+            var batchFix = batchTotal.toFixed(2);
 
-        try {
-            let saveInt = await inventory.save();
-            let savePurch = await purch.save();
-            let savetotal = await order.save();
-            let saveBatch = await batched.save();
+            inventory.qty = minus;
+            inventory.sold = sold;
+            purch.qty = add;
+            purch.total = fix;
+            order.total = fixed;
+            batched.sales = batchFix
 
-            console.log("Modifying Inventory", saveInt, "Modifying Purchase", savePurch, "Modifying Order", savetotal, "Modifying Batch", saveBatch);
+            try {
+                let saveInt = await inventory.save();
+                let savePurch = await purch.save();
+                let savetotal = await order.save();
+                let saveBatch = await batched.save();
 
-            res.status(202);
-            res.send("Product Modified!");
+                console.log("Modifying Inventory", saveInt, "Modifying Purchase", savePurch, "Modifying Order", savetotal, "Modifying Batch", saveBatch);
 
-        } catch (e) {
-            res.status(502);
-            res.send("Internal Error Occured!");
-            console.log(e);
-            return;
-        };
-
-    } else if (!purch) {
-
-        console.log(fix, unit);
-
-        var minus = (inventory.qty * 1) - (qty * 1);
-        var sold = (inventory.sold * 1) + (qty * 1);
-
-
-
-        inventory.qty = minus;
-        inventory.sold = sold;
-        order.total = (order.total * 1) + (fix * 1);
-        batched.sales = (batched.sales * 1) + (fix * 1);
-
-
-        var newPurch = new Purchased({
-            oid: order.oid,
-            productName: inventory.productName,
-            variant: inventory.variant,
-            batch: inventory.batchNo,
-            qty: qty,
-            unit: u,
-            total: fix,
-            createdBy: req.user.full
-        });
-
-        try {
-            let saveInv = await inventory.save();
-            let saveBatch = await batched.save();
-            let saveOrder = await order.save();
-            console.log("Modifying inventory", saveInv, "Modifying Batch", saveBatch, "Modifying Order", saveOrder);
-            newPurch.save((err, save) => {
-                if (err) {
-                    console.log(err);
-                    res.status(502);
-                    res.send("An error has occured");
-                    return;
-                }
                 res.status(202);
-                res.send("Product Added To Cart!");
+                res.send(order);
                 return;
-            })
-        } catch (e) {
-            console.log(e);
-            res.status(502);
-            res.send("Internal Error Occured!");
-            return;
+
+            } catch (e) {
+                res.status(502);
+                res.send("Internal Error Occured!");
+                console.log(e);
+                return;
+            };
+        } else if (!purch) {
+
+            console.log(fix, unit);
+
+            var minus = (inventory.qty * 1) - (qty * 1);
+            var sold = (inventory.sold * 1) + (qty * 1);
+
+
+
+            inventory.qty = minus;
+            inventory.sold = sold;
+            order.total = (order.total * 1) + (fix * 1);
+            batched.sales = (batched.sales * 1) + (fix * 1);
+
+
+            var newPurch = new Purchased({
+                oid: order.oid,
+                productName: inventory.productName,
+                variant: inventory.variant,
+                batch: inventory.batchNo,
+                qty: qty,
+                unit: u,
+                total: fix,
+                createdBy: req.user.full
+            });
+
+            try {
+                let saveInv = await inventory.save();
+                let saveBatch = await batched.save();
+                let saveOrder = await order.save();
+                console.log("Modifying inventory", saveInv, "Modifying Batch", saveBatch, "Modifying Order", saveOrder);
+                newPurch.save((err, save) => {
+                    if (err) {
+                        console.log(err);
+                        res.status(502);
+                        res.send("An error has occured");
+                        return;
+                    }
+                    res.status(202);
+                    res.send(order);
+                    return;
+                })
+            } catch (e) {
+                console.log(e);
+                res.status(502);
+                res.send("Internal Error Occured!");
+                return;
+            }
+
         }
-        
+
     }
 
 });
@@ -325,7 +448,13 @@ router.get("/create-order", (req, res) => {
             discount: 0,
             total: 0,
             createdBy: req.user.full,
-            status: "Creating"
+            status: "Creating",
+            payment: {
+                paid: false,
+                balance: 0,
+                total: 0,
+            },
+            notes:"",
         });
 
         newOrder.save((err, save) => {

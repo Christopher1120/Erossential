@@ -1,5 +1,24 @@
 <%- include("../_partials/_initial") %>
 
+<script>
+function Click(r) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        document.getElementById("frame").innerHTML = this.responseText;
+    }
+    xhttp.open("GET", r.href);
+    xhttp.send();
+}
+
+var xhttp = new XMLHttpRequest();
+xhttp.onload = function() {
+    document.getElementById("assigned").innerHTML = this.responseText;
+}
+xhttp.open("GET", "/pos/assigned-orders");
+xhttp.send();
+
+
+</script>
 
 <div class="row g-2">
 
@@ -18,35 +37,79 @@
 
 </div>
 
-<div class="col-auto">
-<a href="/pos/create-order" class="btn btn-outline-success">
-
-<div class="row align-items-center g-1">
-<div class="col-auto">
-<i class="bi bi-clock-history fs-3"></i>
-</div>
-<div class="col-auto">
-<b> Pending Orders </b>
-</div>
-</div>
-</a>
-
 </div>
 
-<div class="col-auto">
-<a href="/pos/create-order" class="btn btn-outline-success">
+<hr>
 
-<div class="row align-items-center g-1">
-<div class="col-auto">
-<i class="bi bi-cart-check-fill fs-3"></i>
+<div class="row">
+<div class="col-md-7">
+
+<table class="table text-center">
+<tr>
+<th colspan="1"></th>
+<th>Order Date</th>
+<th>Order No.</th>
+<th>Total</th>
+<th>Status</th>
+<th>Processed By</th>
+<th></th>
+</tr>
+<% order.forEach((order)=>{ %>
+<tr>
+<% if (order.status == "Created") { %>
+<td colspan="1"><i class="bi bi-emoji-neutral" title="Waiting for re-routing"></i></td>
+<% } %>
+<td><a href="/pos/oid=<%- order.oid %>/order-information"><%- order.oid %></a></td>
+<td><%- moment(order.createdOn).format("MM/DD/YYYY") %></td>
+<td>PHP <%- order.total %></td>
+<td><%- order.status %></td>
+<td><%- order.createdBy %></td>
+<% if (order.status == "Created") { %>
+<td><a href="/pos/oid=<%- order.oid %>/transfer" data-bs-target="#Frame" data-bs-toggle="modal" onclick="Click(this)"> Transfer </a></td>
+<% } %>
+</tr>
+<% }) %>
+</table>
+
 </div>
-<div class="col-auto">
-<b> Pending Orders </b>
-</div>
-</div>
-</a>
+<div class="col-md-5">
+<div class="card">
+<div class="card-header text-center"><b> Assigned Order </b></div>
+<div class="card-body">
+
+<div id="assigned">
 
 </div>
 
+</div>
+</div>
+</div>
+
+</div>
+</div>
+
+
+
+<div class="modal fade l" id="Frame" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-l">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">EROSSENTIAL POINT-OF-SALES</h1>
+        <button type="button" id="cls" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+
+        <div id="frame">
+
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button"  id="close" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
 
 

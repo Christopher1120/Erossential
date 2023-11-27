@@ -5,6 +5,7 @@ $(document).ready(()=>{
     var xhttp = new XMLHttpRequest();
     xhttp.onload = function() {
         $("#purchases").html(this.responseText);
+        $("#total").val();
     };
     xhttp.open("GET", "/pos/oid=<%- order.oid %>/purchased");
     xhttp.send();
@@ -46,6 +47,31 @@ function Click(r) {
     $("#setQty").attr("action", r.href);
 }
 
+function removeProd(r) {
+    $.ajax({
+        type:"GET",
+        url:r.href,
+        success:function(e) {
+            var x = document.getElementById("snackbar");
+            x.innerHTML = e;
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+                var xhttp = new XMLHttpRequest();
+                xhttp.onload = function() {
+                    $("#purchases").html(this.responseText);
+                };
+                xhttp.open("GET", "/pos/oid=<%- order.oid %>/purchased");
+                xhttp.send();
+        },
+        error: function(e) {
+            var x = document.getElementById("snackbar");
+            x.innerHTML = e.responseText;
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+        }
+    })
+}
+
 $(document).on('submit', "#setQty", function(event) {
     event.preventDefault();
     var qty = document.getElementById("qty").value;
@@ -60,12 +86,13 @@ $(document).on('submit', "#setQty", function(event) {
         },
         success:function(e) {
             var x = document.getElementById("snackbar");
-            x.innerHTML = e;
+            x.innerHTML = "Product Added";
             x.className = "show";
             setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
                 var xhttp = new XMLHttpRequest();
                 xhttp.onload = function() {
                     $("#purchases").html(this.responseText);
+                    $("#total").val(e.total);
                 };
                 xhttp.open("GET", "/pos/oid=<%- order.oid %>/purchased");
                 xhttp.send();
@@ -219,7 +246,7 @@ function SearchContact() {
 
 <div class="col-md-4">
 <div class="card">
-<div class="card-body" style="height:500px">
+<div class="card-body" style="height:300px">
 
 <% order.customer.forEach((customer)=> { %>
 <div class="row align-items-center g-3">
@@ -259,15 +286,44 @@ function SearchContact() {
 
 <hr>
 
-<form class="form-signup" method="POST" action="/pos/oid=<%- order.oid %>/place-order">
+<form class="form-signup" method="POST" action="/pos/oid=<%- order.oid %>/check-out">
 <div class="row align-items-center">
-<div class="col-auto">
+<div class="col-md-5">
 <label for="courier"><b> Courier </b></label>
-<input type="text" class="form-control" name="courier" id="courier" placeholder="Courier / Delivery Company" required>
+<input type="text" class="form-control" name="courier" id="courier" placeholder="Courier Name" required>
+</div>
+<div class="col-md-3">
+<label for="courier"><b> Delivery Fee </b></label>
+<input type="text" class="form-control" name="fee" id="fee" placeholder="Fee" required>
 </div>
 <div class="col-md-3">
 <label for="courier"><b> Discount </b></label>
-<input type="text" class="form-control" name="courier" id="courier" placeholder="Discount" required>
+<input type="text" class="form-control" name="discount" id="discount" placeholder="Discount" required>
+</div>
+</div>
+
+<div class="row align-items-center">
+<div class="col-auto">
+<label for="courier"><b> Payment Type </b></label>
+<select class="form-select" id="payment" name="payment">
+<option disabled selected> Payment Type </option>
+<option value="Gcash">Gcash Payment</option>
+<option value="COD"> Cash On Delivery </option>
+<select>
+</div>
+<div class="col-auto">
+<label for="courier"><b> Total of All </b></label>
+<input type="text" class="form-control" name="total" id="total" value="<%- order.total %>" placeholder="Total of All" required>
+</div>
+</div>
+<br>
+
+<textarea class="form-control" id="notes" name="notes" placeholder="Please input notes, if there's any such as customer's request and others"></textarea>
+
+
+</div>
+<div class="card-footer">
+<button type="submit" class="btn btn-outline-success"> Check-out </button>
 </div>
 </div>
 

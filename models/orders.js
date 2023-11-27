@@ -15,6 +15,9 @@ var orderSchema = mongoose.Schema({
     createdBy: { type: String, required: true },
     transferTo: { type: String, required: false },
     status: { type: String, required: true },
+    notes: { type: String, required: false },
+    payment: { type: Array, required: true },
+    courier: {type:String,required:false},
     createdOn: { type: Date, default: Date.now },
 });
 

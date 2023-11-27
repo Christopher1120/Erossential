@@ -10,24 +10,27 @@
 
 
 <table class="table text-center">
-<tr>
+<tr class="border">
 <th> Product </th>
 <th> Variant </th>
 <th> Qty </th>
 <th> Price </th>
 <th> Total </th>
+<th></th>
 </tr>
 <% pur.forEach((pur)=> {%>
-<tr>
+<tr class="border-right border-left">
 <td><%- pur.productName %></td>
 <td><%- pur.variant %></tD>
 <td><%- pur.qty %></td>
 <td><%- pur.unit %></td>
 <td><%- pur.total %></td>
+<td><a href="/pos/oid=<%- order.oid %>/remove-product/pid=<%- pur._id %>" data-bs-toggle="modal" data-bs-target="#target" onclick="removeProd(this)"> <i class="bi bi-trash text-danger" title="Remove Product"></i></a></td>
 </tr>
 <% }) %>
 <tr>
 <td><b> TOTAL </b></td>
+<td></td>
 <td></td>
 <td></td>
 <td></td>

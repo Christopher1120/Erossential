@@ -163,8 +163,8 @@ router.get("/create-invoice/:ident", async (req, res) => {
 
                     pdfDoc.rect(7, 256 + (productNo * 20), 560, 0.2).fillColor("#000").stroke("#000");
                     productNo++;
-                    pdfDoc.font(fontBold).text("Total:", 300, 256 + (productNo * 17));
-                    pdfDoc.font(fontBold).text(po.total, 400, 256 + (productNo * 17));
+                    pdfDoc.font(fontBold).text("Total:", 400, 300 + (productNo * 17));
+                    pdfDoc.font(fontBold).text(po.total, 500, 300 + (productNo * 17));
 
                     pdfDoc.end();
                     console.log("pdf generate successfully");
@@ -194,7 +194,7 @@ router.post("/create-po/po=:ident", (req, res) => {
     var lower2 = variant.toLowerCase();
 
     PON.findOne({ purchNo: req.params.ident }).then((po) => {
-        PO.findOne({ purchNo: po.purchNo, batchNo: po.batchNo, variant: lower2 }).then(async (purch) => {
+        PO.findOne({ purchNo: po.purchNo, batchNo: po.batchNo, variant: lower2, product:lower1 }).then(async (purch) => {
             console.log(purch);
             if (purch) {
                 

@@ -68,11 +68,13 @@
     <Content Include="views\pos\create-order.ejs" />
     <Content Include="views\pos\login.ejs" />
     <Content Include="views\pos\pos.ejs" />
+    <Content Include="views\pos\_partial\assign.ejs" />
     <Content Include="views\pos\_partial\itm.ejs" />
+    <Content Include="views\pos\order-information.ejs" />
     <Content Include="views\pos\_partial\purchased.ejs" />
     <Content Include="views\pos\_partial\qty.ejs" />
     <Content Include="views\pos\_partial\register.ejs" />
-    <Content Include="views\pos\_partial\search.ejs" />
+    <Content Include="views\pos\_partial\transfer.ejs" />
     <Content Include="views\products\products.ejs" />
     <Content Include="views\products\_partial\product-list.ejs" />
     <Content Include="views\purchased-order\create.ejs" />
