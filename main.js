@@ -1,41 +1,19 @@
-var { app, BrowserWindow, ipcMain, autoUpdater, dialog } = require("electron");
-const gotTheLock = app.requestSingleInstanceLock()
+var { app, BrowserWindow, ipcMain, dialog } = require("electron");
 var path = require("node:path");
-
 
 let server = require("./server");
 
-if (process.defaultApp) {
-    if (process.argv.length >= 2) {
-        app.setAsDefaultProtocolClient('electron-fiddle', process.execPath, [path.resolve(process.argv[1])])
+
+function AppUpdate() {
+    const options = {
+        provider: "github.com",
+        url:"https://github.com/Christopher1120/Erossential",
     }
-} else {
-    app.setAsDefaultProtocolClient('electron-fiddle')
 }
-
-if (!gotTheLock) {
-    app.quit()
-} else {
-    app.on('second-instance', (event, commandLine, workingDirectory) => {
-        // Someone tried to run a second instance, we should focus our window.
-        if (mainWindow) {
-            if (mainWindow.isMinimized()) mainWindow.restore()
-            mainWindow.focus()
-        }
-        // the commandLine is array of strings in which last element is deep link url
-        dialog.showErrorBox('Welcome Back', `You arrived from: ${commandLine.pop()}`)
-    })
-
-    // Create mainWindow, load the rest of the app, etc...
-    app.whenReady().then(() => {
-        createWindow()
-    })
-}
-
 function createWindow() {
     mainWindow = new BrowserWindow({
-        width: 1200,
-        height: 700,
+        width: 1500,
+        height: 800,
         resizable: false,
         autoHideMenuBar: true,
         icon: "favicon.ico",

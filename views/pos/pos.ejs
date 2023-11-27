@@ -17,27 +17,91 @@ xhttp.onload = function() {
 xhttp.open("GET", "/pos/assigned-orders");
 xhttp.send();
 
-function Assing(){
+var xhttp = new XMLHttpRequest();
+xhttp.onload = function() {
+    document.getElementById("orderinfo").innerHTML = this.responseText;
+}
+xhttp.open("GET", "/pos/orderinfo");
+xhttp.send();
 
-var transfer = $("#transfer").val();
+function Assign(){
 
-if (transfer == "" || transfer == null ) {
+    var transfer = $("#transfer").val();
+    var oid = $("#oid").val();
+    var url = "/pos/oid=" + oid + "/transfer";
 
-alert("Transfer field cant be empty!);
+    if (!transfer) {
+        alert("Transfer field should not be empty");
+        $("#transfer").focus();
+    } else {
+        $.ajax({
+            type:"POST",
+            url:url,
+            data:{
+                transfer:transfer
+            },
+            success: function(e) {
+                var x = document.getElementById("snackbar");
+                x.innerHTML = e;
+                x.className = "show";
+                setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+                var xhttp = new XMLHttpRequest();
+                xhttp.onload = function() {
+                    document.getElementById("assigned").innerHTML = this.responseText;
+                }
+                xhttp.open("GET", "/pos/assigned-orders");
+                xhttp.send();
+                var xhttp = new XMLHttpRequest();
+                xhttp.onload = function() {
+                    document.getElementById("orderinfo").innerHTML = this.responseText;
+                }
+                xhttp.open("GET", "/pos/orderinfo");
+                xhttp.send();
 
-} else {
-
- $.ajax({
-type:"POST",
-url: "/pos/oid=<%- order.oid %>/transfer",
-data:{
-transfer : transfer
-},
-success: function(e) {},
-error: function(e) {}
- })
+            },
+            error: function(e) {
+                var x = document.getElementById("snackbar");
+                x.innerHTML = e.responseText;
+                x.className = "show";
+                setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+                var xhttp = new XMLHttpRequest;
+            }
+        })
+    }
 
 }
+
+function Transac(r) {
+
+    $.ajax({
+        type:"GET",
+        url:r.href,
+        success: function(e) {
+                var x = document.getElementById("snackbar");
+                x.innerHTML = e;
+                x.className = "show";
+                setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+                var xhttp = new XMLHttpRequest();
+                xhttp.onload = function() {
+                    document.getElementById("assigned").innerHTML = this.responseText;
+                }
+                xhttp.open("GET", "/pos/assigned-orders");
+                xhttp.send();
+                var xhttp = new XMLHttpRequest();
+                xhttp.onload = function() {
+                    document.getElementById("orderinfo").innerHTML = this.responseText;
+                }
+                xhttp.open("GET", "/pos/orderinfo");
+                xhttp.send();
+        },
+        error:function (e) {
+        var x = document.getElementById("snackbar");
+                x.innerHTML = e.responseText;
+                x.className = "show";
+                setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+                var xhttp = new XMLHttpRequest;
+            }
+    })
 
 }
 
@@ -60,6 +124,21 @@ error: function(e) {}
 
 </div>
 
+<div class="col-auto">
+<a href="/pos/create-order" class="btn btn-outline-success" title="Customer Relations Management">
+
+<div class="row align-items-center g-1">
+<div class="col-auto">
+<i class="bi bi-people fs-3"></i>
+</div>
+<div class="col-auto">
+<b> CRM </b>
+</div>
+</div>
+</a>
+
+</div>
+
 </div>
 
 <hr>
@@ -67,32 +146,9 @@ error: function(e) {}
 <div class="row">
 <div class="col-md-7">
 
-<table class="table text-center">
-<tr>
-<th colspan="1"></th>
-<th>Order Date</th>
-<th>Order No.</th>
-<th>Total</th>
-<th>Status</th>
-<th>Processed By</th>
-<th></th>
-</tr>
-<% order.forEach((order)=>{ %>
-<tr>
-<% if (order.status == "Created") { %>
-<td colspan="1"><i class="bi bi-emoji-neutral" title="Waiting for re-routing"></i></td>
-<% } %>
-<td><a href="/pos/oid=<%- order.oid %>/order-information"><%- order.oid %></a></td>
-<td><%- moment(order.createdOn).format("MM/DD/YYYY") %></td>
-<td>PHP <%- order.total %></td>
-<td><%- order.status %></td>
-<td><%- order.createdBy %></td>
-<% if (order.status == "Created") { %>
-<td><a href="/pos/oid=<%- order.oid %>/transfer" data-bs-target="#Frame" data-bs-toggle="modal" onclick="Click(this)"> Transfer </a></td>
-<% } %>
-</tr>
-<% }) %>
-</table>
+<div id="orderinfo">
+
+</div>
 
 </div>
 <div class="col-md-5">

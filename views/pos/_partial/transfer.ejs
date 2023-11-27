@@ -11,7 +11,7 @@
 <div class="alert alert-info">
 Please select who will prepare order no : <%- order.oid %>.
 </div>
-
+<input type="hidden" id="oid" value="<%- order.oid %>">
 <div class="row align-items-center g-2">
 <div class="col-auto">
 <label for="transfer"><b> Transfer To : </b></label>
@@ -20,14 +20,13 @@ Please select who will prepare order no : <%- order.oid %>.
 <select class="form-select" name="transfer" id="transfer">
 <option disabled selected> Transfer to </option>
 <% user.forEach((user)=> {%>
-<% if (user.full == currentUser.full ) {%>
-<% } else { %>
+
 <option value="<%- user._id %>"><%- user.full %></option>
-<% } %>
+
 <% }) %>
 </select>
 </div>
 <div class="col-auto">
-<button type="button" class="btn btn-outline-success"> Transfer </button>
+<button type="button" class="btn btn-outline-success" onclick="Assign()"> Transfer </button>
 </div>
 </div>

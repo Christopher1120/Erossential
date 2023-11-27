@@ -90,24 +90,127 @@ router.get("/oid=:ident/transfer", (req, res) => {
 })
 
 router.get("/assigned-orders", (req, res) => {
-    Order.find({ transferTo: req.user.full }).then((order) => {
+    Order.find({ transferTo: req.user._id }).then((order) => {
         res.render("pos/_partial/assign", { order: order });
     })
 })
 
+router.get("/orderinfo", (req, res) => {
+    Order.find().sort({status:-1}).then((order) => {
+        res.render("pos/_partial/orderinfo", { order: order });
+    })
+})
+
+router.get("/completed-orders", (req, res) => {
+    Order.find({status:"Completed"})
+})
+
 // DATA Processing
+
+router.get("/oid=:ident/complete", async (req, res) => {
+
+    var order = await Order.findOne({ oid: req.params.ident });
+
+    order.status = "Ready";
+
+    try {
+        let saveOrder = await order.save();
+        console.log("Saving order", saveOrder);
+        res.status(200);
+        res.send("Order is now ready for pick-up");
+        return;
+
+    } catch (e) {
+        console.log(e);
+        res.status(404);
+        res.send("An error has occured");
+        return;
+    }
+
+})
+
+router.get("/oid=:ident/ready", async (req, res) => {
+
+    var order = await Order.findOne({ oid: req.params.ident });
+
+    order.status = "Picked-up";
+
+    try {
+        let saveOrder = await order.save();
+        console.log("Saving order", saveOrder);
+        res.status(200);
+        res.send("Order has been picked-up");
+        return;
+
+    } catch (e) {
+        console.log(e);
+        res.status(404);
+        res.send("An error has occured");
+        return;
+    }
+
+})
+
+router.get("/oid=:ident/delivered", async (req, res) => {
+
+    var order = await Order.findOne({ oid: req.params.ident });
+
+    order.status = "Dispatched";
+
+    try {
+        let saveOrder = await order.save();
+        console.log("Saving order", saveOrder);
+        res.status(200);
+        res.send("Product is dispatched");
+        return;
+
+    } catch (e) {
+        console.log(e);
+        res.status(404);
+        res.send("An error has occured");
+        return;
+    }
+
+})
+
+router.get("/oid=:ident/completed", async (req, res) => {
+
+    var order = await Order.findOne({ oid: req.params.ident });
+
+    order.status = "Completed";
+
+    try {
+        let saveOrder = await order.save();
+        console.log("Saving order", saveOrder);
+        res.status(200);
+        res.send("Transaction Completed");
+        return;
+
+    } catch (e) {
+        console.log(e);
+        res.status(404);
+        res.send("An error has occured");
+        return;
+    }
+
+})
+
+
 
 router.post("/oid=:ident/transfer", async (req, res) => {
     var order = await Order.findOne({ oid: req.params.ident });
     var transfer = req.body.transfer;
 
+    var user = await User.findById(transfer);
+
     order.transferTo = transfer;
+    order.status = "Assigned";
 
     try {
         let saveOrder = await order.save();
         console.log("Transfer Order", saveOrder);
         res.status(202);
-        res.send("Order Transferred To " + transfer);
+        res.send("Transferred to " + user.full);
         return;
     } catch (e) {
         res.status(502);

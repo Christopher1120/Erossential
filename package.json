@@ -2,10 +2,15 @@
   "name": "erossential",
   "version": "1.0.0",
   "description": "Erossential",
-  "main": "server.js",
+  "main": "main.js",
   "author": "Christopher Carl Cruz",
   "devDependencies": {
-    "eslint": "^8.21.0"
+    "electron": "^27.1.2",
+    "electron-builder": "^24.9.1",
+    "electron-is-dev": "^2.0.0",
+    "electron-updater": "^6.1.7",
+    "eslint": "^8.21.0",
+    "webpack": "^5.89.0"
   },
   "eslintConfig": {},
   "dependencies": {
@@ -16,7 +21,6 @@
     "cors": "^2.8.5",
     "dates-between": "^5.0.0",
     "ejs": "^3.1.9",
-    "electron": "^27.1.2",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "helmet": "^7.1.0",
@@ -33,7 +37,25 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "devv": "electron main.js"
+    "devv": "electron main.js",
+    "dist": "electron-builder"
   },
-  "license": "ISC"
+  "build": {
+    "appId": "com.erossential",
+    "productName": "Erossential Business Management",
+    "buildNumber": "1",
+    "win": {
+      "target": "NSIS",
+      "icon": "images/app.png"
+    },
+    "nsis": {
+      "allowToChangeInstallationDirectory": true,
+      "oneClick": false,
+      "perMachine": true,
+      "artifactName": "${productName} Setup ${version}.${buildNumber}.exe",
+      "uninstallDisplayName": "${productName}",
+      "deleteAppDataOnUninstall": true
+    }
+  },
+  "license": "MIT"
 }

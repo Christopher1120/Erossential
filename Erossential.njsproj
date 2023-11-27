@@ -33,6 +33,7 @@
     <Content Include="css\0-dummy.css" />
     <Content Include="css\loginpage.css" />
     <Content Include="css\style.css" />
+    <Content Include="forge.config.js" />
     <Content Include="images\Eros.jpg" />
     <Content Include="images\Eros.png" />
     <Content Include="images\favicon.ico" />
@@ -71,6 +72,7 @@
     <Content Include="views\pos\_partial\assign.ejs" />
     <Content Include="views\pos\_partial\itm.ejs" />
     <Content Include="views\pos\order-information.ejs" />
+    <Content Include="views\pos\_partial\orderinfo.ejs" />
     <Content Include="views\pos\_partial\purchased.ejs" />
     <Content Include="views\pos\_partial\qty.ejs" />
     <Content Include="views\pos\_partial\register.ejs" />

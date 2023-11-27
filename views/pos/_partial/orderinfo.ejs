@@ -8,17 +8,19 @@
 
 <body>
 
+
+
 <table class="table text-center">
 <tr>
 <th colspan="1"></th>
 <th>Order No.</th>
 <th>Order Date</th>
+<th>Total</th>
 <th>Status</th>
 <th>Processed By</th>
 <th></th>
 </tr>
 <% order.forEach((order)=>{ %>
-<% if (order.status != "Completed") { %>
 <tr>
 <% if (order.status == "Created") { %>
 <td colspan="1"><i class="bi bi-emoji-neutral" title="Waiting for re-routing"></i></td>
@@ -32,21 +34,22 @@
 <td colspan="1"><i class="bi bi-box-seam" title="Delivered"></i></td>
 <% } else if (order.status == "Completed") { %>
 <td colspan="1"><i class="bi bi-check text-success" title="Item Received"></i></td>
+<% } else if (order.status == "Creating") { %>
+<td colspan="1"><i class="bi bi-three-dots" title=""></i></td>
 <% }%> 
+<% if (order.status == "Creating") { %>
+<td><a href="/pos/oid=<%- order.oid %>"><%- order.oid %></a></td>
+<% } else { %>
 <td><a href="/pos/oid=<%- order.oid %>/order-information"><%- order.oid %></a></td>
+<% } %>
 <td><%- moment(order.createdOn).format("MM/DD/YYYY") %></td>
+<td>PHP <%- order.total %></td>
 <td><%- order.status %></td>
 <td><%- order.createdBy %></td>
-<% if (order.status == "Assigned") { %>
-<td><a href="/pos/oid=<%- order.oid %>/complete" data-bs-target="#modal" data-bs-toggle="modal" onclick="Transac(this)" title="Ready for delivery"> Completed </a></td>
-<% } else if (order.status == "Ready") { %>
-<td><a href="/pos/oid=<%- order.oid %>/ready" data-bs-target="#modal" data-bs-toggle="modal" onclick="Transac(this)" title="Ready for delivery"> Ready </a></td>
-<% } else if (order.status == "Picked-up") { %>
-<td><a href="/pos/oid=<%- order.oid %>/delivered" data-bs-target="#modal" data-bs-toggle="modal" onclick="Transac(this)" title="Ready for delivery"> Dispatched </a></td>
-<% } else if (order.status == "Dispatched") { %>
-<td><a href="/pos/oid=<%- order.oid %>/completed" data-bs-target="#modal" data-bs-toggle="modal" onclick="Transac(this)" title="Completed"> Complete Order </a></td>
+<% if (order.status == "Created") { %>
+<td><a href="/pos/oid=<%- order.oid %>/transfer" data-bs-target="#Frame" data-bs-toggle="modal" onclick="Click(this)"> Transfer </a></td>
 <% } %>
 </tr>
-<% } %>
+
 <% }) %>
 </table>

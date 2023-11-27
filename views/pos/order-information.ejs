@@ -7,7 +7,7 @@
 </div>
 <div class="col-auto">
 <% order.payment.forEach((payment)=>{ %>
-<% if (payment == true) { %>
+<% if (payment.paid == true) { %>
 <article class="text-success">Payment : PAID</article>
 <% } else { %>
 <article class="text-secondary">Payment : PENDING</article>
