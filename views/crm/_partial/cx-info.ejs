@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+
+
+<table class="table text-center">
+<tr>
+<th> Customer's Name </th>
+<td><%- cx.name %></td>
+<th> Contact Number </th>
+<td><%- cx.contact %></td>
+</tr>
+<tr>
+<th> Address </th>
+<td><%- cx.street %></td>
+<th> City </th>
+<td><%- cx.city %></td>
+</table>
+
+<div class="w3-container">
+
+<table class="table border text-center">
+<tr>
+<th>Order No</th>
+<th>Order Date</th>
+<th>Processed By</th>
+<th>Status</th>
+</tr>
+<% order.forEach((order)=>{ %>
+<tr>
+<td><a href="/pos/oid=<%- order.oid %>/order-information" data-bs-target="modal" data-bs-toggle="modal" onclick="Open(this)"><%- order.oid %></a></td>
+<td><%- moment(order.createdOn).format("MM-DD-YYYY hh:mm A") %></td>
+<td><%- order.createdBy %></td>
+<td><%- order.status %></td>
+
+<% }) %>
+
+
+

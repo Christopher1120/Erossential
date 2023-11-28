@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+
+<table class="table text-center">
+<tr class="border-bottom">
+<th> Customer ID </th>
+<th> Customer's Name </th>
+</tr>
+<% cx.forEach((cx)=>{ %>
+<tr>
+<td><a href="/crm/cx-uid=<%- cx._id %>" data-bs-toggle="modal" data-bs-target="modal" onclick="cxrm(this)"> <%- cx.uid %></a></td>
+<td><%- cx.name %></td>
+</tr>
+<% }) %>

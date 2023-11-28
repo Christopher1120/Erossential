@@ -1,0 +1,43 @@
+<%- include("../_partials/_header") %>
+<h3> Customer Relations Management </h3>
+<hr>
+
+<div class="row">
+<div class="col-md-3">
+
+<div class="border " style="height:500px" id="cxrm">
+
+</div>
+</div>
+
+<div class="col-md-8">
+
+<div class="border" style="height:500px" id="info">
+
+</div>
+
+</div>
+
+
+
+<script>
+var xhttp = new XMLHttpRequest();
+xhttp.onload = function() {
+	document.getElementById("cxrm").innerHTML = this.responseText;
+}
+xhttp.open("GET", "/crm/cxrm");
+xhttp.send();
+
+function cxrm(r) {
+var xhttp = new XMLHttpRequest();
+xhttp.onload = function() {
+	document.getElementById("info").innerHTML = this.responseText;
+}
+xhttp.open("GET", r.href);
+xhttp.send();
+}
+
+function Open(r) {
+	window.open(r.href,"MyWindow","width=1500,height=750","config='toolbar=no, menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no,searchbar=no'");
+}
+</script>

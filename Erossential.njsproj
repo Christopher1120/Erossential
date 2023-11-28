@@ -50,6 +50,7 @@
     <Content Include="models\users.js" />
     <Content Include="params\params.js" />
     <Content Include="preload.js" />
+    <Content Include="routes\web\crm.js" />
     <Content Include="routes\web\home.js" />
     <Content Include="routes\web\index.js" />
     <Content Include="routes\web\investors.js" />
@@ -60,6 +61,9 @@
     <Content Include="package.json" />
     <Content Include="README.md" />
     <Content Include="setuppassport.js" />
+    <Content Include="views\crm\customers.ejs" />
+    <Content Include="views\crm\_partial\cx-info.ejs" />
+    <Content Include="views\crm\_partial\cx-record.ejs" />
     <Content Include="views\home\activation.ejs" />
     <Content Include="views\home\home.ejs" />
     <Content Include="views\home\login.ejs" />
@@ -90,11 +94,11 @@
     <Folder Include="css\" />
     <Folder Include="images\" />
     <Folder Include="models\" />
-    <Folder Include="logs\" />
     <Folder Include="params\" />
     <Folder Include="routes\" />
     <Folder Include="routes\web\" />
     <Folder Include="views\" />
+    <Folder Include="views\crm\_partial\" />
     <Folder Include="views\home\" />
     <Folder Include="views\home\_partial\" />
     <Folder Include="views\investors\" />

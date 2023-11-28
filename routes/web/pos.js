@@ -240,13 +240,13 @@ router.post("/oid=:ident/check-out", async (req, res) => {
 
     if (payment == "Gcash") {
 
-        Order.updateOne({ oid: req.params.ident }, {$set:{type:payment,courier: courier,fee: fee,discount: 0,total: newtotal,notes: notes,payment: {paid: true,balance: 0,total: newtotal},status: "Created",}}).then(async (save) => {
+        Order.updateOne({ oid: req.params.ident }, {$set:{type:payment,courier: courier,deliveryFee: fee,discount: 0,total: newtotal,notes: notes,payment: {paid: true,balance: 0,total: newtotal},status: "Created",}}).then(async (save) => {
             console.log("Saving Order", save);
             req.flash("info", "Order Created And Paid");
             return res.redirect("/pos");
         })
     } else {
-        Order.updateOne({ oid: req.params.ident }, { $set: {type:payment, courier: courier, fee: fee, discount: 0, total: newtotal, notes: notes, payment: { paid: false, balance: newtotal, total: 0 }, status: "Created", } }).then(async (save) => {
+        Order.updateOne({ oid: req.params.ident }, { $set: { type: payment, courier: courier, deliveryFee: fee, discount: 0, total: newtotal, notes: notes, payment: { paid: false, balance: newtotal, total: 0 }, status: "Created", } }).then(async (save) => {
             console.log("Saving Order", save);
             req.flash("info", "Order Created And Paid");
             return res.redirect("/pos");

@@ -21,6 +21,7 @@ router.use("/products", require("./products"));
 router.use("/purchase-order", require("./po"));
 router.use("/investors", require("./investors"));
 router.use("/pos", require("./pos"));
+router.use("/crm", require("./crm"));
 
 
 
