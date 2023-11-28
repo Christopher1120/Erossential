@@ -1,9 +1,13 @@
 {
   "name": "erossential",
-  "version": "1.0.2",
+  "version": "1.0.6",
   "description": "Erossential",
   "main": "main.js",
   "author": "Christopher Carl Cruz",
+  "respository": {
+    "provider": "git",
+    "url": "https://github.com/Christopher1120/Erossential"
+  },
   "devDependencies": {
     "electron": "^27.1.2",
     "electron-builder": "^24.9.1",
@@ -39,8 +43,8 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "devv": "electron main.js",
-    "dist": "set GH_TOKEN=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 && electron-builder --win --publish always",
-    "build:publish": "set GH_TOKEN=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 && electron-builder --win --publish always"
+    "dist": "set GH_TOKEN=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 && electron-builder --win --publish always",
+    "build:publish": "set GH_TOKEN=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 && electron-builder --win --publish always"
   },
   "build": {
     "appId": "com.erossential.app",
@@ -62,5 +66,13 @@
       "deleteAppDataOnUninstall": true
     }
   },
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Christopher1120/Erossential.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Christopher1120/Erossential/issues"
+  },
+  "homepage": "https://github.com/Christopher1120/Erossential#readme"
 }

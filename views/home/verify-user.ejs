@@ -12,10 +12,10 @@
   
   <div class="col-sm p-3">
   
-  <h1> Account Activation </h1>
-	<form action="/activation" method="POST">
+  <h1> Erossential Business Management </h1>
+	<form action="/verify-user" method="POST" autocomplete="off">
 	<div class="headingsContainer">
-		<h3> Erossential Business Management </h3>
+		<img src="../../images/Eros.png"></img>
 
     <div class="container-fluid">
       <% if(error && error.length >0) { %>
@@ -37,16 +37,14 @@
 	</div>
 
 	<div class="mainContainer">
-	<label for="code"><b> Activation Code </b> </label>
-	<input type="text" name="code" id="code" placeholder="Please enter code" required="required" />
-
+	<label for="username"><b> Email Address </b> </label>
+	<input type="email" name="email" id="email" placeholder="Please enter your work email address" required="required" />
 
     <br/>
 
-	<button type="submit">Submit Code</button>
+	<button type="submit">Send Code</button>
 
     <div class="subContainer">
-
 
     </div>
   

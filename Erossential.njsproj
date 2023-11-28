@@ -65,8 +65,11 @@
     <Content Include="views\crm\_partial\cx-info.ejs" />
     <Content Include="views\crm\_partial\cx-record.ejs" />
     <Content Include="views\home\activation.ejs" />
+    <Content Include="views\home\forgot-code.ejs" />
     <Content Include="views\home\home.ejs" />
     <Content Include="views\home\login.ejs" />
+    <Content Include="views\home\forget-password.ejs" />
+    <Content Include="views\home\verify-user.ejs" />
     <Content Include="views\home\_partial\register.ejs" />
     <Content Include="views\investors\investor.ejs" />
     <Content Include="views\investors\investors.ejs" />
@@ -86,6 +89,7 @@
     <Content Include="views\purchased-order\create.ejs" />
     <Content Include="views\purchased-order\purchase.ejs" />
     <Content Include="views\purchased-order\_partial\item-list.ejs" />
+    <Content Include="views\schedules\schedules.ejs" />
     <Content Include="views\_partials\_header.ejs" />
     <Content Include="views\_partials\_initial.ejs" />
   </ItemGroup>
@@ -103,6 +107,7 @@
     <Folder Include="views\home\_partial\" />
     <Folder Include="views\investors\" />
     <Folder Include="views\crm\" />
+    <Folder Include="views\schedules\" />
     <Folder Include="views\pos\" />
     <Folder Include="views\pos\_partial\" />
     <Folder Include="views\products\" />

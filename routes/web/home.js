@@ -24,24 +24,143 @@ router.get("/register", ensureAuthenticated, (req, res) => {
     res.render("home/_partial/register");
 })
 
-router.get("/activation", ensureAuthenticated,(req, res) => {
+router.get("/activation", ensureAuthenticated, (req, res) => {
     res.render("home/activation");
+});
+
+router.get("/forgot-password", (req, res) => {
+    res.render("home/verify-user");
+})
+
+router.get("/forgot-password/verify", (req, res) => {
+    res.render("home/forgot-code");
+})
+
+router.get("/forgot-password/user=:ident", (req, res) => {
+    User.findById(req.params.ident).then((user) => {
+        res.render("home/forget-password", {user:user});
+    });
+})
+
+// DATA Processing
+
+
+router.post("/forgot-password/user=:ident", async (req, res) => {
+    var newpass = req.body.newpass;
+    var retype = req.body.retype;
+
+    var user = await User.findById(req.params.ident);
+
+
+    if (user.password == newpass) {
+        req.flash("error", "Password can't be the same one again!");
+        return res.redirect("/forgot-password/user=" + user._id);
+    } else if (newpass != retype) {
+        req.flash("error", "Password did not match!");
+        return res.redirect("/forgot-password/user=" + user._id);
+    } else {
+
+        user.password = newpass;
+        user.status = "Active";
+
+        try {
+            let savePass = await user.save();
+            console.log("Saving Password", savePass);
+            return res.redirect("/");
+        } catch (e) {
+            console.log(e);
+            return res.redirect("/forgot-password/user=" + user._id);
+        }
+    }
 })
 
 
-// DATA Processing
+router.post("/validate-code", async (req, res) => {
+    var code = req.body.code;
+
+    var user = await User.findOne({ code: code });
+
+    if (!user) {
+        req.flash("error", "Invalid Code!");
+        return res.redirect("/forgot-password/verify");
+    }
+    if (user) {
+        console.log("Code Valid!");
+        return res.redirect("/forgot-password/user=" + user._id);
+    }
+
+})
+
+router.post("/verify-user", (req, res) => {
+    var email = req.body.email;
+
+    User.findOne({ email: email }).then(async (user) => {
+        if (!user) {
+            req.flash("error", "Email address is incorrect!");
+            return res.redirect("/forgot-password");
+        } else {
+
+            var account = await User.findOne({ email: email });
+
+            var coded = Math.floor(Math.random() * 200000);
+
+            console.log(coded);
+
+            account.code = coded;
+            account.status = "FP";
+
+            try {
+                let saveCode = await account.save();
+                console.log("Code sent!", saveCode);
+
+
+                var transporter = nodemailer.createTransport({
+                    service: 'gmail',
+                    auth: {
+                        user: 'ccruz0000.erossential@gmail.com',
+                        pass: 'lzncproizaqwoufw'
+                    }
+                });
+
+                const mailOptions = {
+                    from: "ccruz0000.erossential@gmail.com",
+                    to: email,
+                    subject: "Password Reset Request",
+                    html: "Awesome Day " + account.full + "," + "<br><br>" + "<br><br>Your passcode is : " + coded + "<br><br> " + "<br>Regards</br>" + "<br>Erossential</br>"
+                }
+
+                transporter.sendMail(mailOptions, (err, success) => {
+                    if (err) {
+                        req.flash("error", "An error has occured");
+                        console.log(err);
+                        return res.redirect("/forgot-password");
+                    } else {
+                        console.log(success.response);
+                        req.flash("info", "Code Sent!");
+                        return res.redirect("/forgot-password/verify");
+                    }
+                });
+
+            } catch (e) {
+                console.log(e);
+            }
+
+        }
+    })
+})
+
 
 router.post("/activation", ensureAuthenticated, (req, res) => {
     var code = req.body.code;
 
     User.findOne({ ident: req.user.ident }).then((user) => {
         if (code == user.code) {
-            console.log("Authenticated!");
+                console.log("Authenticated!");
 
-            User.findOneAndUpdate({ ident: req.user.ident }, { $set: { status: "Active" } }).then((scc) => {
-                console.log(scc);
-                return res.redirect("/home");
-            })
+                User.findOneAndUpdate({ ident: req.user.ident }, { $set: { status: "Active" } }).then((scc) => {
+                    console.log(scc);
+                    return res.redirect("/home");
+                })
 
 
         } else {
