@@ -56,11 +56,21 @@
 
 <div class="col-md-3">
 <label for="order"> <b> Batch No. </b></label>
+<div id="assign">
 <% if (purch.batchNo == "" || purch.batchNo == false || purch.batchNo == null) { %>
 <a href="/purchase-order/assign-batch/po=<%- purch.purchNo %>" class="btn btn-outline-success"> Assign Batch </a> 
 <% } else { %>
 <input type="text" class="form-control" name="batch" id="batch" value="<%- purch.batchNo %>" readOnly>
 <% } %>
+</div>
+<div id="select" style="display:none">
+<select class="form-select" onchange="Assign(this)">
+<option disabled selected>Batch No</option>
+<% batch.forEach((batch)=>{%>
+<option value="<%- batch.batchNo %>"><%- batch.batchNo %></option>
+<% }) %>
+</select>
+</div>
 </div>
 </div>
 <br>
@@ -108,10 +118,10 @@
 <% if (purch.type != null) { %>
 <input type="text" class="form-control" name="type" id="type" value="<%- purch.type %>" readOnly>
 <% } else { %>
-<select class="form-select" name="type" id="type" required>
+<select class="form-select" name="type" id="type" onchange="Change()" required>
 <option disabled selected> PO Type </option>
 <option value="Inventory">Inventory</option>
-<option value="Subscriptions">Subscriptions</option>
+<option value="Expenses">Expenses</option>
 </select>
 <% } %>
 </div>
@@ -173,6 +183,39 @@
 
 
 <script>
+function Assign(r) {
+	var batch = r.value;
+	var type = $("#type").val();
+	
+	if (select == false) {
+		alert("Please assign PO to a batch!");
+	} else {
+	  $.ajax({
+		type:"POST",
+		url:"/purchase-order/create-po/po=<%- purch.purchNo %>/assign-batch-expenses=" + batch + "/type=" + type,
+		success:function(e) {
+			alert("Batch Assign");
+			location.href = "/purchase-order/create-po/po=<%- purch.purchNo %>"
+		},
+		error:function(e) {
+			console.log(e);
+		}
+	  })
+	}
+}
+
+function Change() {
+	var type = $("#type").val();
+
+	if (type == "Expenses") {
+		$("#select").attr("style","display:block");
+		$("#assign").attr("style","display:none");
+	} else {
+		$("#select").attr("style","display:none");
+		$("#assign").attr("style","display:block");
+	}
+}
+
 var xhttp = new XMLHttpRequest;
 xhttp.onload = function() {
 	document.getElementById("frame").innerHTML = this.responseText;

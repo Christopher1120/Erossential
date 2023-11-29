@@ -21,7 +21,9 @@ router.get("/", (req, res) => {
 
 router.get("/create-po/po=:ident", (req, res) => {
     PON.findOne({ purchNo: req.params.ident }).then((purch) => {
-        res.render("purchased-order/create", { purch: purch });
+        Batch.find().sort({createdOn:1}).then((batch) => {
+            res.render("purchased-order/create", { purch: purch,batch:batch });
+        });
     })
 })
 
@@ -33,6 +35,28 @@ router.get("/create-po/po=:ident/list", (req, res) => {
 
 // DATA Processing
 
+router.post("/create-po/po=:ident/assign-batch-expenses=:batch/type=:type", async (req, res) => {
+    var batch = req.params.batch;
+    var type = req.params.type;
+
+    var initial = await PON.findOne({ purchNo: req.params.ident });
+
+    initial.batchNo = batch;
+    initial.type = type;
+
+    try {
+        let saveBatch = await initial.save();
+        console.log(saveBatch);
+        req.flash("info", "PO assigned to batch " + batch);
+        return res.redirect("/purchase-order/create-po/po=" + req.params.ident);
+    } catch (e) {
+        console.log(e);
+        req.flash("error", "An error occured while assigning batch");
+        return res.redirect("/purchase-order/create-po/po=" + req.params.ident);
+    }
+
+})
+
 router.post("/create-po/po=:ident/add-info", async (req, res) => {
 
     var fee = req.body.fee;
@@ -40,32 +64,67 @@ router.post("/create-po/po=:ident/add-info", async (req, res) => {
     var order = req.body.order;
     var received = req.body.received;
     var type = req.body.type;
+    var total = req.body.total;
 
     var initial = await PON.findOne({ purchNo: req.params.ident });
 
+    if (type == "Inventory") {
 
-    var total = req.body.total;
-    initial.delivery = fee;
-    initial.supplier = supplier;
-    initial.total = total;
-    initial.orderOn = order;
-    initial.receivedOn = received;
-    initial.type = type;
+        initial.delivery = fee;
+        initial.supplier = supplier;
+        initial.total = total;
+        initial.orderOn = order;
+        initial.receivedOn = received;
+        initial.type = type;
+
+        try {
+            let saveInit = await initial.save();
+            console.log("Adding Delivery Fee", saveInit);
+            res.status(200);
+            res.redirect("/purchase-order/create-invoice/" + initial.purchNo);
+            return;
+
+        } catch (e) {
+            console.log(e);
+            req.flash("error", "An error has occured");
+            return res.redirect("/purchase-order");
+        }
+
+    } else if (type == "Expenses") {
+
+        var batch = await Batch.findOne({ batchNo: initial.batchNo });
+        var expense = (batch.expenses * 1) + (total * 1);
+        var batchEx = expense.toFixed(2);
+
+        var total = req.body.total;
+        initial.delivery = fee;
+        initial.supplier = supplier;
+        initial.total = total;
+        initial.orderOn = order;
+        initial.receivedOn = received;
+        initial.type = type;
+        batch.expenses = batchEx
 
 
+        try {
+            let saveInit = await initial.save();
+            let saveBatch = await batch.save();
+            console.log("Adding Delivery Fee", saveInit, "Modifying Expenses", batchEx);
+            res.status(200);
+            res.redirect("/purchase-order/create-invoice/" + initial.purchNo);
+            return;
+        } catch (e) {
+            console.log(e);
+            req.flash("error", "An error has occured");
+            return res.redirect("/purchase-order");
+        }
+        
 
-    try {
-        let saveInit = await initial.save();
-        console.log("Adding Delivery Fee", saveInit);
-        res.status(200);
-        res.redirect("/purchase-order/create-invoice/" + initial.purchNo);
-        return;
-
-    } catch (e) {
-        console.log(e);
-        req.flash("error", "An error has occured");
-        return res.redirect("/purchase-order");
     }
+
+
+
+
 });
 
 router.get("/create-invoice/:ident", async (req, res) => {

@@ -47,6 +47,7 @@
     <Content Include="models\po.js" />
     <Content Include="models\pon.js" />
     <Content Include="models\purchased.js" />
+    <Content Include="models\schedules.js" />
     <Content Include="models\users.js" />
     <Content Include="params\params.js" />
     <Content Include="preload.js" />
@@ -57,6 +58,7 @@
     <Content Include="routes\web\po.js" />
     <Content Include="routes\web\pos.js" />
     <Content Include="routes\web\products.js" />
+    <Content Include="routes\web\schedule.js" />
     <Content Include="server.js" />
     <Content Include="package.json" />
     <Content Include="README.md" />
@@ -64,6 +66,7 @@
     <Content Include="views\crm\customers.ejs" />
     <Content Include="views\crm\_partial\cx-info.ejs" />
     <Content Include="views\crm\_partial\cx-record.ejs" />
+    <Content Include="views\errors\404.ejs" />
     <Content Include="views\home\activation.ejs" />
     <Content Include="views\home\forgot-code.ejs" />
     <Content Include="views\home\home.ejs" />
@@ -90,6 +93,7 @@
     <Content Include="views\purchased-order\purchase.ejs" />
     <Content Include="views\purchased-order\_partial\item-list.ejs" />
     <Content Include="views\schedules\schedules.ejs" />
+    <Content Include="views\schedules\_partial\mymeeting.ejs" />
     <Content Include="views\_partials\_header.ejs" />
     <Content Include="views\_partials\_initial.ejs" />
   </ItemGroup>
@@ -107,6 +111,7 @@
     <Folder Include="views\home\_partial\" />
     <Folder Include="views\investors\" />
     <Folder Include="views\crm\" />
+    <Folder Include="views\errors\" />
     <Folder Include="views\schedules\" />
     <Folder Include="views\pos\" />
     <Folder Include="views\pos\_partial\" />
@@ -114,6 +119,7 @@
     <Folder Include="views\products\_partial\" />
     <Folder Include="views\purchased-order\" />
     <Folder Include="views\purchased-order\_partial\" />
+    <Folder Include="views\schedules\_partial\" />
     <Folder Include="views\_partials\" />
   </ItemGroup>
   <Import Project="$(VSToolsPath)\Node.js Tools\Microsoft.NodejsToolsV2.targets" />
