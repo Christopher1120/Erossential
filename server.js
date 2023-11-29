@@ -58,3 +58,9 @@ app.use("/invoices", express.static(path.resolve(__dirname, "invoices")));
 app.listen(app.get("port"), function (req, res) {
     console.log("Application is now running at port " + app.get("port"));
 });
+
+
+app.get("*", (req, res) => {
+    res.status(404);
+    res.render("errors/404");
+})

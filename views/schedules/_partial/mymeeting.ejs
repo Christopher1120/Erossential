@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+<table class="table text-center">
+<tr>
+<th> Meeting ID </th>
+<th> Title </th>
+<th> Location </th>
+</tr>
+<% meet.forEach((meet)=>{%>
+<tr>
+<td><%- meet.ident %></td>
+<td><%- meet.title %></td>
+<% if (meet.type == "Link") { %>
+<td><a href="<%- meet.location %>"> Link </a></td>
+<% } else { %>
+<td><a href="<%- meet.location %>"> Link </a></td>
+<% } %>
+</tr>
+<% }) %>

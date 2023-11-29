@@ -16,6 +16,13 @@ function AppUpdate() {
         url:"https://github.com/Christopher1120/Erossential",
     }
 }
+
+let mainWindow;
+function sendStatusToWindow(text) {
+    log.info(text);
+    mainWindow.webContents.send('message', text);
+}
+
 function createWindow() {
     mainWindow = new BrowserWindow({
         width: 1500,
@@ -45,6 +52,8 @@ function createWindow() {
 }
 
 
+
+
 app.whenReady().then(() => {
     createWindow();
 
@@ -56,7 +65,29 @@ app.whenReady().then(() => {
     })
 })
 
+autoUpdater.on('checking-for-update', () => {
+    const dialogOpts = {
+        type: "info",
+        buttons: ['Ok'],
+        title: "Erossentail Business Management",
+        detail: "Checking For Updates"
+    }
+    dialog.showMessageBox(dialogOpts, (response) => {
 
+    })
+})
+
+autoUpdater.on('update-not-available', (info) => {
+    const dialogOpts = {
+        type: "info",
+        buttons: ['Ok'],
+        title: "Erossentail Business Management",
+        detail: "No Updates Available"
+    }
+    dialog.showMessageBox(dialogOpts, (response) => {
+
+    })
+})
 
 autoUpdater.on("update-available", (_event,releaseName,releaseNotes) => {
     const dialogOpts = {
@@ -72,6 +103,13 @@ autoUpdater.on("update-available", (_event,releaseName,releaseNotes) => {
     log.info(releaseName, releaseNotes)
 })
 
+autoUpdater.on('download-progress', (progressObj) => {
+    let log_message = "Download speed: " + progressObj.bytesPerSecond;
+    log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+    log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+    sendStatusToWindow(log_message);
+})
+
 autoUpdater.on("update-downloaded", (_event, releaseName, releaseNotes) => {
     const dialogOpts = {
         type: "info",
@@ -81,9 +119,13 @@ autoUpdater.on("update-downloaded", (_event, releaseName, releaseNotes) => {
         detail: "A new version has been downloaded, Restart the application to apply changes!"
     }
     dialog.showMessageBox(dialogOpts, (response) => {
-        if (returnValue.response === 0) autoUpdater.quitAndInstall();
+        if (response === 0) {
+            autoUpdater.quitAndInstall()
+        };
+
     })
-    log.info(releaseName,releaseNotes)
+    log.info(releaseName, releaseNotes)
+    sendStatusToWindow('Update downloaded');
 })
 
 autoUpdater.on("error", (err) => {

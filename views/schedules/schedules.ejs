@@ -1,2 +1,96 @@
 <%- include("../_partials/_header") %>
 <h3> Schedule Manager </h3>
+<hr>
+
+
+<div class="row">
+
+<div class="col-md-4">
+
+<div class="card">
+<div class="card-header"> <b>Creating Meeting</b> </div>
+<div class="card-body">
+
+<form class="form-signup" method="POST" id="setMeeting">
+
+<label for="title"><b> Meeting Title </b></label>
+<input type="text" class="form-control" name="title" id="title" placeholder="Meeting Title">
+
+<div class="row align-items-center">
+
+<div class="col-md-6">
+<label for="date"><b> Date </b></label>
+<input type="date" class="form-control" name="date" id="date" required>
+</div>
+
+<div class="col-md-5">
+<label for="time"><b> Time </b></label>
+<input type="time" class="form-control" name="time" id="time" required>
+</div>
+
+<div class="col-md-6">
+<label for="type"><b> Meet Type </b></label>
+<select class="form-select" name="type" id="type" required>
+<option disabled selected> Meet Type </option>
+<option value="Personal">Personal</option>
+<option value="Link">Link</option>
+</select>
+</div>
+
+<div class="col-md-6">
+<label for="location"><b> Location </b></label>
+<input type="text" class="form-control" name="location" id="location" placeholder="Location or Link of the meeting" required>
+</div>
+
+<div class="col-md-6">
+<label for="attendees"><b> Attendees </b></label>
+<select class="form-select" name="attendees" id="attendees" multiple required>
+<option disabled selected> Attendees </option>
+<% user.forEach((user)=>{ %>
+<option value="<%- user.full %>"><%- user.full %></option>
+<% }) %>
+</select>
+</div>
+
+<br>
+
+
+</div>
+<br>
+<button type="submit" class="btn btn-success"> Create Meeting </button>
+</form>
+</div>
+<div class="card-footer">
+Erossential
+</div>
+</div>
+</div>
+
+
+
+
+<div class="col-md-5">
+<div class="card">
+<div class="card-header"><b> My Meeting </b></div>
+<div class="card-body">
+
+<div id="mymeeting">
+
+</div>
+
+</div>
+</div>
+</div>
+
+
+
+
+<script>
+var xhttp = new XMLHttpRequest();
+xhttp.onload = function() {
+	document.getElementById("mymeeting").innerHTML = this.responseText;
+}
+xhttp.open("GET", "/schedule/mymeetings");
+xhttp.send();
+
+</script>
