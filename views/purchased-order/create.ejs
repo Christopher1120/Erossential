@@ -67,7 +67,9 @@
 <select class="form-select" onchange="Assign(this)">
 <option disabled selected>Batch No</option>
 <% batch.forEach((batch)=>{%>
+<% if (batch.status == "Active") { %>
 <option value="<%- batch.batchNo %>"><%- batch.batchNo %></option>
+<% } %>
 <% }) %>
 </select>
 </div>
@@ -183,6 +185,35 @@
 
 
 <script>
+
+function Delete(r) {
+	$.ajax({
+		type:"GET",
+		url:r.href,
+		success:function(e){
+			var x = document.getElementById("snackbar");
+            x.innerHTML = e;
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+            var xhttp = new XMLHttpRequest;
+            xhttp.onload = function() {
+	            document.getElementById("frame").innerHTML = this.responseText;
+            }
+			xhttp.open("GET","/purchase-order/create-po/po=<%- purch.purchNo %>/list");
+			xhttp.send();
+				$("#total").val(e.total);
+				$("#amountonly").val(e.total);
+				console.log(e);
+		},
+		error:function(e) {
+			var x = document.getElementById("snackbar");
+            x.innerHTML = e.responseText;
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+		}
+	})
+}
+
 function Assign(r) {
 	var batch = r.value;
 	var type = $("#type").val();

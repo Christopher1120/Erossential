@@ -9,7 +9,7 @@
 <body>
 
 
-<table class="table text-center align-middle">
+<table class="table align-middle">
 <% user.forEach((user)=>{ %>
 <tr>
 <td>
@@ -23,6 +23,10 @@
   </span>
 <% } %>
 </td>
-<td><%- user.full %></td>
+<% if (user.online == "Online") { %>
+<td><%- user.full %><article class="text-secondary">Online</article></td>
+<% } else { %>
+<td><%- user.full %><article class="text-secondary"><%- moment(user.last).fromNow() %></td>
+<% } %>
 </tr>
 <% }) %>

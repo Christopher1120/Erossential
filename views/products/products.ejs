@@ -49,8 +49,9 @@
 </div>
 <div class="col-auto">
 <label for="product"><b>Variant</b></label>
-<input type="text" class="form-control" name="variant" id="variant" list="variants" autocomplete="off">
-<datalist id="variants">
+<select class="form-select" name="variant" id="variant">
+<option disabled selected>Please select variant</option>
+</select>
 </datalist>
 </div>
 </div>
@@ -75,7 +76,9 @@
 
 </div>
 </div>
+
 </div>
+
 
 
 
@@ -85,7 +88,7 @@
 function Choice() {
 	var batch = $("#batch").val();
 	var product = $("#product").val();
-	var datalist = $("#variants");
+	var select = $("#variant");
 		
 		$.ajax({
 			type:"GET",
@@ -95,13 +98,15 @@ function Choice() {
 				product:product,
 			},
 			success:function(e) {
-				datalist.empty();
+				select.empty();
 				console.log(e);
 				e.forEach((item)=>{
 				console.log(item)
-				var option = "<option value=" + item.variant + "></option>";
-
-				datalist.append(option);
+				const option = document.createElement("OPTION");
+				option.setAttribute("value",item.variant);
+				var text = document.createTextNode(item.variant);
+				option.appendChild(text);
+				document.getElementById("variant").appendChild(option)
 
 				});
 			},error:function(e) {

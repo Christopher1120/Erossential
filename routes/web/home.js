@@ -104,9 +104,12 @@ router.post("/create-comms", ensureAuthenticated, ensureOnline, async (req, res)
 
 router.get("/log-out", ensureAuthenticated, async (req, res) => {
 
+
+    var d = new Date();
     var user = await User.findById(req.user._id);
 
     user.online = "Offline";
+    user.last = d;
 
     try {
         let saveUser = await user.save();

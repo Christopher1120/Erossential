@@ -44,11 +44,6 @@ if (!gotTheLock) {
         // the commandLine is array of strings in which last element is deep link url
         dialog.showErrorBox('Welcome Back', `You arrived from: ${commandLine.pop()}`)
     })
-
-    // Create mainWindow, load the rest of the app, etc...
-    app.whenReady().then(() => {
-        createWindow()
-    })
 }
 
 function createWindow() {

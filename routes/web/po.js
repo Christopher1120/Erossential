@@ -35,6 +35,35 @@ router.get("/create-po/po=:ident/list", (req, res) => {
 
 // DATA Processing
 
+router.get("/create-po/po=:ident/product=:id", async (req, res) => {
+    var po = await PON.findOne({ purchNo: req.params.ident });
+    var prod = await PO.findById(req.params.id);
+
+    var cal = (po.total * 1) - (prod.cost * 1);
+    var fix = cal.toFixed(2);
+    console.log(fix);
+
+    po.total = fix;
+
+    try {
+        let savePO = await po.save();
+        console.log("Saving PO", savePO);
+
+        PO.findByIdAndDelete(req.params.id).then((purch) => {
+            res.status(202);
+            res.send("Product Deleted!");
+            return;
+        })
+
+    } catch (e) {
+        res.status(501);
+        res.send("An error has occured");
+        return;
+    }
+
+
+})
+
 router.get("/end-batch", async (req, res) => {
     var batch = await Batch.findOne({ status: "Active" });
 

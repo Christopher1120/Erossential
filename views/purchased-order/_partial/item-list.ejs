@@ -16,6 +16,7 @@
 <th> Variant </th>
 <th> Unit Price </th>
 <th> Total </th>
+<th></th>
 </tr>
 <% purch.forEach((purch)=>{ %>
 <tr>
@@ -25,6 +26,7 @@
 <td><%- purch.variant %></td>
 <td>PHP <%- purch.unit %></td>
 <td>PHP <%- purch.cost %></td>
+<td><a href="/purchase-order/create-po/po=<%- purch.purchNo %>/product=<%- purch._id %>" data-bs-toggle="modal" data-bs-target="modal" onclick="Delete(this)" title="Remove <%- purch.product %> <%- purch.variant %>"><i class="bi bi-trash text-danger"></i></td>
 </tr>
 <% }) %>
 

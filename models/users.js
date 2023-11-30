@@ -18,7 +18,8 @@ var userSchema = mongoose.Schema({
     department: { type: String, required: false },
     role: { type: String, required: false },
     online: {type:String,required:false},
-    code: {type:String,required:true},
+    code: { type: String, required: true },
+    last: {type:String,required:false},
 });
 
 
