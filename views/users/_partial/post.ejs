@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+
+<form class="form-signup" id="position" method="POST" action="/users/user=<%- user._id %>/assign-post">
+
+<div class="row align-items-center g-2">
+<div class="col-auto">
+<label for="position"><b> Position : </b></label>
+</div>
+<div class="col-auto">
+<select class="form-select" name="post" id="post">
+<% if (user.position == null) {  %>
+<option disabled selected> Select Position </option>
+<option value="Employee">Employee</option>
+<option value="Supervisor">Supervisor</option>
+<option value="Partner">Partner</option>
+<option value="Others">Others</option>
+<% } else { %>
+<option value="<%- user.position %>" selected> <%- user.position %> </option>
+<option value="Employee">Employee</option>
+<option value="Supervisor">Supervisor</option>
+<option value="Partner">Partner</option>
+<option value="Others">Others</option>
+<% } %>
+</select>
+</div>
+
+<div class="col-auto">
+<button type="submit" class="btn btn-outline-success"> Assign Post</button>
+</div>
+</div>
+
+</form>

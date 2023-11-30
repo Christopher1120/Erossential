@@ -1,0 +1,54 @@
+<%- include("../_partials/_header") %>
+
+
+<h3> Account Information </h3>
+<hr>
+<div class="row">
+<div class="col-sm-2 align-items-center">
+<img class="rounded-circle img-thumbnail img-fluid mx-auto d-block" src="../../images/user.jpg" width="700px" ></img>
+<article class="text-center"> <b><%- user.full %></b> </article>
+<article class="text-center"><b><%- user.ident %></b></article>
+<hr>
+<div class="list-group">
+<% if (currentUser.full == user.full) { %> 
+<a href="/schedule/employee=<%- user.ident %>" class="list-group-item list-group-item text-center">My Schedule</a>
+<% } %>
+<% if (currentUser.position == "Supervisor") { %>
+<% } else { %>
+<a href="/employee/employee-view/profile=<%- user._id %>/update" class="list-group-item list-group-item text-center" style="width:100%">Edit Profile</a>
+<% } %>
+<a href="/employee/employee-view/profile=<%- user._id %>/action-forms" class="list-group-item text-center" style="width:100%">Action Forms</a>
+<a href="/schedule/admin/employee=<%- user.ident %>" class="list-group-item list-group-item text-center">View Schedule</a>
+</div>
+</div>
+<br>
+<div class="col-md-10 w3-responsive">
+<table class="table table-striped">
+<tr>
+<tr>
+<th>Employee ID</th>
+<td><%- user.ident %></td>
+<th>Employee Status</th>
+<% if (user.status == "Applicant") { %>
+<td><%- user.status %> || <a href="/employee/employee-view/profile=<%- user._id %>/hired"> Hired </a></td>
+<% } else { %>
+<td><%- user.status %></td>
+<% } %>
+</tr>
+<th>First Name</th>
+<td><%- user.firstName %></td>
+<th>Last Name</th>
+<td><%- user.lastName %></td>
+</tr>
+<tr>
+<th>Position</th>
+<td><%- user.position %></td>
+<th>Role</th>
+<td><%- user.role %></td>
+</tr>
+<tr>
+<th>Contact Number</th>
+<td><%- user.contact %></td>
+<th>Email Address</th>
+<td><%- user.wemail %></td>
+

@@ -1,8 +1,51 @@
 <%- include("../_partials/_header") %>
-<h3> Welcome Back User! </h3>
+<h3> Welcome Back <%- currentUser.full %> </h3>
 <hr>
 
+
+
 <div class="row">
+<div class="col-auto">
+
+<div class="card">
+<div class="card-header"><b>
+
+<div class="row align-items-center g-2">
+<div class="col-auto">
+News & Updates
+</div>
+<div class="col-auto">
+<a href="/create-comms" data-bs-target="#Frame" data-bs-toggle="modal" onclick="Click(this)" title="Create Communication">
+<i class="bi bi-plus-circle fs-5"></i> 
+</a>
+</div>
+</div>
+</b></div>
+<div class="card-body">
+
+<div id="updates">
+
+</div>
+
+</div>
+</div>
+
+<br>
+
+
+<div class="card">
+<div class="card-body">
+
+<div id="online">
+
+</div>
+
+</div>
+</div>
+
+
+</div>
+
 <div class="col-md-5">
 
 <div class="card">
@@ -16,6 +59,7 @@
 </div>
 
 </div>
+
 
 <div class="col-md-5">
 
@@ -35,12 +79,11 @@
 
 
 
-
 <div class="modal fade l" id="Frame" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
   <div class="modal-dialog  modal-l">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="staticBackdropLabel">Register New Account</h1>
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Communications</h1>
         <button type="button" id="cls" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -62,8 +105,51 @@
 
 <script>
 
+function Click(r) {
+var xhttp = new XMLHttpRequest();
+xhttp.onload = function() {
+    document.getElementById("frame").innerHTML = this.responseText;
+}
+xhttp.open("GET", r.href);
+xhttp.send();
+}
+
+
 $("body").ready(function(e) {
 
+setInterval(function() {
+var xhttp = new XMLHttpRequest();
+xhttp.onload = function() {
+    document.getElementById("online").innerHTML = this.responseText;
+}
+xhttp.open("GET", "/status");
+xhttp.send();
+console.log("Working")
+},1000)
+
+setInterval(function() {
+var xhttp = new XMLHttpRequest();
+xhttp.onload = function() {
+    document.getElementById("updates").innerHTML = this.responseText;
+}
+xhttp.open("GET", "/comms");
+xhttp.send();
+console.log("Working")
+},5000)
+
+var xhttp = new XMLHttpRequest();
+xhttp.onload = function() {
+    document.getElementById("online").innerHTML = this.responseText;
+}
+xhttp.open("GET", "/status");
+xhttp.send();
+
+var xhttp = new XMLHttpRequest();
+xhttp.onload = function() {
+    document.getElementById("updates").innerHTML = this.responseText;
+}
+xhttp.open("GET", "/comms");
+xhttp.send();
 
 
 console.log(xValues);
@@ -119,13 +205,5 @@ new Chart("monthly", {
 });
 
 });
-function Click(r) {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onload = function() {
-        document.getElementById("frame").innerHTML = this.responseText;
-    }
-    xhttp.open("GET", r.href);
-    xhttp.send();
-}
 </script>
 

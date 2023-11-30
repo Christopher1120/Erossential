@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+
+<form class="form-signup" id="role" method="POST" action="/users/user=<%- user._id %>/assign-role">
+
+<div class="row align-items-center g-2">
+<div class="col-auto">
+<label for="position"><b> Roles :  </b></label>
+</div>
+<div class="col-auto">
+<select class="form-select" name="role" id="role">
+<% if (user.position == null) {  %>
+<option disabled selected> Select Role </option>
+<option value="User">User Role</option>
+<option value="Admin">Admin Role</option>
+<% } else { %>
+<option value="<%- user.position %>" selected> <%- user.role %> </option>
+<option value="User">User Role</option>
+<option value="Admin">Admin Role</option>
+<% } %>
+</select>
+
+</div>
+
+<div class="col-auto">
+<button type="submit" class="btn btn-outline-success"> Assign Role</button>
+</div>
+</div>
+
+</form>

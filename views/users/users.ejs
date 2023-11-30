@@ -1,0 +1,75 @@
+<%- include("../_partials/_header") %>
+<h3> Employee | Partner Management </h3>
+<hr>
+
+
+<div id="list">
+
+</div>
+
+
+<div class="modal fade l" id="Frame" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-l">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">User Account Management</h1>
+        <button type="button" id="cls" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="frame">
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button"  id="close" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+<script>
+function lhref(r) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        document.getElementById("frame").innerHTML = this.responseText;
+    }
+    xhttp.open("GET", r.href);
+    xhttp.send();
+}
+
+function lhref2(r) {
+    $.ajax({
+        type:"GET",
+        url:r.href,
+        success: function(e) {
+            var x = document.getElementById("snackbar");
+            x.innerHTML = e;
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+            var xhttp = new XMLHttpRequest();
+            xhttp.onload = function() {
+	            document.getElementById("list").innerHTML = this.responseText;
+            }
+            xhttp.open("GET","/users/list");
+            xhttp.send();
+        },
+        error:function(e) {
+            var x = document.getElementById("snackbar");
+            x.innerHTML = e.responseText;
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+        }
+    })
+}
+
+var xhttp = new XMLHttpRequest();
+xhttp.onload = function() {
+	document.getElementById("list").innerHTML = this.responseText;
+}
+xhttp.open("GET","/users/list");
+xhttp.send();
+</script>

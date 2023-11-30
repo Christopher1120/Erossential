@@ -10,18 +10,20 @@
 
 <table class="table text-center">
 <tr>
+<th> Date & Time </th>
 <th> Meeting ID </th>
 <th> Title </th>
 <th> Location </th>
 </tr>
 <% meet.forEach((meet)=>{%>
 <tr>
+<td><%- moment(meet.datetime).format("MM-DD-YYYY hh:mm A") %></td>
 <td><%- meet.ident %></td>
 <td><%- meet.title %></td>
 <% if (meet.type == "Link") { %>
 <td><a href="<%- meet.location %>"> Link </a></td>
 <% } else { %>
-<td><a href="<%- meet.location %>"> Link </a></td>
+<td><a href="<%- meet.location %>" target="_blank"> Link </a></td>
 <% } %>
 </tr>
 <% }) %>

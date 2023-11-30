@@ -1,8 +1,9 @@
-var { app, BrowserWindow, ipcMain, dialog } = require("electron");
+var { app, BrowserWindow, ipcMain, dialog, session } = require("electron");
 var { autoUpdater } = require("electron-updater");
 var isDev = require("electron-is-dev");
 var path = require("node:path");
 const log = require("electron-log");
+const gotTheLock = app.requestSingleInstanceLock();
 
 
 let server = require("./server");
@@ -23,11 +24,38 @@ function sendStatusToWindow(text) {
     mainWindow.webContents.send('message', text);
 }
 
+if (process.defaultApp) {
+    if (process.argv.length >= 2) {
+        app.setAsDefaultProtocolClient('electron-fiddle', process.execPath, [path.resolve(process.argv[1])])
+    }
+} else {
+    app.setAsDefaultProtocolClient('electron-fiddle')
+}
+
+if (!gotTheLock) {
+    app.quit()
+} else {
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
+        // Someone tried to run a second instance, we should focus our window.
+        if (mainWindow) {
+            if (mainWindow.isMinimized()) mainWindow.restore()
+            mainWindow.focus()
+        }
+        // the commandLine is array of strings in which last element is deep link url
+        dialog.showErrorBox('Welcome Back', `You arrived from: ${commandLine.pop()}`)
+    })
+
+    // Create mainWindow, load the rest of the app, etc...
+    app.whenReady().then(() => {
+        createWindow()
+    })
+}
+
 function createWindow() {
     mainWindow = new BrowserWindow({
-        width: 1500,
+        width: 1600,
         height: 800,
-        resizable: false,
+        resizable: true,
         autoHideMenuBar: true,
         icon: "favicon.ico",
         webPreferences: {
@@ -35,7 +63,8 @@ function createWindow() {
             preload: path.join(__dirname, "preload.js")
         },
     });
-    mainWindow.loadURL("http://localhost:80");
+    mainWindow.setMenuBarVisibility(false);
+    mainWindow.loadURL("http://localhost:80/");
     mainWindow.on("closed", function () {
         mainWindow = null;
     })
@@ -43,9 +72,11 @@ function createWindow() {
     if (isDev) {
         mainWindow.webContents.openDevTools({ mode: "detach" });
         autoUpdater.checkForUpdates();
+        
     }
     if (!isDev) {
         autoUpdater.checkForUpdates();
+
     }
 
 
@@ -56,7 +87,6 @@ function createWindow() {
 
 app.whenReady().then(() => {
     createWindow();
-
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) {
             ipcMain.handle('ping', () => 'pong')
@@ -139,3 +169,4 @@ autoUpdater.on("error", (err) => {
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();
 })
+

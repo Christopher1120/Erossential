@@ -3,10 +3,13 @@ var Inventory = require("../../models/inventory");
 var Auth = require("../../auth/auth").ensureAuthenticated;
 var PON = require("../../models/pon");
 var PO = require("../../models/po");
+const ensureOnline = require("../../auth/auth-online").ensureOnline;
 
 var router = express.Router();
 
+
 router.use(Auth);
+router.use(ensureOnline);
 
 
 router.get("/", (req, res) => {
@@ -134,7 +137,7 @@ router.post("/add-products", (req, res) => {
             }
         }
         if (!prod) {
-            var po = await PO.findOne({ type: "Inventory", batchNo: batch, variant: prod2 });
+            var po = await PO.findOne({ type: "Inventory", batchNo: batch, product:prod1, variant: prod2 });
             
             if (!po) {
                 res.status(404);

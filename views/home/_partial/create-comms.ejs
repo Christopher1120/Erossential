@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+        <script src="https://cdn.ckeditor.com/4.19.0/standard-all/ckeditor.js"></script>
+        <script src="https://cdn.ckeditor.com/ckeditor5/27.1.0/classic/ckeditor.js"></script>
+        </head>
+
+<body>
+
+<form class="form-signup" method="POST" action="/create-comms">
+<div class="row align-items-center">
+<div class="col-auto">
+<label><b> Title : </b></label>
+<input type="text" class="form-control" name="title" id="title" placeholder="Communication Title" required>
+</div>
+<div class="col-auto">
+<label><b> Type : </b></label>
+<select class="form-select" id="type" name="type" required>
+<option disabled selected> Communication Type </option>
+<% if (currentUser.role == "Admin") { %>
+<option value="Application-Updates"> Application Updates </option>
+<% } %>
+<option value="Updates"> Updates </option>
+<option value="News">News</option>
+</select>
+</div>
+</div>
+<label><b> Ident </b></label>
+<input type="text" class="form-control" name="user" id="user" placeholder="Input the ID No of the person/s" required>
+<br>
+<textarea name="content" id="content" rows="5" cols="56" class="form-control" placeholder="Input your message here" required>
+</textarea>
+<br>
+<button type="submit" class="btn btn-outline-success"> Submit</button>
+
+</form>
+
+
+

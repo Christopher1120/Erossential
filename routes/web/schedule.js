@@ -2,11 +2,13 @@ var express = require("express");
 var User = require("../../models/users");
 var Schedule = require("../../models/schedules");
 var Auth = require("../../auth/auth").ensureAuthenticated;
-
+const ensureOnline = require("../../auth/auth-online").ensureOnline;
 
 var router = express.Router();
 
+
 router.use(Auth);
+router.use(ensureOnline);
 
 
 router.get("/", (req, res) => {

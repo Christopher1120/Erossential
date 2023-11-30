@@ -4,6 +4,8 @@ var nodemailer = require("nodemailer");
 var passport = require("passport");
 var Batch = require("../../models/batch");
 const ensureAuthenticated = require("../../auth/auth").ensureAuthenticated;
+const ensureOnline = require("../../auth/auth-online").ensureOnline;
+var Comms = require("../../models/comms");
 
 
 var router = express.Router();
@@ -14,17 +16,17 @@ router.get("/", (req, res) => {
     res.render("home/login");
 })
 
-router.get("/home", ensureAuthenticated, (req, res) => {
+router.get("/home", ensureAuthenticated, ensureOnline, (req, res) => {
     Batch.find().then((batch) => {
         res.render("home/home", {batch:batch});
     });
 })
 
-router.get("/register", ensureAuthenticated, (req, res) => {
+router.get("/register", ensureAuthenticated, ensureOnline, (req, res) => {
     res.render("home/_partial/register");
 })
 
-router.get("/activation", ensureAuthenticated, (req, res) => {
+router.get("/activation", ensureAuthenticated, ensureOnline, (req, res) => {
     res.render("home/activation");
 });
 
@@ -42,7 +44,86 @@ router.get("/forgot-password/user=:ident", (req, res) => {
     });
 })
 
+router.get("/status", ensureAuthenticated, ensureOnline, (req, res) => {
+    User.find().then((user) => {
+        res.render("home/_partial/online", { user: user });
+    })
+});
+
+router.get("/create-comms", ensureAuthenticated, ensureOnline, (req, res) => {
+    res.render("home/_partial/create-comms");
+})
+
+router.get("/comms", ensureAuthenticated, ensureOnline, (req, res) => {
+    Comms.find({ user: req.user.ident }).then((comms) => {
+        res.render("home/_partial/comms-list", { comms: comms });
+    })
+})
+
+router.get("/comms/comms=:id", ensureAuthenticated, ensureOnline, (req, res) => {
+    Comms.findById(req.params.id).then((comms) => {
+        res.render("home/_partial/comms", { comms: comms });
+    })
+})
+
 // DATA Processing
+
+router.post("/create-comms", ensureAuthenticated, ensureOnline, async (req, res) => {
+    var title = req.body.title;
+    var type = req.body.type;
+    var user = req.body.user;
+    var content = req.body.content;
+
+    var users = user.split(",");
+    var communic = await Comms.find();
+
+    users.forEach(async emp => {
+
+        var comms = await Comms.insertMany({
+            title: title,
+            type: type,
+            user: emp,
+            content: content,
+            createdby: req.user.full,
+            status: "Active",
+            read: false
+        });
+    });
+
+    try {
+        console.log(communic);
+        req.flash("info", "Communication sent!");
+        return res.redirect("/home");
+
+    } catch (e) {
+        console.log(e);
+        req.flash("error", "An error has occured");
+        return res.redirect("/home");
+    }
+});
+
+router.get("/log-out", ensureAuthenticated, async (req, res) => {
+
+    var user = await User.findById(req.user._id);
+
+    user.online = "Offline";
+
+    try {
+        let saveUser = await user.save();
+        console.log(saveUser);
+
+        req.logout((err) => {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            return res.redirect("/");
+        })
+    } catch (e) {
+        console.log(e);
+    }
+
+})
 
 
 router.post("/forgot-password/user=:ident", async (req, res) => {
@@ -150,7 +231,7 @@ router.post("/verify-user", (req, res) => {
 })
 
 
-router.post("/activation", ensureAuthenticated, (req, res) => {
+router.post("/activation", ensureAuthenticated, ensureOnline, (req, res) => {
     var code = req.body.code;
 
     User.findOne({ ident: req.user.ident }).then((user) => {

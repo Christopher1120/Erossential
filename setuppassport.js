@@ -25,13 +25,25 @@ module.exports = function () {
                 return done(null, false, { message: "Username or password is incorrect" });
                 console.log("User does not exist");
             }
-            user.checkPassword(password, function (err, isMatch) {
+            user.checkPassword(password,async function (err, isMatch) {
                 if (err) { return done(err); }
                 if (isMatch) {
-                    return done(null, user);
-                    console.log(user);
+
+                    var profile = await User.findOne({ username: username });
+
+                    profile.online = "Online";
+
+                    try {
+                        let saveProf = await profile.save();
+                        console.log(saveProf);
+                        return done(null, user);
+                        console.log(user);
+                    } catch (e) {
+                        console.log(e);
+                    }
 
                 } else {
+
                     return done(null, false, { message: "Username or password is incorrect" });
                     console.log("Password is not correct")
                 };

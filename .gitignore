@@ -11,8 +11,6 @@
 *.sln.docstates
 dist
 *.exe
-invoice
-package.js
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+
+<table class="table text-center align-middle">
+<% user.forEach((user)=>{ %>
+<tr>
+<td>
+<% if (user.online != "Online") { %>
+  <span class="position-absolute translate-middle p-2 bg-danger border border-light rounded-circle" title="<%- user.online %>">
+    <span class="visually-hidden">Online</span>
+  </span>
+<% } else { %>
+  <span class="position-absolute translate-middle p-2 bg-success border border-light rounded-circle" title="<%- user.online %>">
+    <span class="visually-hidden">Offline</span>
+  </span>
+<% } %>
+</td>
+<td><%- user.full %></td>
+</tr>
+<% }) %>

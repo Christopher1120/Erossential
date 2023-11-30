@@ -4,11 +4,13 @@ var Order = require("../../models/orders");
 var Purchased = require("../../models/purchased");
 var User = require("../../models/users");
 var Cx = require("../../models/customers");
+const ensureOnline = require("../../auth/auth-online").ensureOnline;
 
 var router = express.Router();
 
 
 router.use(Auth);
+router.use(ensureOnline);
 
 router.get("/", (req, res) => {
     res.render("crm/customers");

@@ -14,6 +14,10 @@ var userSchema = mongoose.Schema({
     contact: {type:String,required:true},
     addedOn: { type: Date, default: Date.now },
     status: { type: String, required: true },
+    position: { type: String, required: false },
+    department: { type: String, required: false },
+    role: { type: String, required: false },
+    online: {type:String,required:false},
     code: {type:String,required:true},
 });
 

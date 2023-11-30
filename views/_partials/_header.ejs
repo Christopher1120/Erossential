@@ -57,16 +57,53 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
 <body>
 
-<div class="sidenav">
-  <a href="/home">Home</a>
-  <a href="/schedule"> Meeting </a>
-  <a href="/products">Products</a>
-  <a href="/investors"> Investors </a>
-  <a href="/purchase-order">PO</a>
-  <a href="/pos" id="pos"> POS </a>
-  <a href="/crm">CRM</a>
-  <a href="/register" data-bs-toggle="modal" data-bs-target="#Frame" onclick="Click(this)">Register</a>
-</div>
+<nav class="navbar navbar-expand-lg bg-light">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#"><image src="../../images/Eros.png" width="30" height="27"></i> </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link active" aria-current="page" href="/home">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/schedule">Meetings</a>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Productivity
+          </a>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/products">Products</a>
+            <li><a class="dropdown-item" href="/purchase-order">PO</a>
+            <li><a class="dropdown-item" href="/pos" id="pos">POS</a>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="/crm">CRM</a>
+            <li><a class="dropdown-item" href="/purchase-order/end-batch" id="endbatch">End Batch</a>
+          </ul>
+        </li>
+                  <% if (currentUser.role == "Admin") { %>
+        <li class="nav-item">
+          <a href="/users" class="nav-link"> Users </a>
+        </li>
+        <li class="nav-item">
+
+          <a href="/register" class="nav-link" data-bs-toggle="modal" data-bs-target="#Frame" onclick="Click()">Register</a>
+        </li>
+          <% } %>
+      </ul>
+       <div class="end">
+        <a href="/log-out" class="nav-link" title="Logout"><i class="bi bi-box-arrow-right fs-3"></i> </a>
+        </div>
+    </div>
+  </div>
+</nav>
+
+
+
+
 
 
 <div class="main col-sm p-3">
@@ -117,8 +154,47 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
 
 <script>
+
+$("#endbatch").on("click",function(event){
+    event.preventDefault();
+    var href = $("#endbatch").prop("href");
+    var conf = confirm("Are you sure you want to end the current active batch?");
+    
+    if (conf == true) {
+        $.ajax({
+            type:"GET",
+            url:href,
+            success:function(e) {
+                var x = document.getElementById("snackbar");
+                x.innerHTML = e;
+                x.className = "show";
+                setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+                console.log(href);
+            },
+            error:function(e) {
+                var x = document.getElementById("snackbar");
+                x.innerHTML = e.responseText;
+                x.className = "show";
+                setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+            }
+        })
+    } else {
+        alert("Ending of batch canceled!");
+    }
+
+})
+
 $("#pos").on("click",function(e) {
     e.preventDefault();
-    window.open("/pos","MyWindow","width=1500,height=750","config='toolbar=no, menubar=no,scrollbars=no,resizable=no,location=no,directories=no,status=no,searchbar=no'");
+    window.open("/pos","MyWindow","width=1500,height=750","config='toolbar=false, menubar=false,scrollbars=no,resizable=no,location=no,directories=no,status=no,searchbar=no'");
 })
+function Click() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        document.getElementById("frame").innerHTML = this.responseText;
+    }
+    xhttp.open("GET", "/register");
+    xhttp.send();
+}
+
 </script>

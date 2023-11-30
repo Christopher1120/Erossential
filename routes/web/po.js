@@ -5,13 +5,13 @@ var PON = require("../../models/pon");
 var Batch = require("../../models/batch");
 var fs = require("fs");
 var pdfKit = require("pdfkit");
-
-
+const ensureOnline = require("../../auth/auth-online").ensureOnline;
 
 var router = express.Router();
 
-router.use(Auth);
 
+router.use(Auth);
+router.use(ensureOnline);
 
 router.get("/", (req, res) => {
     PON.find().then((po) => {
@@ -34,6 +34,38 @@ router.get("/create-po/po=:ident/list", (req, res) => {
 })
 
 // DATA Processing
+
+router.get("/end-batch", async (req, res) => {
+    var batch = await Batch.findOne({ status: "Active" });
+
+    if (!batch) {
+        res.status(404);
+        res.send("No Active Batch Found!");
+        return;
+    } else if (batch) {
+
+        var cal = (batch.sales * 1) - (batch.expenses * 1);
+        var tot = cal.toFixed(2)
+
+        console.log("Net Profit : " + tot);
+
+        batch.profit = tot;
+        batch.status = "Completed";
+
+        try {
+            let saveBatch = await batch.save();
+            console.log("Ending Batch ", saveBatch);
+            res.status(200)
+            res.send("Batch No : " + batch.batchNo + " is now completed!");
+            return;
+        } catch (e) {
+            console.log(e);
+            res.status(501);
+            res.send("An error has occured!");
+            return;
+        }
+    }
+})
 
 router.post("/create-po/po=:ident/assign-batch-expenses=:batch/type=:type", async (req, res) => {
     var batch = req.params.batch;
@@ -346,53 +378,61 @@ router.post("/create-po/po=:ident", (req, res) => {
 
 router.get("/assign-batch/po=:ident", async (req, res) => {
     var po = await PON.findOne({ purchNo: req.params.ident });
+    var bat = await Batch.findOne({ status: "Active" });
 
     var d = new Date();
     var year = d.getFullYear();
     var month = d.getMonth() + 1;
 
-    Batch.count().then(async (count) => {
-        var ident;
+    if (bat) {
+        req.flash("error", "There's still an active batch!");
+        return res.redirect("/purchase-order/create-po/po=" + req.params.ident);
+    } else if (!bat) {
 
-        if (count < 10) {
-            var ident = year + "-000" + count;
-        } else if (count > 9 && count < 100) {
-            var ident = year + "-00" + count;
-        } else if (count > 99 && count < 1000) {
-            var ident = year + "-0" + count;
-        } else {
-            var ident = year + "-" + count;
-        }
+        Batch.count().then(async (count) => {
+            var ident;
 
-        po.batchNo = ident;
-        console.log(po);
+            if (count < 10) {
+                var ident = year + "-000" + count;
+            } else if (count > 9 && count < 100) {
+                var ident = year + "-00" + count;
+            } else if (count > 99 && count < 1000) {
+                var ident = year + "-0" + count;
+            } else {
+                var ident = year + "-" + count;
+            }
 
-        var newBatch = new Batch({
-            batchNo: ident,
-            purchNo: req.params.ident,
-            sales: 0,
-            loss: 0,
-            expenses:0,
-            year: year,
-            month: month,
-            createdBy:req.user.full,
-        })
+            po.batchNo = ident;
+            console.log(po);
 
-        try {
-            let savePO = await po.save();
-            let saveBatch = await newBatch.save();
-            console.log("savePO", savePO, "saveBatch", saveBatch);
-            req.flash("info", "Batch Assign : " + ident);
-            return res.redirect("/purchase-order/create-po/po=" + req.params.ident);
-        } catch (e) {
-            console.log(e);
-            res.status(502);
-            req.flash("error", "An error has occured")
-            return res.redirect("/purchase-order/create-po/po=" + req.params.ident);
-            return;
-        }
+            var newBatch = new Batch({
+                batchNo: ident,
+                purchNo: req.params.ident,
+                sales: 0,
+                loss: 0,
+                expenses: 0,
+                year: year,
+                month: month,
+                createdBy: req.user.full,
+                status: "Active",
+            })
 
-    });
+            try {
+                let savePO = await po.save();
+                let saveBatch = await newBatch.save();
+                console.log("savePO", savePO, "saveBatch", saveBatch);
+                req.flash("info", "Batch Assign : " + ident);
+                return res.redirect("/purchase-order/create-po/po=" + req.params.ident);
+            } catch (e) {
+                console.log(e);
+                res.status(502);
+                req.flash("error", "An error has occured")
+                return res.redirect("/purchase-order/create-po/po=" + req.params.ident);
+                return;
+            }
+
+        });
+    }
 
 })
 
