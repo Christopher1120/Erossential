@@ -13,7 +13,11 @@ var router = express.Router();
 
 
 router.get("/", (req, res) => {
-    res.render("home/login");
+    if (req.user) {
+        res.redirect("/home");
+    } else {
+        res.render("home/login");
+    }
 })
 
 router.get("/home", ensureAuthenticated, ensureOnline, (req, res) => {
@@ -44,23 +48,28 @@ router.get("/forgot-password/user=:ident", (req, res) => {
     });
 })
 
-router.get("/status", ensureAuthenticated, ensureOnline, (req, res) => {
+router.get("/status", (req, res) => {
     User.find().then((user) => {
         res.render("home/_partial/online", { user: user });
     })
 });
 
-router.get("/create-comms", ensureAuthenticated, ensureOnline, (req, res) => {
+router.get("/create-comms", (req, res) => {
     res.render("home/_partial/create-comms");
 })
 
-router.get("/comms", ensureAuthenticated, ensureOnline, (req, res) => {
+router.get("/comms", (req, res) => {
     Comms.find({ user: req.user.ident }).then((comms) => {
-        res.render("home/_partial/comms-list", { comms: comms });
+        if (!comms) {
+            console.log("No info");
+            res.render("home/_partial/comms-list", { comms: comms });
+        } else {
+            res.render("home/_partial/comms-list", { comms: comms });
+        }
     })
 })
 
-router.get("/comms/comms=:id", ensureAuthenticated, ensureOnline, (req, res) => {
+router.get("/comms/comms=:id", (req, res) => {
     Comms.findById(req.params.id).then((comms) => {
         res.render("home/_partial/comms", { comms: comms });
     })

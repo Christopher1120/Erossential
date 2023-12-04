@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+
+<table class="table text-center">
+<tr>
+<th> Promo </th>
+<th> Code </th>
+<th> Status </th>
+</tr>
+<% promo.forEach((promo)=>{ %>
+<tr>
+<td><a href="/promos/promo-code=<%- promo._id %>" onclick="thref(this)" data-bs-target="modal" data-bs-toggle="modal"><%- promo.name %></a></td>
+<td><%- promo.code %></td>
+<td><%- promo.status %></td>
+</tR>
+<%}) %>
+</table>
