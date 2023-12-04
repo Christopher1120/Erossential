@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+<form class="form-signup" method="POST" action="/promos/create-promo">
+<div class="row align-items-center">
+<div class="col-auto">
+<label for="name"><b> Promo Name </b></label>
+<input type="text" class="form-control" name="name" id="name" placeholder="Promo Name">
+</div>
+<div class="col-auto">
+<label for="code"><b> Promo Code </b></label>
+<input type="text" class="form-control" name="code" id="code" placeholder="Promo Code">
+</div>
+</div>
+<div class="row align-items-center">
+<div class="col-md-6">
+<label for="start"><b> Start </b></label>
+<input type="date" id="start" name="start" class="form-control">
+</div>
+<div class="col-md-6">
+<label for="end"><b> End </b></label>
+<input type="date" id="end" name="end" class="form-control">
+</div>
+</div>
+<div class="row align-items-center">
+<div class="col-auto">
+<label for="amount"><b> Amount off </b></label>
+<input type="text" class="form-control" name="amount" id="amount" placeholder="Amount Off (PHP)">
+</div>
+<div class="col-auto">
+<label for="product"><b> Product Selector </b></label>
+<select class="form-select" id="product" name="product">
+<option disabled selected> Please select a product </option>
+<option value="roller blends"> Roller Blends </option>
+<option value="diffuser"> Diffuser </option>
+</select>
+</div>
+</div>
+<div class="row align-items-center">
+<div class="col-auto">
+<label for="variant"><b> Variant</b></label>
+<input type="text" class="form-control" name="variant" id="variant" placeholder="Variant">
+</div>
+<div class="col-auto">
+<label for="qty"><b> Required Qty </b></label>
+<input type="text" class="form-control" name="qty" id="qty" placeholder="Required qty">
+</div>
+</div>
+<br>
+<button type="submit" class="btn btn-outline-success">Create Promo</button>
+</form>
+

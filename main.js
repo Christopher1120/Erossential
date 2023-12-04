@@ -42,7 +42,7 @@ if (!gotTheLock) {
             mainWindow.focus()
         }
         // the commandLine is array of strings in which last element is deep link url
-        dialog.showErrorBox('Welcome Back', `You arrived from: ${commandLine.pop()}`)
+        createWindow2();
     })
 }
 
@@ -77,6 +77,37 @@ function createWindow() {
 
 }
 
+function createWindow2() {
+    mainWindow = new BrowserWindow({
+        width: 1300,
+        height: 800,
+        resizable: true,
+        autoHideMenuBar: true,
+        icon: "favicon.ico",
+        webPreferences: {
+            nodeIntegration: true,
+            preload: path.join(__dirname, "preload.js")
+        },
+    });
+    mainWindow.setMenuBarVisibility(false);
+    mainWindow.loadURL("http://localhost:80/pos");
+    mainWindow.on("closed", function () {
+        mainWindow = null;
+    })
+
+    if (isDev) {
+        mainWindow.webContents.openDevTools({ mode: "detach" });
+        autoUpdater.checkForUpdates();
+
+    }
+    if (!isDev) {
+        autoUpdater.checkForUpdates();
+
+    }
+
+
+}
+
 
 
 
@@ -86,6 +117,7 @@ app.whenReady().then(() => {
         if (BrowserWindow.getAllWindows().length === 0) {
             ipcMain.handle('ping', () => 'pong')
             createWindow();
+            createWindow2();
         }
     })
 })
@@ -157,7 +189,10 @@ autoUpdater.on("error", (err) => {
     log.info("Error in auto-updater. " + err);
 })
 
-
+process.on('uncaughtException', (err) => {
+    console.log(err);
+    log.info(err);
+})
 
 
 

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+
+<table class="table text-center">
+<tr>
+<th> Promo Name </th>
+<td><%- promo.name %></td>
+<th> Promo Code </th>
+<td><%- promo.code %></td>
+</tr>
+<tr>
+<th> Promo Starts </th>
+<td><%- moment(promo.start).format("MM/DD/YYYY") %></td>
+<th> Promo Expiry </th>
+<td><%- moment(promo.expiry).format("MM/DD/YYYY") %></td>
+</tr>
+<tr>
+<tr>
+<th> Amount </th>
+<td></td>
+<th>PHP</th>
+<td><%- promo.amount %></td>
+</tr>
+<% promo.criteria.forEach((criteria)=>{ %>
+<tr>
+<th> Product </th>
+<td><%- criteria.product %> (<%- criteria.variant %>)</td>
+<th> Quantity </tH>
+<td><%- criteria.qty %></td>
+<% }) %>

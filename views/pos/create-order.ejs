@@ -93,6 +93,7 @@ $(document).on('submit', "#setQty", function(event) {
                 xhttp.onload = function() {
                     $("#purchases").html(this.responseText);
                     $("#total").val(e.total);
+                    $("#totalofall").val(e.total);
                 };
                 xhttp.open("GET", "/pos/oid=<%- order.oid %>/purchased");
                 xhttp.send();
@@ -106,6 +107,25 @@ $(document).on('submit', "#setQty", function(event) {
     })
 
 })
+function Discount() {
+    var discount = $("#discount").val();
+    var amount = $("#totalofall").val();
+    var fee = $("#fee").val();
+
+    var disc = (amount * 1) - (discount * 1) + (fee * 1);
+    var fix = disc.toFixed(2);
+    
+    $("#total").val(fix);
+
+}
+function Promo(r) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        document.getElementById("promo").innerHTML = this.responseText;
+    }
+    xhttp.open("GET", r.href);
+    xhttp.send();
+}
 </script>
 
 <% if (order.assigned == false) { %>
@@ -196,6 +216,24 @@ function SearchContact() {
 
 <% } %>
 
+<div class="modal fade " id="Promo" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-l">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Promotions Selector</h1>
+      </div>
+      <div class="modal-body">
+        <div id="promo">
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <p> Erossential 2023 </p>
+        
+      </div>
+    </div>
+  </div>
+</div>
 
 
 <div class="row">
@@ -225,12 +263,8 @@ function SearchContact() {
 <% }) %>
 </select>
 </div>
-
 <div class="col-auto">
-<input type="text" class="form-control" id="search" placeholder="Please input product name" name="search">
-</div>
-<div class="col-auto">
-<button type="submit" class="btn btn-outline-success"><i class="bi bi-search"></i></button>
+<a href="/pos/apply-promo/oid=<%- order.oid %>" class="btn btn-outline-success" title="Apply Promo" data-bs-toggle="modal" data-bs-target="#Promo" onclick="Promo(this)"><i class="bi bi-percent"></i></a>
 </div>
 </div>
 <hr>
@@ -298,7 +332,7 @@ function SearchContact() {
 </div>
 <div class="col-md-3">
 <label for="courier"><b> Discount </b></label>
-<input type="text" class="form-control" name="discount" id="discount" placeholder="Discount" required>
+<input type="text" class="form-control" name="discount" id="discount" placeholder="Discount" onkeyup="Discount()" required>
 </div>
 </div>
 
@@ -314,6 +348,7 @@ function SearchContact() {
 <div class="col-auto">
 <label for="courier"><b> Total of All </b></label>
 <input type="text" class="form-control" name="total" id="total" value="<%- order.total %>" placeholder="Total of All" required>
+<input type="hidden" id="totalofall" value="<%- order.total %>">
 </div>
 </div>
 <br>

@@ -51,6 +51,7 @@
     <Content Include="models\orders.js" />
     <Content Include="models\po.js" />
     <Content Include="models\pon.js" />
+    <Content Include="models\promos.js" />
     <Content Include="models\purchased.js" />
     <Content Include="models\schedules.js" />
     <Content Include="models\users.js" />
@@ -63,6 +64,7 @@
     <Content Include="routes\web\po.js" />
     <Content Include="routes\web\pos.js" />
     <Content Include="routes\web\products.js" />
+    <Content Include="routes\web\promos.js" />
     <Content Include="routes\web\schedule.js" />
     <Content Include="routes\web\users.js" />
     <Content Include="server.js" />
@@ -89,6 +91,7 @@
     <Content Include="views\pos\create-order.ejs" />
     <Content Include="views\pos\login.ejs" />
     <Content Include="views\pos\pos.ejs" />
+    <Content Include="views\pos\_partial\apply-promos.ejs" />
     <Content Include="views\pos\_partial\assign.ejs" />
     <Content Include="views\pos\_partial\itm.ejs" />
     <Content Include="views\pos\order-information.ejs" />
@@ -99,6 +102,10 @@
     <Content Include="views\pos\_partial\transfer.ejs" />
     <Content Include="views\products\products.ejs" />
     <Content Include="views\products\_partial\product-list.ejs" />
+    <Content Include="views\promos\promos.ejs" />
+    <Content Include="views\promos\_partial\create.ejs" />
+    <Content Include="views\promos\_partial\list.ejs" />
+    <Content Include="views\promos\_partial\promo-info.ejs" />
     <Content Include="views\purchased-order\create.ejs" />
     <Content Include="views\purchased-order\purchase.ejs" />
     <Content Include="views\purchased-order\_partial\item-list.ejs" />
@@ -127,6 +134,8 @@
     <Folder Include="views\investors\" />
     <Folder Include="views\crm\" />
     <Folder Include="views\errors\" />
+    <Folder Include="views\promos\" />
+    <Folder Include="views\promos\_partial\" />
     <Folder Include="views\users\" />
     <Folder Include="views\schedules\" />
     <Folder Include="views\pos\" />

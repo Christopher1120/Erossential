@@ -1,0 +1,81 @@
+<%- include("../_partials/_initial") %>
+<h3> Promos and Discounts Manager </h3>
+<a href="/promos/create-promo" class="btn btn-outline-success" data-bs-target="#Frame" data-bs-toggle="modal" onclick="Click(this)">
+<div class="row align-items-center g-2">
+<div class="col-auto">
+<i class="bi bi-plus-circle fs-4"></i>
+</div>
+<div class="col-auto">
+Add Promo/s
+</div>
+</div>
+</a>
+<hr>
+
+
+<div class="row">
+<div class="col-md-3">
+
+<div class="border " style="height:500px" id="promo">
+
+</div>
+</div>
+
+<div class="col-md-8">
+
+<div class="border" style="height:500px" id="info">
+
+</div>
+
+</div>
+
+
+<div class="modal fade l" id="Frame" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-l">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Promo Manager</h1>
+        <button type="button" id="cls" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="frame">
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button"  id="close" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+
+function thref(r) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        document.getElementById("info").innerHTML = this.responseText;
+    }
+    xhttp.open("GET",r.href);
+    xhttp.send();
+}
+
+var xhttp = new XMLHttpRequest();
+xhttp.onload = function() {
+    document.getElementById("promo").innerHTML = this.responseText;
+}
+xhttp.open("GET","/promos/promo-list");
+xhttp.send();
+
+function Click(r) {
+var xhttp = new XMLHttpRequest();
+xhttp.onload = function() {
+    document.getElementById("frame").innerHTML = this.responseText;
+}
+xhttp.open("GET",r.href);
+xhttp.send();
+}
+</script>

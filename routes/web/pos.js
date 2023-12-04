@@ -10,11 +10,16 @@ var Auth2 = require("../../auth/auth2").ensureAuthenticated2;
 var passport = require("passport");
 const Inventory = require("../../models/inventory");
 const ensureOnline = require("../../auth/auth-online").ensureOnline;
+const Promo = require("../../models/promos");
 
 var router = express.Router();
 
 router.get("/login", (req, res) => {
-    res.render("pos/login");
+    if (req.user) {
+        res.redirect("/pos");
+    } else {
+        res.render("pos/login")
+    }
 });
 
 router.get("/", Auth2, ensureOnline, (req, res) => {
@@ -102,7 +107,93 @@ router.get("/completed-orders", Auth2, ensureOnline, (req, res) => {
     Order.find({status:"Completed"})
 })
 
+router.get("/apply-promo/oid=:ident", (req, res) => {
+    Promo.find().then((promo) => {
+        Order.findOne({ oid: req.params.ident }).then((order) => {
+            res.render("pos/_partial/apply-promos", { promo: promo, order: order });
+        })
+    })
+})
+
+router.get("/apply-promo/promo-code=:code/oid=:ident", async (req, res) => {
+
+    var promo = await Promo.findOne({ code: req.params.code });
+    var order = await Order.findOne({ oid: req.params.ident });
+
+    promo.criteria.forEach(async crit => {
+        console.log(crit);
+        
+
+        var purch = await Purchased.findOne({ oid: req.params.ident, productName: crit.product, variant: crit.variant });
+        var prod = await Purchased.findOne({ oid: req.params.ident, productNmae: crit.product, variant: crit.code });
+        console.log(purch);
+        console.log("Purchased qty : " + purch.productName);
+        console.log("Needed qty : " + crit.qty);
+        if (prod) {
+            req.flash("error", "Can't add the same promo again, please look for another one!");
+            return res.redirect("/pos/oid=" + req.params.ident);
+        } else if (!prod) {
+            if (crit.qty < purch.qty) {
+
+                console.log("Applying Promotion");
+
+                var newPurch = new Purchased({
+                    oid: purch.oid,
+                    productName: promo.name,
+                    variant: promo.code,
+                    batch: "--",
+                    qty: 1,
+                    unit: "-" + promo.amount,
+                    total: "-" + promo.amount,
+                    createdBy: req.user.full,
+                });
+
+                newPurch.save(async (err, save) => {
+                    if (err) {
+                        console.log(err);
+                        req.flash("error", "An error has occured");
+                        return res.redirect("/pos/oid=" + purch.oid);
+                    }
+
+                    var cal = (order.total * 1) - (promo.amount * 1);
+                    var tot = cal.toFixed(2);
+
+                    order.total = tot;
+
+                    try {
+                        let saveOrder = await order.save();
+                        console.log("Saving Order", saveOrder);
+                        console.log(save);
+                        req.flash("info", "Product Added!");
+                        return res.redirect("/pos/oid=" + req.params.ident);
+                    } catch (e) {
+                        console.log(e);
+                        req.flash("error", "An error has occured");
+                        return res.redirect("/pos/oid=" + req.params.ident);
+                    }
+                })
+
+            } else {
+                req.flash("error", "Promo is not applicable to this purchased!");
+                return res.redirect("/pos/oid=" + req.params.ident);
+
+            }
+        }
+    });
+});
+
 // DATA Processing
+
+router.get("/oid=:ident/paid", Auth2, ensureOnline,  async (req, res) => {
+    var orders = await Order.findOne({ oid: req.params.ident });
+    Order.findOneAndUpdate({ oid: req.params.ident }, { $set: { payment: { paid: true, balance: 0, total: orders.total } } }).then((order) => {
+        res.status(202);
+        console.log(orders);
+        req.flash("info", orders.oid + " is paid!");
+        return res.redirect("/oid=" + orders.oid + "/order-information");
+    })
+
+})
 
 router.get("/oid=:ident/complete", Auth2, ensureOnline, async (req, res) => {
 
@@ -226,28 +317,54 @@ router.post("/oid=:ident/check-out", Auth2, ensureOnline, async (req, res) => {
     var discount = req.body.discount;
     var payment = req.body.payment;
     var notes = req.body.notes;
+    var total = req.body.total;
 
     var order = await Order.findOne({ oid: req.params.ident });
+    var purch = await Purchased.findOne({ oid: req.params.ident });
+    var batch = await Batch.findOne({ batchNo: purch.batch });
 
-    var total = (order.total * 1) + (fee * 1);
+    var cal = (batch.sales * 1) + (total * 1);
+    console.log(cal);
+    var fix = cal.toFixed(2);
+    
 
     var newtotal = Number(total);
+    batch.sales = fix;
     console.log(newtotal)
 
 
     if (payment == "Gcash") {
 
-        Order.updateOne({ oid: req.params.ident }, {$set:{type:payment,courier: courier,deliveryFee: fee,discount: 0,total: newtotal,notes: notes,payment: {paid: true,balance: 0,total: newtotal},status: "Created",}}).then(async (save) => {
-            console.log("Saving Order", save);
-            req.flash("info", "Order Created And Paid");
-            return res.redirect("/pos");
-        })
+        try {
+            let saveBatch = await batch.save();
+            console.log(saveBatch);
+
+            Order.updateOne({ oid: req.params.ident }, { $set: { type: payment, courier: courier, deliveryFee: fee, discount: discount, total: newtotal, notes: notes, payment: { paid: true, balance: 0, total: newtotal }, status: "Created", } }).then(async (save) => {
+                console.log("Saving Order", save);
+                req.flash("info", "Order Created And Paid");
+                return res.redirect("/pos");
+            })
+        } catch (e) {
+            console.log(e);
+            req.flash("error", "An error has occured");
+            return res.redirect("/pos/oid=" + req.params.ident);
+        }
     } else {
-        Order.updateOne({ oid: req.params.ident }, { $set: { type: payment, courier: courier, deliveryFee: fee, discount: 0, total: newtotal, notes: notes, payment: { paid: false, balance: newtotal, total: 0 }, status: "Created", } }).then(async (save) => {
-            console.log("Saving Order", save);
-            req.flash("info", "Order Created And Paid");
-            return res.redirect("/pos");
-        })
+
+        try {
+            let saveBatch = await batch.save();
+            console.log(saveBatch);
+
+
+            Order.updateOne({ oid: req.params.ident }, { $set: { type: payment, courier: courier, deliveryFee: fee, discount: discount, total: newtotal, notes: notes, payment: { paid: false, balance: newtotal, total: 0 }, status: "Created", } }).then(async (save) => {
+                console.log("Saving Order", save);
+                req.flash("info", "Order Created And Paid");
+                return res.redirect("/pos");
+            })
+        } catch (e) {
+            req.flash("error", "An error has occured");
+            return res.redirect("/pos/oid=" + req.params.ident);
+        }
     }
 
 })
@@ -269,7 +386,6 @@ router.get("/oid=:ident/remove-product/pid=:pid", Auth2, ensureOnline, async (re
 
     inventory.qty = addinventory;
     inventory.sold = sold
-    batch.sales = fix1;
     order.total = fix2;
 
 
@@ -277,7 +393,7 @@ router.get("/oid=:ident/remove-product/pid=:pid", Auth2, ensureOnline, async (re
         let saveInv = await inventory.save();
         let saveBatch = await batch.save();
         let saveOrder = await order.save();
-        console.log("Saving Inventory", saveInv, "Saving Batch", saveBatch, "Saving Order", saveOrder);
+        console.log("Saving Inventory", saveInv, "Saving Order", saveOrder);
         Purchased.findByIdAndDelete(purch._id).then(function () {
             res.status(202);
             res.send("Product Removed from cart!");
@@ -343,7 +459,6 @@ router.post("/oid=:ident/add-to-cart=:id", Auth2, ensureOnline, async (req, res)
             purch.qty = add;
             purch.total = fix;
             order.total = fixed;
-            batched.sales = batchFix
 
             try {
                 let saveInt = await inventory.save();
@@ -351,7 +466,7 @@ router.post("/oid=:ident/add-to-cart=:id", Auth2, ensureOnline, async (req, res)
                 let savetotal = await order.save();
                 let saveBatch = await batched.save();
 
-                console.log("Modifying Inventory", saveInt, "Modifying Purchase", savePurch, "Modifying Order", savetotal, "Modifying Batch", saveBatch);
+                console.log("Modifying Inventory", saveInt, "Modifying Purchase", savePurch, "Modifying Order", savetotal);
 
                 res.status(202);
                 res.send(order);
@@ -375,7 +490,6 @@ router.post("/oid=:ident/add-to-cart=:id", Auth2, ensureOnline, async (req, res)
             inventory.qty = minus;
             inventory.sold = sold;
             order.total = (order.total * 1) + (fix * 1);
-            batched.sales = (batched.sales * 1) + (fix * 1);
 
 
             var newPurch = new Purchased({
