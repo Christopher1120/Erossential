@@ -19,7 +19,8 @@ var userSchema = mongoose.Schema({
     role: { type: String, required: false },
     online: {type:String,required:false},
     code: { type: String, required: true },
-    last: {type:String,required:false},
+    last: { type: String, required: false },
+    access: {type:Array,required:false},
 });
 
 

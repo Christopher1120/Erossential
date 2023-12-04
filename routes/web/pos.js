@@ -11,8 +11,11 @@ var passport = require("passport");
 const Inventory = require("../../models/inventory");
 const ensureOnline = require("../../auth/auth-online").ensureOnline;
 const Promo = require("../../models/promos");
+const CheckPOS = require("../../auth/auth-pos").CheckPOS;
 
 var router = express.Router();
+
+
 
 router.get("/login", (req, res) => {
     if (req.user) {
@@ -22,13 +25,13 @@ router.get("/login", (req, res) => {
     }
 });
 
-router.get("/", Auth2, ensureOnline, (req, res) => {
+router.get("/", Auth2, CheckPOS, ensureOnline, (req, res) => {
     Order.find().then((order) => {
         res.render("pos/pos", {order:order});
     });
 })
 
-router.get("/oid=:ident", Auth2, ensureOnline, (req, res) => {
+router.get("/oid=:ident", Auth2, CheckPOS, ensureOnline, (req, res) => {
     Order.findOne({ oid: req.params.ident }).then((order) => {
         Batch.find().then((batch) => { 
             if (!order || !batch) {
@@ -40,13 +43,13 @@ router.get("/oid=:ident", Auth2, ensureOnline, (req, res) => {
     })
 })
 
-router.get("/oid=:ident/assign", Auth2, ensureOnline, (req, res) => {
+router.get("/oid=:ident/assign", Auth2, CheckPOS, ensureOnline, (req, res) => {
     Order.findOne({ oid: req.params.ident }).then((order) => {
         res.render("pos/_partial/register", { order: order });
     })
 })
 
-router.get("/oid=:ident/purchased", Auth2, ensureOnline, (req, res) => {
+router.get("/oid=:ident/purchased", Auth2, CheckPOS, ensureOnline, (req, res) => {
     Purchased.find({ oid: req.params.ident }).then((pur) => {
         Order.findOne({ oid: req.params.ident }).then((order) => {
             res.render("pos/_partial/purchased", { pur: pur, order: order });
@@ -54,7 +57,7 @@ router.get("/oid=:ident/purchased", Auth2, ensureOnline, (req, res) => {
     })
 })
 
-router.get("/oid=:ident/items", Auth2, ensureOnline, (req, res) => {
+router.get("/oid=:ident/items", Auth2, CheckPOS, ensureOnline, (req, res) => {
 
     var batch = req.query.batch;
 
@@ -66,14 +69,14 @@ router.get("/oid=:ident/items", Auth2, ensureOnline, (req, res) => {
     });
 })
 
-router.get("/oid=:ident/add-to-cart=:id", Auth2, ensureOnline, (req, res) => {
+router.get("/oid=:ident/add-to-cart=:id", Auth2, CheckPOS, ensureOnline, (req, res) => {
     Products.findById(req.params.id).then((prod) => {
         res.render("pos/_partial/qty", { prod: prod });
     })
 })
 
 
-router.get("/oid=:ident/order-information", Auth2, ensureOnline, (req, res) => {
+router.get("/oid=:ident/order-information", Auth2, CheckPOS, ensureOnline, (req, res) => {
     Order.findOne({ oid: req.params.ident }).then((order) => {
         Purchased.find({ oid: req.params.ident }).then((purch) => {
             res.render("pos/order-information", { order: order,purch:purch });
@@ -83,7 +86,7 @@ router.get("/oid=:ident/order-information", Auth2, ensureOnline, (req, res) => {
 
 
 
-router.get("/oid=:ident/transfer", Auth2, ensureOnline, (req, res) => {
+router.get("/oid=:ident/transfer", Auth2, CheckPOS, ensureOnline, (req, res) => {
     Order.findOne({ oid: req.params.ident }).then((order) => {
         User.find().then((user) => {
             res.render("pos/_partial/transfer", { order: order, user: user });
@@ -91,19 +94,19 @@ router.get("/oid=:ident/transfer", Auth2, ensureOnline, (req, res) => {
     })
 })
 
-router.get("/assigned-orders", Auth2, ensureOnline, (req, res) => {
+router.get("/assigned-orders", Auth2, CheckPOS, ensureOnline, (req, res) => {
     Order.find({ transferTo: req.user._id }).then((order) => {
         res.render("pos/_partial/assign", { order: order });
     })
 })
 
-router.get("/orderinfo", Auth2, ensureOnline, (req, res) => {
+router.get("/orderinfo", Auth2, CheckPOS, ensureOnline, (req, res) => {
     Order.find().sort({status:-1}).then((order) => {
         res.render("pos/_partial/orderinfo", { order: order });
     })
 })
 
-router.get("/completed-orders", Auth2, ensureOnline, (req, res) => {
+router.get("/completed-orders", Auth2, CheckPOS, ensureOnline, (req, res) => {
     Order.find({status:"Completed"})
 })
 
@@ -126,15 +129,21 @@ router.get("/apply-promo/promo-code=:code/oid=:ident", async (req, res) => {
 
         var purch = await Purchased.findOne({ oid: req.params.ident, productName: crit.product, variant: crit.variant });
         var prod = await Purchased.findOne({ oid: req.params.ident, productNmae: crit.product, variant: crit.code });
-        console.log(purch);
-        console.log("Purchased qty : " + purch.productName);
-        console.log("Needed qty : " + crit.qty);
         if (prod) {
+            console.log(purch);
+            console.log("Purchased qty : " + purch.qty);
+            console.log("Needed qty : " + crit.qty);
             req.flash("error", "Can't add the same promo again, please look for another one!");
             return res.redirect("/pos/oid=" + req.params.ident);
         } else if (!prod) {
+            if (!purch) {
+                req.flash("error", "Criteria not fulfilled!");
+                return res.redirect("/pos/oid=" + req.params.ident);
+            }
             if (crit.qty < purch.qty) {
-
+                console.log(purch);
+                console.log("Purchased qty : " + purch.qty);
+                console.log("Needed qty : " + crit.qty);
                 console.log("Applying Promotion");
 
                 var newPurch = new Purchased({
@@ -184,7 +193,7 @@ router.get("/apply-promo/promo-code=:code/oid=:ident", async (req, res) => {
 
 // DATA Processing
 
-router.get("/oid=:ident/paid", Auth2, ensureOnline,  async (req, res) => {
+router.get("/oid=:ident/paid", Auth2, CheckPOS, ensureOnline,  async (req, res) => {
     var orders = await Order.findOne({ oid: req.params.ident });
     Order.findOneAndUpdate({ oid: req.params.ident }, { $set: { payment: { paid: true, balance: 0, total: orders.total } } }).then((order) => {
         res.status(202);
@@ -195,7 +204,7 @@ router.get("/oid=:ident/paid", Auth2, ensureOnline,  async (req, res) => {
 
 })
 
-router.get("/oid=:ident/complete", Auth2, ensureOnline, async (req, res) => {
+router.get("/oid=:ident/complete", Auth2, CheckPOS, ensureOnline, async (req, res) => {
 
     var order = await Order.findOne({ oid: req.params.ident });
 
@@ -217,7 +226,7 @@ router.get("/oid=:ident/complete", Auth2, ensureOnline, async (req, res) => {
 
 })
 
-router.get("/oid=:ident/ready", Auth2, ensureOnline, async (req, res) => {
+router.get("/oid=:ident/ready", Auth2, CheckPOS, ensureOnline, async (req, res) => {
 
     var order = await Order.findOne({ oid: req.params.ident });
 
@@ -239,7 +248,7 @@ router.get("/oid=:ident/ready", Auth2, ensureOnline, async (req, res) => {
 
 })
 
-router.get("/oid=:ident/delivered", Auth2, ensureOnline, async (req, res) => {
+router.get("/oid=:ident/delivered", Auth2, CheckPOS, ensureOnline, async (req, res) => {
 
     var order = await Order.findOne({ oid: req.params.ident });
 
@@ -261,7 +270,7 @@ router.get("/oid=:ident/delivered", Auth2, ensureOnline, async (req, res) => {
 
 })
 
-router.get("/oid=:ident/completed", Auth2, ensureOnline, async (req, res) => {
+router.get("/oid=:ident/completed", Auth2, CheckPOS, ensureOnline, async (req, res) => {
 
     var order = await Order.findOne({ oid: req.params.ident });
 
@@ -285,7 +294,7 @@ router.get("/oid=:ident/completed", Auth2, ensureOnline, async (req, res) => {
 
 
 
-router.post("/oid=:ident/transfer", Auth2, ensureOnline, async (req, res) => {
+router.post("/oid=:ident/transfer", Auth2, CheckPOS, ensureOnline, async (req, res) => {
     var order = await Order.findOne({ oid: req.params.ident });
     var transfer = req.body.transfer;
 
@@ -308,7 +317,7 @@ router.post("/oid=:ident/transfer", Auth2, ensureOnline, async (req, res) => {
 
 })
 
-router.post("/oid=:ident/check-out", Auth2, ensureOnline, async (req, res) => {
+router.post("/oid=:ident/check-out", Auth2, CheckPOS, ensureOnline, async (req, res) => {
 
 
 
@@ -369,46 +378,70 @@ router.post("/oid=:ident/check-out", Auth2, ensureOnline, async (req, res) => {
 
 })
 
-router.get("/oid=:ident/remove-product/pid=:pid", Auth2, ensureOnline, async (req, res) => {
+router.get("/oid=:ident/remove-product/pid=:pid", Auth2, CheckPOS, ensureOnline, async (req, res) => {
     var order = await Order.findOne({ oid: req.params.ident });
     var purch = await Purchased.findById(req.params.pid);
     var batch = await Batch.findOne({ batchNo: purch.batch });
     var inventory = await Inventory.findOne({ productName: purch.productName, batchNo: purch.batch, variant: purch.variant });
 
+    if (!inventory) {
 
-    var addinventory = (purch.qty * 1) + (inventory.qty * 1);
-    var sold = (inventory.sold * 1) - (purch.qty * 1);
-    var minussales = (batch.sales * 1) - (purch.total * 1);
-    var minusorder = (order.total * 1) - (purch.total * 1);
+        var cal = (order.total * 1) - (purch.total * 1);
+        console.log(cal);
+        var fix = cal.toFixed(2);
+        var abs = Math.abs(fix);
 
-    var fix1 = minussales.toFixed(2);
-    var fix2 = minusorder.toFixed(2);
-
-    inventory.qty = addinventory;
-    inventory.sold = sold
-    order.total = fix2;
+        order.total = abs;
 
 
-    try {
-        let saveInv = await inventory.save();
-        let saveBatch = await batch.save();
-        let saveOrder = await order.save();
-        console.log("Saving Inventory", saveInv, "Saving Order", saveOrder);
-        Purchased.findByIdAndDelete(purch._id).then(function () {
-            res.status(202);
-            res.send("Product Removed from cart!");
-        })
-    } catch (e) {
-        console.log(e);
-        res.status(404);
-        res.send("Internal Error Occured!");
-        return;
+        try {
+            let saveOrder = await order.save();
+            console.log("saveOrder", saveOrder);
+            Purchased.findByIdAndDelete(purch._id).then(function () {
+                res.status(202);
+                res.send("Product Removed from cart!");
+            })
+        } catch (e) {
+            console.log(e);
+            res.send("An error has occured")
+        }
+
+    } else {
+
+
+        var addinventory = (purch.qty * 1) + (inventory.qty * 1);
+        var sold = (inventory.sold * 1) - (purch.qty * 1);
+        var minussales = (batch.sales * 1) - (purch.total * 1);
+        var minusorder = (order.total * 1) - (purch.total * 1);
+
+        var fix1 = minussales.toFixed(2);
+        var fix2 = minusorder.toFixed(2);
+
+        inventory.qty = addinventory;
+        inventory.sold = sold
+        order.total = fix2;
+
+
+        try {
+            let saveInv = await inventory.save();
+            let saveBatch = await batch.save();
+            let saveOrder = await order.save();
+            console.log("Saving Inventory", saveInv, "Saving Order", saveOrder);
+            Purchased.findByIdAndDelete(purch._id).then(function () {
+                res.status(202);
+                res.send("Product Removed from cart!");
+            })
+        } catch (e) {
+            console.log(e);
+            res.status(404);
+            res.send("Internal Error Occured!");
+            return;
+        }
     }
-
 
 })
 
-router.post("/oid=:ident/add-to-cart=:id", Auth2, ensureOnline, async (req, res) => {
+router.post("/oid=:ident/add-to-cart=:id", Auth2, CheckPOS, ensureOnline, async (req, res) => {
     var inventory = await Products.findOne({ _id: req.params.id });
     var order = await Order.findOne({ oid: req.params.ident });
     var batched = await Batch.findOne({ batchNo: inventory.batchNo });
@@ -532,7 +565,7 @@ router.post("/oid=:ident/add-to-cart=:id", Auth2, ensureOnline, async (req, res)
 
 });
 
-router.post("/oid=:ident/search-contact=:contact", Auth2, ensureOnline, (req, res) => {
+router.post("/oid=:ident/search-contact=:contact", Auth2, CheckPOS, ensureOnline, (req, res) => {
 
     var contact = req.params.contact;
     console.log(contact);
@@ -551,7 +584,7 @@ router.post("/oid=:ident/search-contact=:contact", Auth2, ensureOnline, (req, re
 })
 
 
-router.post("/oid=:ident/assign", Auth2, ensureOnline, async (req, res) => {
+router.post("/oid=:ident/assign", Auth2, CheckPOS, ensureOnline, async (req, res) => {
     var type = req.body.type;
     var cx = req.body.cx;
     var street = req.body.street;
@@ -632,7 +665,7 @@ router.post("/login", passport.authenticate("login", {
     failureFlash: true
 }));
 
-router.get("/create-order", Auth2, ensureOnline, (req, res) => {
+router.get("/create-order", Auth2, CheckPOS, ensureOnline, (req, res) => {
 
     var d = new Date();
     d.getUTCFullYear();

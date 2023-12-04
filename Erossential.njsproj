@@ -29,7 +29,11 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="auth\auth-inv.js" />
     <Content Include="auth\auth-online.js" />
+    <Content Include="auth\auth-po.js" />
+    <Content Include="auth\auth-pos.js" />
+    <Content Include="auth\auth-user.js" />
     <Content Include="auth\auth.js" />
     <Content Include="auth\auth2.js" />
     <Content Include="css\0-dummy.css" />
@@ -74,6 +78,7 @@
     <Content Include="views\crm\customers.ejs" />
     <Content Include="views\crm\_partial\cx-info.ejs" />
     <Content Include="views\crm\_partial\cx-record.ejs" />
+    <Content Include="views\errors\401.ejs" />
     <Content Include="views\errors\404.ejs" />
     <Content Include="views\home\activation.ejs" />
     <Content Include="views\home\forgot-code.ejs" />
@@ -113,6 +118,7 @@
     <Content Include="views\schedules\_partial\mymeeting.ejs" />
     <Content Include="views\users\profile.ejs" />
     <Content Include="views\users\users.ejs" />
+    <Content Include="views\users\_partial\access.ejs" />
     <Content Include="views\users\_partial\list.ejs" />
     <Content Include="views\users\_partial\post.ejs" />
     <Content Include="views\users\_partial\roles.ejs" />

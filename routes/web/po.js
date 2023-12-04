@@ -6,12 +6,16 @@ var Batch = require("../../models/batch");
 var fs = require("fs");
 var pdfKit = require("pdfkit");
 const ensureOnline = require("../../auth/auth-online").ensureOnline;
+const CheckPO = require("../../auth/auth-po").CheckPO;
 
 var router = express.Router();
 
 
 router.use(Auth);
 router.use(ensureOnline);
+router.use(CheckPO);
+
+
 
 router.get("/", (req, res) => {
     PON.find().then((po) => {

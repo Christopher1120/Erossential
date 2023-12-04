@@ -17,10 +17,12 @@
 <th></th>
 </tr>
 <% promo.forEach((promo)=>{ %>
+<% if (promo.status == "Active") { %>
 <tr>
 <td><%- promo.name %></td>
 <td><%- promo.code %></td>
 <td><%- promo.amount %></td>
 <td><a href="/pos/apply-promo/promo-code=<%- promo.code %>/oid=<%- order.oid %>"> Apply Promo </td>
 </tr>
+<% } %>
 <% }) %>

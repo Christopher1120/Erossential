@@ -2,12 +2,14 @@ var express = require("express");
 var User = require("../../models/users");
 var Auth = require("../../auth/auth").ensureAuthenticated;
 const ensureOnline = require("../../auth/auth-online").ensureOnline;
+const CheckUser = require("../../auth/auth-user").CheckUser;
 
 var router = express.Router();
 
 
 router.use(Auth);
 router.use(ensureOnline);
+router.use(CheckUser);
 
 
 router.get("/", (req, res) => {
@@ -38,8 +40,40 @@ router.get("/user=:id/profile", (req, res) => {
     })
 })
 
+router.get("/user=:id/assign-access", (req, res) => {
+    User.findById(req.params.id).then((user) => {
+        res.render("users/_partial/access", { user: user });
+    })
+})
 
 // DATA Process
+
+router.post("/user=:id/assign-access", async (req, res) => {
+
+    var pos = Boolean(req.body.pos);
+    var po = Boolean(req.body.po);
+    var inv = Boolean(req.body.inv);
+    var user = Boolean(req.body.user);
+
+    var emp = await User.findById(req.params.id);
+
+    emp.access = [{ 'pos': pos, 'po': po, 'inv': inv, 'user': user }];
+
+    try {
+        let saveEmp = await emp.save();
+        res.status(200);
+        console.log(saveEmp);
+        req.flash("info","Access Distributed!");
+        return res.redirect("/users");
+    } catch (e) {
+        res.status(404);
+        console.log(e);
+        req.flash("error", "An error has occured");
+        return res.redirect("/users");
+    }
+
+
+})
 
 router.post("/user=:id/assign-post", async (req, res) => {
     var post = req.body.post;
@@ -67,6 +101,12 @@ router.post("/user=:id/assign-role", async (req, res) => {
     var user = await User.findById(req.params.id);
 
     user.role = role;
+
+    if (role == "User") {
+        user.access = [{ 'pos': true, 'po': true, 'inv': true, 'users': false }];
+    } else {
+        user.access = [{ 'pos': true, 'po': true, 'inv': true, 'users': true }];
+    }
 
     try {
         let saveUser = await user.save();

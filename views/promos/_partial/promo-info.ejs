@@ -35,4 +35,22 @@
 <td><%- criteria.product %> (<%- criteria.variant %>)</td>
 <th> Quantity </tH>
 <td><%- criteria.qty %></td>
+</tr>
 <% }) %>
+</table>
+
+
+<div class="container">
+<table class="table">
+<tr>
+<th> Order ID </th>
+<th> Batch No </th>
+</tr>
+<% purch.forEach((purch)=>{ %>
+<tr>
+<td><%- purch.oid %></td>
+<td><%- purch.batch %></td>
+</tr>
+<% }) %>
+</table>
+</div>

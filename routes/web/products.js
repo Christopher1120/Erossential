@@ -4,12 +4,27 @@ var Auth = require("../../auth/auth").ensureAuthenticated;
 var PON = require("../../models/pon");
 var PO = require("../../models/po");
 const ensureOnline = require("../../auth/auth-online").ensureOnline;
+const CheckInv = require("../../auth/auth-inv").CheckInv;
 
 var router = express.Router();
 
 
 router.use(Auth);
 router.use(ensureOnline);
+router.use(CheckInv);
+
+router.use(function check(req, res, next) {
+
+    req.user.access.forEach((access) => {
+        if (access.inv == true) {
+            next();
+        } else {
+            res.status(401);
+            res.render("errors/401");
+        }
+    })
+
+})
 
 
 router.get("/", (req, res) => {

@@ -76,14 +76,24 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
             Productivity
           </a>
           <ul class="dropdown-menu">
+          <% currentUser.access.forEach((access)=> {%>
+            <% if (access.inv == true) { %>
             <li><a class="dropdown-item" href="/products">Products</a>
+            <% } %>
+            <% if (access.po == true) { %>
             <li><a class="dropdown-item" href="/purchase-order">PO</a>
+            <% } %>
+            <% if (access.pos == true) { %>
             <li><a class="dropdown-item" href="electron-fiddle://localhost/pos">POS</a>
             <li><hr class="dropdown-divider"></li>
+            <% } %>
+            
+            <% if (access.po == true) { %>
             <li><a class="dropdown-item" href="/purchase-order/end-batch" id="endbatch">End Batch</a>
+            <% } %>
           </ul>
         </li>
-                  <% if (currentUser.role == "Admin") { %>
+        <% if (access.user == true) { %>
         <li class="nav-item">
           <a href="/users" class="nav-link"> Users </a>
         </li>
@@ -91,7 +101,8 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
 
           <a href="/register" class="nav-link" data-bs-toggle="modal" data-bs-target="#Frame" onclick="Click()">Register</a>
         </li>
-          <% } %>
+        <% } %>
+          <% }) %>
       </ul>
        <div class="end">
         <a href="/log-out" class="nav-link" title="Logout"><i class="bi bi-box-arrow-right fs-3"></i> </a>
