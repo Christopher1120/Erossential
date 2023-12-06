@@ -33,6 +33,7 @@
     <Content Include="auth\auth-online.js" />
     <Content Include="auth\auth-po.js" />
     <Content Include="auth\auth-pos.js" />
+    <Content Include="auth\auth-report.js" />
     <Content Include="auth\auth-user.js" />
     <Content Include="auth\auth.js" />
     <Content Include="auth\auth2.js" />
@@ -69,6 +70,7 @@
     <Content Include="routes\web\pos.js" />
     <Content Include="routes\web\products.js" />
     <Content Include="routes\web\promos.js" />
+    <Content Include="routes\web\reports.js" />
     <Content Include="routes\web\schedule.js" />
     <Content Include="routes\web\users.js" />
     <Content Include="server.js" />
@@ -114,6 +116,10 @@
     <Content Include="views\purchased-order\create.ejs" />
     <Content Include="views\purchased-order\purchase.ejs" />
     <Content Include="views\purchased-order\_partial\item-list.ejs" />
+    <Content Include="views\reports\report.ejs" />
+    <Content Include="views\reports\_partial\batch.ejs" />
+    <Content Include="views\reports\_partial\monthly.ejs" />
+    <Content Include="views\reports\_partial\yearly.ejs" />
     <Content Include="views\schedules\schedules.ejs" />
     <Content Include="views\schedules\_partial\mymeeting.ejs" />
     <Content Include="views\users\profile.ejs" />
@@ -140,8 +146,10 @@
     <Folder Include="views\investors\" />
     <Folder Include="views\crm\" />
     <Folder Include="views\errors\" />
+    <Folder Include="views\reports\" />
     <Folder Include="views\promos\" />
     <Folder Include="views\promos\_partial\" />
+    <Folder Include="views\reports\_partial\" />
     <Folder Include="views\users\" />
     <Folder Include="views\schedules\" />
     <Folder Include="views\pos\" />

@@ -1,0 +1,58 @@
+<%- include("../_partials/_header") %>
+<h3> Reports </h3>
+<hr>
+
+<div class="row">
+<div class="col-md-3">
+
+<div class="border " style="height:500px" id="batch">
+
+
+
+</div>
+</div>
+
+<div class="col-md-3">
+
+<div class="border " style="height:500px" id="monthly">
+
+
+
+</div>
+</div>
+
+<div class="col-md-3">
+
+<div class="border " style="height:500px" id="yearly">
+
+
+
+</div>
+</div>
+
+</div>
+
+
+
+<script>
+var xhttp = new XMLHttpRequest();
+xhttp.onload = function() {
+	document.getElementById("batch").innerHTML = this.responseText;
+}
+xhttp.open("GET","/report/batch-sales");
+xhttp.send();
+
+var xhttp = new XMLHttpRequest();
+xhttp.onload = function() {
+	document.getElementById("monthly").innerHTML = this.responseText;
+}
+xhttp.open("GET","/report/monthly-sales");
+xhttp.send();
+
+var xhttp = new XMLHttpRequest();
+xhttp.onload = function() {
+	document.getElementById("yearly").innerHTML = this.responseText;
+}
+xhttp.open("GET","/report/yearly-sales");
+xhttp.send();
+</script>

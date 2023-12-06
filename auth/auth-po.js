@@ -5,7 +5,7 @@ var CheckPO = function CheckPO(req, res, next) {
         res.redirect("/")
     }
     req.user.access.forEach((access) => {
-        if (access.po == true || access.po == null) {
+        if (access.po == true) {
             next();
         } else {
             res.status(401);

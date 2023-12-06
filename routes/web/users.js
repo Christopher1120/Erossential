@@ -54,10 +54,11 @@ router.post("/user=:id/assign-access", async (req, res) => {
     var po = Boolean(req.body.po);
     var inv = Boolean(req.body.inv);
     var user = Boolean(req.body.user);
+    var report = Boolean(req.body.report);
 
     var emp = await User.findById(req.params.id);
 
-    emp.access = [{ 'pos': pos, 'po': po, 'inv': inv, 'user': user }];
+    emp.access = [{ 'pos': pos, 'po': po, 'inv': inv, 'user': user, 'report':report }];
 
     try {
         let saveEmp = await emp.save();

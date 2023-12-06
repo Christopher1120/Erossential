@@ -7,6 +7,7 @@ var fs = require("fs");
 var pdfKit = require("pdfkit");
 const ensureOnline = require("../../auth/auth-online").ensureOnline;
 const CheckPO = require("../../auth/auth-po").CheckPO;
+var Month = require("../../models/monthly-sales");
 
 var router = express.Router();
 
@@ -70,6 +71,14 @@ router.get("/create-po/po=:ident/product=:id", async (req, res) => {
 
 router.get("/end-batch", async (req, res) => {
     var batch = await Batch.findOne({ status: "Active" });
+    var d = new Date(batch.createdOn);
+    const m = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    var year = d.getFullYear();
+
+    var ms = await Month.findOne({ month: m, year: year });
+
+    var month = m[d.getMonth()];
+    console.log(month);
 
     if (!batch) {
         res.status(404);
@@ -82,20 +91,72 @@ router.get("/end-batch", async (req, res) => {
 
         console.log("Net Profit : " + tot);
 
-        batch.profit = tot;
-        batch.status = "Completed";
+        if (!ms) {
+            var newMonth = new Month({
+                month: month,
+                year: year,
+                sales: batch.sales,
+                expenses: batch.expenses,
+                loss: batch.loss,
+                profit: tot
+            });
 
-        try {
-            let saveBatch = await batch.save();
-            console.log("Ending Batch ", saveBatch);
-            res.status(200)
-            res.send("Batch No : " + batch.batchNo + " is now completed!");
-            return;
-        } catch (e) {
-            console.log(e);
-            res.status(501);
-            res.send("An error has occured!");
-            return;
+            batch.profit = tot;
+            batch.status = "Completed";
+
+            newMonth.save(async (err, save) => {
+                if (err) {
+                    res.send("An error occured while creating monthly sales");
+                    return;
+                }
+                console.log(save);
+
+                try {
+                    let saveBatch = await batch.save();
+                    console.log("Ending Batch ", saveBatch);
+                    res.status(200)
+                    res.send("Batch No : " + batch.batchNo + " is now completed!");
+                    return;
+                } catch (e) {
+                    console.log(e);
+                    res.status(501);
+                    res.send("An error has occured!");
+                    return;
+                }
+            })
+        } else {
+
+            var mssales = (ms.sales * 1) + (batch.sales * 1);
+            var msprofit = (ms.profit * 1) + (tot * 1);
+            var msloss = (ms.loss * 1) + (batch.loss * 1);
+            var msexpense = (ms.expenses * 1) + (batch.expenses * 1);
+            var mssFx = mssales.toFixed(2);
+            var mspFx = msprofit.toFixed(2);
+            var mslFx = msloss.toFixed(2);
+            var mseFx = msexpense.toFixed(2);
+
+
+            batch.profit = tot;
+            batch.status = "Completed";
+            ms.sales = mssFx;
+            ms.loss = mspFx;
+            ms.expenses = mseFx;
+            ms.profit = mspFx;
+            ms.loss = mslFx
+
+            try {
+                let saveBatch = await batch.save();
+                let saveMonth = await ms.save();
+                console.log("Ending Batch ", saveBatch, "Modifying Montly Sales " + saveMonth);
+                res.status(200)
+                res.send("Batch No : " + batch.batchNo + " is now completed!");
+                return;
+            } catch (e) {
+                console.log(e);
+                res.status(501);
+                res.send("An error has occured!");
+                return;
+            }
         }
     }
 })
@@ -135,12 +196,19 @@ router.post("/create-po/po=:ident/add-info", async (req, res) => {
 
     if (type == "Inventory") {
 
+        var batch = await Batch.findOne({ batchNo: initial.batchNo });
+
+        var expenses = (batch.expenses * 1) + (total * 1);
+        var batchEx = expenses.toFixed(2);
+
         initial.delivery = fee;
         initial.supplier = supplier;
         initial.total = total;
         initial.orderOn = order;
         initial.receivedOn = received;
         initial.type = type;
+        initial.expenses = batchEx;
+        
 
         try {
             let saveInit = await initial.save();

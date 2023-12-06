@@ -25,6 +25,7 @@ router.use("/crm", require("./crm"));
 router.use("/schedule", require("./schedule"));
 router.use("/users", require("./users"))
 router.use("/promos", require("./promos"));
+router.use("/report", require("./reports"));
 
 
 

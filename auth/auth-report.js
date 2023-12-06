@@ -1,11 +1,11 @@
 
-var CheckInv = function CheckInv(req, res, next) {
+var CheckRep = function CheckRep(req, res, next) {
     if (!req.isAuthenticated()) {
         req.flash("error", "Please sign in again!");
         res.redirect("/")
     }
     req.user.access.forEach((access) => {
-        if (access.inv == true) {
+        if (access.report == true) {
             next();
         } else {
             res.status(401);
@@ -15,4 +15,4 @@ var CheckInv = function CheckInv(req, res, next) {
 };
 
 
-module.exports = { CheckInv: CheckInv }
+module.exports = { CheckRep: CheckRep }

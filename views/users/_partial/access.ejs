@@ -11,7 +11,9 @@
 
 <form class="form-signup" method="POST" action="/users/user=<%- user._id %>/assign-access">
 <label for="POS"><b> POS Access </b></label><br>
-<input class="form-check-input" type="radio" name="pos" id="pos" value="true" >
+<% user.access.forEach((access)=> { %>
+<% if (access.pos == true) { %>
+<input class="form-check-input" type="radio" name="pos" id="pos" value="true" checked>
   <label class="form-check-label" for="pos">
     Grant Access
   </label>
@@ -20,10 +22,33 @@
   <label class="form-check-label" for="pos">
     Deny Access
   </label>
+  <% } else if (access.pos == false ){ %>
+<input class="form-check-input" type="radio" name="pos" id="pos" value="true" >
+  <label class="form-check-label" for="pos">
+    Grant Access
+  </label>
+
+<input class="form-check-input" type="radio" name="pos" id="pos" value="" checked>
+  <label class="form-check-label" for="pos">
+    Deny Access
+  </label>
+  <% } else {%>
+<input class="form-check-input" type="radio" name="pos" id="pos" value="true" >
+  <label class="form-check-label" for="pos">
+    Grant Access
+  </label>
+
+<input class="form-check-input" type="radio" name="pos" id="pos" value="" >
+  <label class="form-check-label" for="pos">
+    Deny Access
+  </label>
+  <% } %>
   <br>
   <br>
+
 <label for="Inventory"> <b> Inventory Access </b> </label></br>
-<input class="form-check-input" type="radio" name="inv" id="inv" value="true" >
+<% if (access.inv == true) { %>
+<input class="form-check-input" type="radio" name="inv" id="inv" value="true" checked>
   <label class="form-check-label" for="inv">
     Grant Access
   </label>
@@ -32,10 +57,32 @@
   <label class="form-check-label" for="inv">
     Deny Access
   </label>
+  <% } else if (access.inv == false ){ %>
+<input class="form-check-input" type="radio" name="inv" id="inv" value="true" >
+  <label class="form-check-label" for="inv">
+    Grant Access
+  </label>
+
+<input class="form-check-input" type="radio" name="inv" id="inv" value="" checked>
+  <label class="form-check-label" for="inv">
+    Deny Access
+  </label>
+  <% } else {%>
+<input class="form-check-input" type="radio" name="inv" id="inv" value="true" >
+  <label class="form-check-label" for="inv">
+    Grant Access
+  </label>
+
+<input class="form-check-input" type="radio" name="inv" id="inv" value="" >
+  <label class="form-check-label" for="inv">
+    Deny Access
+  </label>
+  <% } %>
   <br>
   <br>
 <label for="Inventory"> <b> Purchased Order Access </b> </label></br>
-<input class="form-check-input" type="radio" name="po" id="po" value="true" >
+<% if (access.po == true) { %>
+<input class="form-check-input" type="radio" name="po" id="po" value="true" checked>
   <label class="form-check-label" for="po">
     Grant Access
   </label>
@@ -44,10 +91,32 @@
   <label class="form-check-label" for="po">
     Deny Access
   </label>
+  <% } else if (access.po == false ){ %>
+<input class="form-check-input" type="radio" name="po" id="po" value="true" >
+  <label class="form-check-label" for="po">
+    Grant Access
+  </label>
+
+<input class="form-check-input" type="radio" name="po" id="po" value="" checked>
+  <label class="form-check-label" for="po">
+    Deny Access
+  </label>
+  <% } else {%>
+<input class="form-check-input" type="radio" name="po" id="pos" value="true" >
+  <label class="form-check-label" for="pos">
+    Grant Access
+  </label>
+
+<input class="form-check-input" type="radio" name="po" id="po" value="" >
+  <label class="form-check-label" for="po">
+    Deny Access
+  </label>
+  <% } %>
 <br>
 <br>
 <label for="Inventory"> <b> Users Access </b> </label></br>
-<input class="form-check-input" type="radio" name="user" id="user" value="true" >
+<% if (access.user == true) { %>
+<input class="form-check-input" type="radio" name="user" id="user" value="true" checked>
   <label class="form-check-label" for="user">
     Grant Access
   </label>
@@ -56,7 +125,64 @@
   <label class="form-check-label" for="user">
     Deny Access
   </label>
+  <% } else if (access.user == false ){ %>
+<input class="form-check-input" type="radio" name="user" id="user" value="true" >
+  <label class="form-check-label" for="user">
+    Grant Access
+  </label>
+
+<input class="form-check-input" type="radio" name="user" id="user" value="" checked>
+  <label class="form-check-label" for="user">
+    Deny Access
+  </label>
+  <% } else {%>
+<input class="form-check-input" type="radio" name="user" id="user" value="true" >
+  <label class="form-check-label" for="user">
+    Grant Access
+  </label>
+
+<input class="form-check-input" type="radio" name="user" id="user" value="" >
+  <label class="form-check-label" for="user">
+    Deny Access
+  </label>
+  <% } %>
 <br>
+<br>
+<label for="Inventory"> <b> Reports Access </b> </label></br>
+<% if (access.report == true) { %>
+<input class="form-check-input" type="radio" name="report" id="report" value="true" checked>
+  <label class="form-check-label" for="report">
+    Grant Access
+  </label>
+
+<input class="form-check-input" type="radio" name="report" id="report" value="">
+  <label class="form-check-label" for="report">
+    Deny Access
+  </label>
+  <% } else if (access.report == false ){ %>
+<input class="form-check-input" type="radio" name="report" id="report" value="true" >
+  <label class="form-check-label" for="report">
+    Grant Access
+  </label>
+
+<input class="form-check-input" type="radio" name="report" id="report" value="" checked>
+  <label class="form-check-label" for="report">
+    Deny Access
+  </label>
+  <% } else {%>
+<input class="form-check-input" type="radio" name="report" id="report" value="true" >
+  <label class="form-check-label" for="report">
+    Grant Access
+  </label>
+
+<input class="form-check-input" type="radio" name="report" id="report" value="" >
+  <label class="form-check-label" for="report">
+    Deny Access
+  </label>
+  <% } %>
+  <br>
 <br>
 <button type="submit" class="btn btn-outline-success"> Submit Access</button>
 </form>
+
+<% }) %>

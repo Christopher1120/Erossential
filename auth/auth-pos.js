@@ -5,7 +5,7 @@ var CheckPOS = function CheckPOS(req, res, next) {
         res.redirect("/pos/logim")
     }
     req.user.access.forEach((access) => {
-        if (access.pos == true || access.pos == null) {
+        if (access.pos == true) {
             next();
         } else {
             res.status(401);

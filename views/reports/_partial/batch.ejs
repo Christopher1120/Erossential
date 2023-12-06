@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+
+<table class="table text-center">
+<tr>
+<th> Batch No </th>
+<th> Sales </th>
+<th> Expenses </th>
+<th> Profit </th>
+</tr>
+<% batch.forEach((batch)=>{ %>
+<tr>
+<td><%- batch.batchNo %></td>
+<td><%- batch.sales %></td>
+<td><%- batch.expenses %></td>
+<td><%- batch.profit %></td>
+</tr>
+<% }) %>

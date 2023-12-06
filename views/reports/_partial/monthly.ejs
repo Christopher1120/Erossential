@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+
+<table class="table text-center">
+<tr>
+<th> Month - Year </th>
+<th> Sales </th>
+<th> Expenses </th>
+<th> Profit </th>
+</tr>
+<% monthly.forEach((monthly)=>{ %>
+<tr>
+<td><%- monthly._id.month %></td>
+<td><%- monthly.sales %></td>
+<td><%- monthly.expenses %></td>
+<td><%- monthly.profit %></td>
+</tr>
+<% }) %>
