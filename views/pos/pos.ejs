@@ -105,6 +105,35 @@ function Transac(r) {
 
 }
 
+function Copy(el) {
+    var body = document.body, range, sel;
+    if (document.createRange && window.getSelection) {
+        range = document.createRange();
+        sel = window.getSelection();
+        sel.removeAllRanges();
+        try {
+            range.selectNodeContents(el);
+            sel.addRange(range);
+			navigator.clipboard.writeText(sel);
+        } catch (e) {
+            range.selectNode(el);
+            sel.addRange(range);
+			navigator.clipboard.writeText(sel);
+        }
+    } else if (body.createTextRange) {
+        range = body.createTextRange();
+        range.moveToElementText(el);
+        range.select();
+        document.execCommand("copy");
+		navigator.clipboard.writeText(sel);
+    }
+		var x = document.getElementById("snackbar");
+				x.innerHTML = "Copy to clipboard";
+				x.className = "show";
+				setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+
+}
+
 </script>
 
 <div class="row g-2">
@@ -151,6 +180,24 @@ function Transac(r) {
 </div>
 </div>
 </a>
+
+</div>
+
+<% if (currentUser.role == "Admin") { %>
+<div class="col-auto">
+<a href="#Copy-Sales" class="btn btn-outline-success" onclick="Copy( document.getElementById('orderinfo') );">
+
+<div class="row align-items-center g-1">
+<div class="col-auto">
+<i class="bi bi-clipboard fs-3"></i>
+</div>
+<div class="col-auto">
+<b> Copy </b>
+</div>
+</div>
+</a>
+
+<% } %>
 
 </div>
 

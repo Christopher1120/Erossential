@@ -101,7 +101,7 @@ router.get("/assigned-orders", Auth2, CheckPOS, ensureOnline, (req, res) => {
 })
 
 router.get("/orderinfo", Auth2, CheckPOS, ensureOnline, (req, res) => {
-    Order.find().sort({status:-1}).then((order) => {
+    Order.find().sort({createdOn: -1}).then((order) => {
         res.render("pos/_partial/orderinfo", { order: order });
     })
 })

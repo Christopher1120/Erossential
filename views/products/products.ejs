@@ -7,7 +7,11 @@
 
 <div class="col-md-4">
 <div class="card">
-<div class="card-header"> <b> PRODUCT LIST </b> </div>
+<div class="card-header"> <b> PRODUCT LIST </b> || 
+<% if (currentUser.role == "Admin") { %>
+<a href="#Copy-Inventory" type="button" onclick="Copy( document.getElementById('frame') );"> Copy </a>
+<% } %>
+</div>
 <div class="card-body">
 
 <div id="frame" style="height:500px">
@@ -83,6 +87,35 @@
 
 
 <script>
+
+function Copy(el) {
+    var body = document.body, range, sel;
+    if (document.createRange && window.getSelection) {
+        range = document.createRange();
+        sel = window.getSelection();
+        sel.removeAllRanges();
+        try {
+            range.selectNodeContents(el);
+            sel.addRange(range);
+			navigator.clipboard.writeText(sel);
+        } catch (e) {
+            range.selectNode(el);
+            sel.addRange(range);
+			navigator.clipboard.writeText(sel);
+        }
+    } else if (body.createTextRange) {
+        range = body.createTextRange();
+        range.moveToElementText(el);
+        range.select();
+        document.execCommand("copy");
+		navigator.clipboard.writeText(sel);
+    }
+		var x = document.getElementById("snackbar");
+				x.innerHTML = "Copy to clipboard";
+				x.className = "show";
+				setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+
+}
 
 
 function Choice() {

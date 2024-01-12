@@ -10,7 +10,7 @@
 
 
 
-<table class="table text-center">
+<table class="table text-center" id="orderinfo">
 <tr>
 <th colspan="1"></th>
 <th>Order No.</th>
@@ -42,7 +42,7 @@
 <% } else { %>
 <td><a href="/pos/oid=<%- order.oid %>/order-information"><%- order.oid %></a></td>
 <% } %>
-<td><%- moment(order.createdOn).format("MM/DD/YYYY") %></td>
+<td><%- moment(order.createdOn).format("YYYY-MM-DD") %></td>
 <td>PHP <%- order.total %></td>
 <td><%- order.status %></td>
 <td><%- order.createdBy %></td>
