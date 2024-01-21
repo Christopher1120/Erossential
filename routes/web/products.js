@@ -35,7 +35,7 @@ router.get("/", (req, res) => {
 
 router.get("/product-list", (req, res) => {
     Inventory.find().then((prod) => {
-        res.render("products/_partial/product-list", {prod:prod});
+      res.render("products/_partial/product-list", {prod:prod});
     });
 })
 

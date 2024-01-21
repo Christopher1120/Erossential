@@ -59,6 +59,7 @@
     <Content Include="models\promos.js" />
     <Content Include="models\purchased.js" />
     <Content Include="models\schedules.js" />
+    <Content Include="models\tickets.js" />
     <Content Include="models\users.js" />
     <Content Include="params\params.js" />
     <Content Include="preload.js" />
@@ -66,6 +67,7 @@
     <Content Include="routes\web\home.js" />
     <Content Include="routes\web\index.js" />
     <Content Include="routes\web\investors.js" />
+    <Content Include="routes\web\issue.js" />
     <Content Include="routes\web\po.js" />
     <Content Include="routes\web\pos.js" />
     <Content Include="routes\web\products.js" />
@@ -122,6 +124,10 @@
     <Content Include="views\reports\_partial\yearly.ejs" />
     <Content Include="views\schedules\schedules.ejs" />
     <Content Include="views\schedules\_partial\mymeeting.ejs" />
+    <Content Include="views\tickets\home.ejs" />
+    <Content Include="views\tickets\_partials\create.ejs" />
+    <Content Include="views\tickets\_partials\tickets.ejs" />
+    <Content Include="views\tickets\_partials\view-ticket.ejs" />
     <Content Include="views\users\profile.ejs" />
     <Content Include="views\users\users.ejs" />
     <Content Include="views\users\_partial\access.ejs" />
@@ -146,10 +152,12 @@
     <Folder Include="views\investors\" />
     <Folder Include="views\crm\" />
     <Folder Include="views\errors\" />
+    <Folder Include="views\tickets\" />
     <Folder Include="views\reports\" />
     <Folder Include="views\promos\" />
     <Folder Include="views\promos\_partial\" />
     <Folder Include="views\reports\_partial\" />
+    <Folder Include="views\tickets\_partials\" />
     <Folder Include="views\users\" />
     <Folder Include="views\schedules\" />
     <Folder Include="views\pos\" />

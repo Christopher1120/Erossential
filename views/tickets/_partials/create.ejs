@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+<form class="form-signup" method="POST" action="/issue/create-ticket">
+
+<div class="row align-items-center g-2">
+<div class="col-auto">
+<label><b>Issue : </b></label>
+</div>
+
+<div class="col-auto">
+<input type="text" class="form-control" name="issue" id="issue" placeholder="Issue Experiencing" required>
+</div>
+
+<div class="col-auto">
+<label><b>For :</b></label>
+</div>
+
+<div class="col-auto">
+<input type="text" class="form-control" name="ident" id="ident" placeholder="Employee Id" onkeyup="Search()" required>
+</div>
+
+<div class="col-auto">
+<label><b>Name :</b></label>
+</div>
+
+<div class="col-auto">
+<input type="text" class="form-control" name="name" id="name" readOnly>
+</div>
+
+<div class="col-auto">
+<label><b>Date :</b></label>
+</div>
+
+<div class="col-auto">
+<input type="date" class="form-control" value="<%- moment().format("YYYY-MM-DD") %>" readOnly>
+</div>
+
+</div>
+<br>
+<label><b> Description : </b></label><br><br>
+
+<textarea class="form-control" cols="10" rows="10" name="description" id="description" placeholder="Please elaborate on what's happening" required></textarea><br>
+
+
+<button type="submit" class="btn btn-outline-success"> Create Ticket </button>
+
+</form>

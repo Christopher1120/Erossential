@@ -47,8 +47,8 @@
 <label for="product"><b>Product Name</b></label>
 <select class="form-select" name="product" id="product" onchange="Choice()">
 <option disabled selected> Product Name </option>
-<option value="Roller Blends">Roller Blends</option>
-<option value="Diffuser"> Diffuser </option>
+<option value="roller blends">Roller Blends</option>
+<option value="diffuser"> Diffuser </option>
 </select>
 </div>
 <div class="col-auto">
@@ -219,6 +219,7 @@ function getData(i) {
 		var row5 = rows[i].getElementsByTagName("TD")[4].innerHTML;
 
 		console.log(row1);
+		console.log(row3);
 		$("#batch").val(row1);
 		$("#product").val(row2);
 		$("#variant").val(row3);

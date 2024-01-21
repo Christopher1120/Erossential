@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+
+
+<table class="table text-center">
+<% ticket.forEach((ticket)=> {%>
+<% ticket.createdBy.forEach((user)=> {%>
+<% if (user.name == currentUser.full) {%>
+<tr>
+<td><a href="/issue/view-ticket/<%-ticket.ident%>" onclick="View(this)"><%- ticket.ident %></a></td>
+<td><%- ticket.issue %></td>
+<td><%- ticket.status %></td>
+<% } %>
+<% }) %>
+<% }) %>
