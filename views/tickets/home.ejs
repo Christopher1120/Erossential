@@ -1,0 +1,84 @@
+<%- include("../_partials/_header") %>
+<h3> Issue Tracker </h3>
+<a href="/issue/create-ticket" data-bs-target="modal" data-bs-toggle="modal" onclick="Create(this)" class="btn btn-outline-success" title="Create Ticket"> Create </a>
+<hr>
+
+
+<div class="row">
+<div class="col-md-3">
+
+<div class="card">
+<div class="card-body">
+
+<div id="tickets" style="height:500px">
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+<div class="col-md-7">
+
+<div class="card">
+<div class="card-body">
+
+<div id="details" style="height:500px">
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+
+
+
+<script>
+var xhttp = new XMLHttpRequest();
+xhttp.onload = function() {
+	document.getElementById("tickets").innerHTML = this.responseText;
+}
+xhttp.open("GET", "/issue/view-tickets");
+xhttp.send();
+
+function Create(e) {
+var xhttp = new XMLHttpRequest();
+xhttp.onload = function() {
+	document.getElementById("details").innerHTML = this.responseText;
+}
+xhttp.open("GET", e.href);
+xhttp.send();
+}
+
+function Search() {
+
+	var ident = document.getElementById("ident").value;
+	console.log(ident);
+
+	$.ajax({
+		type:"POST",
+		url:"/issue/search-employee/user=" + ident,
+		success:function(e) {
+			$("#name").val(e.full);
+		},
+		error:function(e) {
+		console.log(e);
+		}
+	})
+
+}
+
+function View(r) {
+	var details = $("#details").html();
+	var xhttp = new XMLHttpRequest;
+	xhttp.onload = function() {
+		$("#details").html(this.responseText);
+	}
+	xhttp.open("GET", r.href);
+	xhttp.send();
+}
+
+</script>

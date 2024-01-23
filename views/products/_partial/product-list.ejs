@@ -18,13 +18,15 @@
 <th> Price </th>
 </tr>
 <% prod.forEach((prod)=>{ %>
-<tr onclick="getData(this)">
-<td style="cursor:pointer"><%- prod.batchNo %></td>
+<% if (prod.qty != 0) { %>
+<tr>
+<td><%- prod.batchNo %></td>
 <td><%- prod.productName %></td>
 <td><%- prod.variant %></td>
 <td><%- prod.qty %></td>
 <td><%- prod.price %></td>
 </tr>
+<% } %>
 <% }) %>
 </table>
 
