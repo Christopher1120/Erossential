@@ -152,6 +152,8 @@ router.post("/search-employee/user=:ident", (req, res) => {
 
     User.findOne({ ident: ident }).then((user) => {
         if (!user) {
+            res.status(404);
+            res.send("No Employee Found with " + ident);
             console.log("No User found");
             return;
         } else if (user) {

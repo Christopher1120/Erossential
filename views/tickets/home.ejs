@@ -71,14 +71,6 @@ function Search() {
 
 }
 
-function View(r) {
-	var details = $("#details").html();
-	var xhttp = new XMLHttpRequest;
-	xhttp.onload = function() {
-		$("#details").html(this.responseText);
-	}
-	xhttp.open("GET", r.href);
-	xhttp.send();
-}
+
 
 </script>
