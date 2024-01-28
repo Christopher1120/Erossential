@@ -3,7 +3,7 @@ var User = require("../../models/users");
 var Orders = require("../../models/orders");
 var Batch = require("../../models/batch");
 var Month = require("../../models/monthly-sales");
-var Inventory = require("../../models/batch");
+var Products = require("../../models/inventory");
 var Auth = require("../../auth/auth").ensureAuthenticated;
 var Online = require("../../auth/auth-online").ensureOnline;
 var Report = require("../../auth/auth-report").CheckRep;
@@ -22,9 +22,27 @@ router.get("/", (req, res) => {
 });
 
 router.get("/batch-sales", (req, res) => {
-    Batch.find().then((batch) => {
+    Batch.aggregate(
+        [
+            {
+                $project: {
+                    _id: 1,
+                    batchNo: 1,
+                    sales: 1,
+                    expenses: 1,
+                    profit: { $subtract: ["$sales", "$expenses"] }
+                }
+            }
+        ]
+    ).then((batch) => {
+        console.log(batch);
         res.render("reports/_partial/batch", { batch: batch });
-    });
+    })
+
+
+   // Batch.find().then((batch) => {
+   //     res.render("reports/_partial/batch", { batch: batch });
+   // });
 })
 
 router.get("/monthly-sales", (req, res) => {
@@ -48,6 +66,29 @@ router.get("/yearly-sales", (req, res) => {
     ).then((yearly) => {
         console.log(yearly);
         res.render("reports/_partial/yearly", { yearly: yearly });
+    })
+})
+
+router.get("/top-selling", (req, res) => {
+    Products.aggregate(
+        [
+            {
+                $group: {
+                    _id: "$variant",
+                    sold: { $sum: "$sold" },
+                }
+            },
+            {
+                $project: {
+                    _id: 1,
+                    sold: 1,
+                    total: {$multiply:["$sold",69]}
+                }
+            }
+        ]
+    ).sort({ sold: -1 }).then((selling) => {
+        console.log(selling);
+        res.render("reports/_partial/top-selling", { selling: selling });
     })
 })
 

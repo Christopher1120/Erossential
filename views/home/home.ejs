@@ -114,8 +114,9 @@ xhttp.open("GET", r.href);
 xhttp.send();
 }
 
-
 $("body").ready(function(e) {
+
+
 
 setInterval(function() {
 var xhttp = new XMLHttpRequest();
@@ -125,6 +126,7 @@ xhttp.onload = function() {
 xhttp.open("GET", "/status");
 xhttp.send();
 console.log("Working")
+
 },1000)
 
 setInterval(function() {

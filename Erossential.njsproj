@@ -19,7 +19,7 @@
     <OutputPath>.</OutputPath>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <ProjectTypeGuids>{3AF33F2E-1136-4D97-BBB7-1795711AC8B8};{349c5851-65df-11da-9384-00065b846f21};{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}</ProjectTypeGuids>
-    <NodejsPort>1337</NodejsPort>
+    <NodejsPort>80</NodejsPort>
     <StartWebBrowser>True</StartWebBrowser>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
@@ -27,6 +27,10 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
     <DebugSymbols>true</DebugSymbols>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Deploy' ">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Deploy\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="auth\auth-inv.js" />
@@ -95,6 +99,7 @@
     <Content Include="views\home\_partial\create-comms.ejs" />
     <Content Include="views\home\_partial\online.ejs" />
     <Content Include="views\home\_partial\register.ejs" />
+    <Content Include="views\reports\_partial\top-selling.ejs" />
     <Content Include="views\investors\investor.ejs" />
     <Content Include="views\investors\investors.ejs" />
     <Content Include="views\pos\create-order.ejs" />

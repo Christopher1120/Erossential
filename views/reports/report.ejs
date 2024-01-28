@@ -30,6 +30,15 @@
 </div>
 </div>
 
+<div class="col-md-3">
+
+<div class="border " style="height:500px" id="selling">
+
+
+
+</div>
+</div>
+
 </div>
 
 
@@ -55,4 +64,12 @@ xhttp.onload = function() {
 }
 xhttp.open("GET","/report/yearly-sales");
 xhttp.send();
+
+var xhttp = new XMLHttpRequest();
+xhttp.onload = function() {
+    document.getElementById("selling").innerHTML = this.responseText;
+}
+xhttp.open("GET", "/report/top-selling");
+xhttp.send();
+console.log("Working")
 </script>

@@ -207,12 +207,13 @@ router.post("/create-po/po=:ident/add-info", async (req, res) => {
         initial.orderOn = order;
         initial.receivedOn = received;
         initial.type = type;
-        initial.expenses = batchEx;
+        batch.expenses = batchEx;
         
 
         try {
             let saveInit = await initial.save();
-            console.log("Adding Delivery Fee", saveInit);
+            let saveBatch = await batch.save();
+            console.log("Adding Delivery Fee", saveInit, "Adding Expenses", saveBatch);
             res.status(200);
             res.redirect("/purchase-order/create-invoice/" + initial.purchNo);
             return;

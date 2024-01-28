@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+        <script src="https://cdn.ckeditor.com/4.19.0/standard-all/ckeditor.js"></script>
+        <script src="https://cdn.ckeditor.com/ckeditor5/27.1.0/classic/ckeditor.js"></script>
+        </head>
+
+<body>
+
+
+<table class="table text-center">
+<tr>
+<th>Name</th>
+<th>Sold</th>
+<th>Total</th>
+</tr>
+<% selling.forEach((selling)=>{ %>
+<tr>
+<td><%- selling._id %></td>
+<td><%- selling.sold %></td>
+<td>PHP <%- selling.total %></td>
+</tr>
+<% }) %>
+</table>
+

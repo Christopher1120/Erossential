@@ -3,6 +3,7 @@ var User = require("../../models/users");
 var nodemailer = require("nodemailer");
 var passport = require("passport");
 var Batch = require("../../models/batch");
+var Products = require("../../models/inventory");
 const ensureAuthenticated = require("../../auth/auth").ensureAuthenticated;
 const ensureOnline = require("../../auth/auth-online").ensureOnline;
 var Comms = require("../../models/comms");

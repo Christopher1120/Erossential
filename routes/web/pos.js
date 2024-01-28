@@ -140,7 +140,7 @@ router.get("/apply-promo/promo-code=:code/oid=:ident", async (req, res) => {
                 req.flash("error", "Criteria not fulfilled!");
                 return res.redirect("/pos/oid=" + req.params.ident);
             }
-            if (crit.qty < purch.qty) {
+            if (purch.qty >= crit.qty) {
                 console.log(purch);
                 console.log("Purchased qty : " + purch.qty);
                 console.log("Needed qty : " + crit.qty);

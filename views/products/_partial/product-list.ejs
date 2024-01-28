@@ -16,17 +16,17 @@
 <th> Variant</th>
 <th> Qty </th>
 <th> Price </th>
+<th> Sold </th>
 </tr>
 <% prod.forEach((prod)=>{ %>
-<% if (prod.qty != 0) { %>
 <tr>
 <td><%- prod.batchNo %></td>
 <td><%- prod.productName %></td>
 <td><%- prod.variant %></td>
 <td><%- prod.qty %></td>
 <td><%- prod.price %></td>
+<td><%- prod.sold %></td>
 </tr>
-<% } %>
 <% }) %>
 </table>
 

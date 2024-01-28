@@ -10,10 +10,20 @@
 
 
 <table class="table text-center">
+<tr>
+<th></th>
+<th>Name</th>
+<th>Qty</th>
+<th>Variant</th>
+<th>Price</th>
 <% prod.forEach((prod)=> { %>
+<% if (prod.qty != "0") { %>
+<tr>
 <td><a href="/pos/oid=<%- order.oid %>/add-to-cart=<%- prod._id %>" data-bs-toggle="modal" data-bs-target="#Frame" onclick="Click(this)"><i class="bi bi-plus-circle"></i></a></td>
 <td><%- prod.productName %></td>
+<td><%- prod.qty %></td>
 <td><%- prod.variant %></td>
-<td><%- prod.price %></tD>
+<td>PHP <%- prod.price %></td>
+<% } %>
 </tr>
 <% }) %>

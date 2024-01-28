@@ -165,13 +165,20 @@ router.post("/add-products", (req, res) => {
                 return
             }
             else {
+
+                if (prod1 == "roller blends") {
+                    var initial = "RB-" + prod2;
+                } else {
+                    var initial = "DF-" + prod2;
+                }
+
                 var newProd = new Inventory({
                     batchNo: batch,
                     productName: prod1,
                     qty: qty,
                     price: fix,
                     sold: 0,
-                    variant:prod2
+                    variant:initial
                 });
 
                 var cal = (po.inventory * 1) - (qty * 1);

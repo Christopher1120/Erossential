@@ -94,6 +94,7 @@ $(document).on('submit', "#setQty", function(event) {
                     $("#purchases").html(this.responseText);
                     $("#total").val(e.total);
                     $("#totalofall").val(e.total);
+                    $("#qty").val("0");
                 };
                 xhttp.open("GET", "/pos/oid=<%- order.oid %>/purchased");
                 xhttp.send();
@@ -126,6 +127,16 @@ function Promo(r) {
     xhttp.open("GET", r.href);
     xhttp.send();
 }
+
+function CloseQty() {
+    var modal = document.getElementById("Frame");
+    var qty = document.getElementById("qty");
+
+    document.getElementById("qtycls").click();
+    
+
+}
+
 </script>
 
 <% if (order.assigned == false) { %>
@@ -188,6 +199,9 @@ function SearchContact() {
         }
     })
 }
+
+
+
 </script>
 
 <button type="button" style="display:none" data-bs-toggle="modal" data-bs-target="#Frame" id="btn">Toggle</button>
@@ -221,7 +235,7 @@ function SearchContact() {
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="staticBackdropLabel">Promotions Selector</h1>
-        <button type="button" id="cls" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>rs
+        <button type="button" id="cls" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
         <div id="promo">
@@ -372,7 +386,7 @@ function SearchContact() {
     <div class="modal-content">
       <div class="modal-header">
         <h1 class="modal-title fs-5" id="staticBackdropLabel">EROSSENTIAL POINT-OF-SALES</h1>
-        <button type="button" id="cls" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" id="qtycls" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
 
@@ -385,7 +399,7 @@ function SearchContact() {
             <input type="number" min="0" class="form-control" name="qty" id="qty">
             </div>
             <div class="col-auto">
-            <button type="submit" class="btn btn-outline-success"> Set Quantity </button> 
+            <button type="submit" class="btn btn-outline-success" id="setQty" onclick="CloseQty()"> Set Quantity </button> 
             </div>
             </div>
 
