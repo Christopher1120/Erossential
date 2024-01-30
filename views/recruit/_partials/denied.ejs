@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+<table class="table">
+<% user.forEach((user)=>{ %>
+<tr>
+<td><i class="bi bi-person-circle"></i></td>
+<td><%- user.full %></td>
+<td><%- user.contact %></td>
+<td><a href="/recruit/reset/applicant=<%- user._id %>" data-bs-toggle="modal" data-bs-target="modal" onclick="Click(this)">Reset</a></td>
+</tr>
+<% }) %>

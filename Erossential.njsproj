@@ -51,6 +51,7 @@
     <Content Include="images\user.jpg" />
     <Content Include="images\user.png" />
     <Content Include="main.js" />
+    <Content Include="models\applicant.js" />
     <Content Include="models\batch.js" />
     <Content Include="models\comms.js" />
     <Content Include="models\customers.js" />
@@ -76,6 +77,7 @@
     <Content Include="routes\web\pos.js" />
     <Content Include="routes\web\products.js" />
     <Content Include="routes\web\promos.js" />
+    <Content Include="routes\web\recruit.js" />
     <Content Include="routes\web\reports.js" />
     <Content Include="routes\web\schedule.js" />
     <Content Include="routes\web\users.js" />
@@ -99,6 +101,14 @@
     <Content Include="views\home\_partial\create-comms.ejs" />
     <Content Include="views\home\_partial\online.ejs" />
     <Content Include="views\home\_partial\register.ejs" />
+    <Content Include="views\recruit\home.ejs" />
+    <Content Include="views\recruit\_partials\applicant.ejs" />
+    <Content Include="views\recruit\_partials\create-offer.ejs" />
+    <Content Include="views\recruit\_partials\denied.ejs" />
+    <Content Include="views\recruit\_partials\interviews.ejs" />
+    <Content Include="views\recruit\_partials\job-offer.ejs" />
+    <Content Include="views\recruit\_partials\view.ejs" />
+    <Content Include="views\reports\_partial\orders.ejs" />
     <Content Include="views\reports\_partial\top-selling.ejs" />
     <Content Include="views\investors\investor.ejs" />
     <Content Include="views\investors\investors.ejs" />
@@ -157,6 +167,8 @@
     <Folder Include="views\investors\" />
     <Folder Include="views\crm\" />
     <Folder Include="views\errors\" />
+    <Folder Include="views\recruit\" />
+    <Folder Include="views\recruit\_partials\" />
     <Folder Include="views\tickets\" />
     <Folder Include="views\reports\" />
     <Folder Include="views\promos\" />

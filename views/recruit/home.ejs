@@ -1,0 +1,174 @@
+<%- include("../_partials/_header") %>
+<h3> Recruitment </h3>
+<hr>
+
+<div class="row">
+
+<div class="col-md-4">
+
+<div class="card">
+<div class="card-header align-middle"><b> Applicants </b></div>
+<div class="card-body">
+
+<div style="height:250px" id="applicants">
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<div class="card">
+<div class="card-header"><b> Interviews </b></div>
+<div class="card-body">
+
+<div style="height:250px" id="interviews">
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+<div class="col-md-4">
+
+<div class="card">
+<div class="card-header"><b> Job Offer </b></div>
+<div class="card-body">
+
+<div style="height:250px" id="offer">
+
+</div>
+
+</div>
+</div>
+
+</div>
+
+
+<div class="modal fade l" id="View" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-l">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Recruitment Management</h1>
+        <button type="button" id="cls" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="frame">
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button"  id="close" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+
+
+function Get(r) {
+var xhttp = new XMLHttpRequest;
+xhttp.onload = function() {
+	document.getElementById("frame").innerHTML = this.responseText;
+}
+xhttp.open("GET", r.href);
+xhttp.send();
+}
+
+function Click(r) {
+	$.ajax({
+		type:"GET",
+		url:r.href,
+		success:function(e) {
+			var x = document.getElementById("snackbar");
+				x.innerHTML = e;
+				x.className = "show";
+				setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+				console.log(e);
+		},
+		error:function(e) {
+		var x = document.getElementById("snackbar");
+				x.innerHTML = e.responseText;
+				x.className = "show";
+				setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+				console.log(e);
+		}
+	})
+}
+
+
+var xhttp = new XMLHttpRequest;
+xhttp.onload = function() {
+	document.getElementById("applicants").innerHTML = this.responseText;
+}
+xhttp.open("GET", "/recruit/applicant");
+xhttp.send();
+
+var xhttp = new XMLHttpRequest;
+xhttp.onload = function() {
+	document.getElementById("offer").innerHTML = this.responseText;
+}
+xhttp.open("GET", "/recruit/job-offer");
+xhttp.send();
+
+var xhttp = new XMLHttpRequest;
+xhttp.onload = function() {
+	document.getElementById("denied").innerHTML = this.responseText;
+}
+xhttp.open("GET", "/recruit/denied");
+xhttp.send();
+
+var xhttp = new XMLHttpRequest;
+xhttp.onload = function() {
+	document.getElementById("interviews").innerHTML = this.responseText;
+}
+xhttp.open("GET", "/recruit/interviews");
+xhttp.send();
+
+$("#body").ready(function() {
+
+setInterval(function() { 
+var xhttp = new XMLHttpRequest;
+xhttp.onload = function() {
+	document.getElementById("applicants").innerHTML = this.responseText;
+}
+xhttp.open("GET", "/recruit/applicant");
+xhttp.send();
+
+
+}, 1000)
+
+setInterval(function() { 
+var xhttp = new XMLHttpRequest;
+xhttp.onload = function() {
+	document.getElementById("interviews").innerHTML = this.responseText;
+}
+xhttp.open("GET", "/recruit/interviews");
+xhttp.send();
+
+
+}, 1000)
+
+setInterval(function() { 
+var xhttp = new XMLHttpRequest;
+xhttp.onload = function() {
+	document.getElementById("offer").innerHTML = this.responseText;
+}
+xhttp.open("GET", "/recruit/job-offer");
+xhttp.send();
+
+
+}, 1000)
+
+})
+
+</script>

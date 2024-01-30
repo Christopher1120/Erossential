@@ -14,7 +14,7 @@ var router = express.Router();
 
 
 router.get("/", (req, res) => {
-    if (req.user) {
+    if (req.user && req.user.status == "Active" ) {
         res.redirect("/home");
     } else {
         res.render("home/login");
@@ -244,29 +244,6 @@ router.post("/verify-user", (req, res) => {
 })
 
 
-router.post("/activation", ensureAuthenticated, ensureOnline, (req, res) => {
-    var code = req.body.code;
-
-    User.findOne({ ident: req.user.ident }).then((user) => {
-        if (code == user.code) {
-                console.log("Authenticated!");
-
-                User.findOneAndUpdate({ ident: req.user.ident }, { $set: { status: "Active" } }).then((scc) => {
-                    console.log(scc);
-                    return res.redirect("/home");
-                })
-
-
-        } else {
-            console.log("Not valid!");
-            req.flash("error", "Invalid activation code");
-            return res.redirect("/activation");
-        }
-    })
-
-})
-
-
 router.post("/login", passport.authenticate("login", {
     successRedirect: "/authentication",
     failureRedirect: "/",
@@ -274,14 +251,13 @@ router.post("/login", passport.authenticate("login", {
 }));
 
 router.get("/authentication", (req, res) => {
-    if (req.user.status == "Pending") {
-        return res.redirect("/activation");
+    if (req.user.status != "Active") {
+        req.flash("error", "Account is not active!");
+        return res.redirect("/");
     } else {
         return res.redirect("/home");
     }
 })
-
-
 
 router.post("/register", (req, res) => {
     var first = req.body.first;
@@ -289,9 +265,6 @@ router.post("/register", (req, res) => {
     var email = req.body.email;
     var contact = req.body.contact;
     var full = first + " " + last
-
-    var Confirmation = Math.floor(Math.random() * 20000);
-    console.log(Confirmation);
 
     User.count().then((count) => {
         if (count < 10) {
@@ -319,8 +292,7 @@ router.post("/register", (req, res) => {
             password: "Erossential19.",
             contact: contact,
             email: email,
-            status: "Pending",
-            code: Confirmation,
+            status: "Applicant",
         })
 
         newUser.save((err, save) => {
@@ -330,38 +302,12 @@ router.post("/register", (req, res) => {
                 return res.redirect("/home");
             }
 
-            
+            console.log(save);
+            req.flash("info", "Person is now on recruitment stage");
+            return res.redirect("/home");
 
-            var transporter = nodemailer.createTransport({
-                service: 'gmail',
-                auth: {
-                    user: 'ccruz0000.erossential@gmail.com',
-                    pass: 'lzncproizaqwoufw'
-                }
-            });
-
-            const mailOptions = {
-                from: "ccruz0000.erossential@gmail.com",
-                to: email,
-                subject: "Account Activation from Erossential System",
-                html: "Awesome Day " + full + "," + "<br><br>Username : " + username +"<br><br>Your Account Activation Code is : " + Confirmation +"<br><br> " + "<br>Regards</br>" + "<br>Erossential</br>"
-            }
-
-            transporter.sendMail(mailOptions, (err, success) => {
-                if (err) {
-                    req.flash("error", "An error has occured");
-                    console.log(err);
-                    return res.redirect("/home");
-                } else {
-                    console.log(success.response);
-                    req.flash("info", "Account Registered!");
-                    return res.redirect("/home");
-                }
-
-            })
-
-        })
-    })
+        });
+    });
 });
 
 

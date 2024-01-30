@@ -96,8 +96,20 @@ src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
           </ul>
         </li>
         <% if (access.user == true) { %>
-        <li class="nav-item">
-          <a href="/users" class="nav-link"> Users </a>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Employees
+          </a>
+          <ul class="dropdown-menu">
+          <% currentUser.access.forEach((access)=> {%>
+            <% if (access.user == true) { %>
+            <li><a class="dropdown-item" href="/users">Users</a>
+            <% } %>
+            <% if (access.user == true) { %>
+            <li><a class="dropdown-item" href="/Recruit">Recruit</a>
+            <% } %>
+            <% }) %>
+          </ul>
         </li>
         <li class="nav-item">
 

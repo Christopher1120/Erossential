@@ -1,6 +1,6 @@
 var express = require("express");
 var User = require("../../models/users");
-var Orders = require("../../models/orders");
+var Orders = require("../../models/purchased");
 var Batch = require("../../models/batch");
 var Month = require("../../models/monthly-sales");
 var Products = require("../../models/inventory");
@@ -82,13 +82,19 @@ router.get("/top-selling", (req, res) => {
                 $project: {
                     _id: 1,
                     sold: 1,
-                    total: {$multiply:["$sold",69]}
+                    total: {$multiply:["$sold","$price"]}
                 }
             }
         ]
     ).sort({ sold: -1 }).then((selling) => {
         console.log(selling);
         res.render("reports/_partial/top-selling", { selling: selling });
+    })
+})
+
+router.get("/top-selling-products-all", (req, res) => {
+    Orders.find().then((orders) => {
+        res.render("reports/_partial/orders", { orders: orders });
     })
 })
 

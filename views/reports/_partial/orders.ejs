@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+        <script src="https://cdn.ckeditor.com/4.19.0/standard-all/ckeditor.js"></script>
+        <script src="https://cdn.ckeditor.com/ckeditor5/27.1.0/classic/ckeditor.js"></script>
+        </head>
+
+<body>
+
+
+
+<table class="table text-center">
+<% orders.forEach((orders)=>{ %>
+<tr>
+<td><%- orders.productName %></td>
+<td><%- orders.variant %></td>
+<td><%- orders.qty %></td>
+<td><%- moment(orders.createdOn).format("YYYY-MM-DD") %></td>
+</tr>
+<% }) %>
+</table>
