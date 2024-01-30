@@ -11,6 +11,7 @@
 
 <table class="table align-middle">
 <% user.forEach((user)=>{ %>
+<% if (user.status == "Active") { %>
 <tr>
 <td>
 <% if (user.online != "Online") { %>
@@ -29,4 +30,5 @@
 <td><%- user.full %><article class="text-secondary"><%- moment(user.last).fromNow() %></td>
 <% } %>
 </tr>
+<% } %>
 <% }) %>

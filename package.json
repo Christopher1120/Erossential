@@ -1,7 +1,7 @@
 {
-  "name": "ebm",
+  "name": "erossential",
   "version": "1.0.31",
-  "description": "ebm",
+  "description": "erossential",
   "main": "main.js",
   "author": "Christopher Cruz",
   "respository": {
@@ -31,6 +31,7 @@
     "init": "^0.1.2",
     "moment": "^2.29.4",
     "mongoose": "^6.7.0",
+    "multer": "^1.4.5-lts.1",
     "node": "^21.2.0",
     "nodemailer": "^6.9.7",
     "nodemon": "^3.0.1",
@@ -47,9 +48,9 @@
     "build:publish": "electron-builder --win --publish always"
   },
   "build": {
-    "appId": "com.ebm.app",
-    "productName": "Erossential Business Management",
-    "buildNumber": "2",
+    "appId": "com.erossential.app",
+    "productName": "Erossential",
+    "buildNumber": "1",
     "win": {
       "target": "NSIS",
       "icon": "images/app.png",

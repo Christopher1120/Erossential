@@ -179,9 +179,46 @@
   <label class="form-check-label" for="report">
     Deny Access
   </label>
+
+
   <% } %>
   <br>
 <br>
+
+<label for="Inventory"> <b> Files Access </b> </label></br>
+<% if (access.file == true) { %>
+<input class="form-check-input" type="radio" name="files" id="files" value="true" checked>
+  <label class="form-check-label" for="files">
+    Grant Access
+  </label>
+
+<input class="form-check-input" type="radio" name="files" id="files" value="">
+  <label class="form-check-label" for="files">
+    Deny Access
+  </label>
+  <% } else if (access.file == false ){ %>
+<input class="form-check-input" type="radio" name="files" id="files" value="true" >
+  <label class="form-check-label" for="files">
+    Grant Access
+  </label>
+
+<input class="form-check-input" type="radio" name="files" id="files" value="" checked>
+  <label class="form-check-label" for="files">
+    Deny Access
+  </label>
+  <% } else {%>
+<input class="form-check-input" type="radio" name="files" id="files" value="true" >
+  <label class="form-check-label" for="files">
+    Grant Access
+  </label>
+
+<input class="form-check-input" type="radio" name="files" id="files" value="" >
+  <label class="form-check-label" for="files">
+    Deny Access
+  </label>
+  <% } %>
+  <br>
+  <br>
 <button type="submit" class="btn btn-outline-success"> Submit Access</button>
 </form>
 

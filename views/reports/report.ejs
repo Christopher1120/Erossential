@@ -1,6 +1,22 @@
 <%- include("../_partials/_header") %>
 <h3> Reports </h3>
+<% if (currentUser.role == "Admin") { %>
+<a href="#Copy-Sold-Items" class="btn btn-outline-success"  type="button" onclick="Copy( document.getElementById('allsolds') );"> Copy Raw Report </a>
+<% } %>
 <hr>
+
+<div id="sold" style="display:none">
+
+<div id="allsolds">
+
+
+
+
+</div>
+
+</div>
+
+<div id="reports">
 
 <div class="row">
 <div class="col-md-3">
@@ -41,9 +57,19 @@
 
 </div>
 
+</div>
+
 
 
 <script>
+
+var xhttp = new XMLHttpRequest();
+xhttp.onload = function() {
+	document.getElementById("allsolds").innerHTML = this.responseText;
+}
+xhttp.open("GET","/report/top-selling-products-all");
+xhttp.send();
+
 var xhttp = new XMLHttpRequest();
 xhttp.onload = function() {
 	document.getElementById("batch").innerHTML = this.responseText;
@@ -72,4 +98,40 @@ xhttp.onload = function() {
 xhttp.open("GET", "/report/top-selling");
 xhttp.send();
 console.log("Working")
+
+
+
+function Copy(el) {
+	document.getElementById("sold").style.display = "block";
+	document.getElementById("reports").style.display = "none";
+    var body = document.body, range, sel;
+    if (document.createRange && window.getSelection) {
+        range = document.createRange();
+        sel = window.getSelection();
+        sel.removeAllRanges();
+        try {
+            range.selectNodeContents(el);
+            sel.addRange(range);
+			navigator.clipboard.writeText(sel);
+        } catch (e) {
+            range.selectNode(el);
+            sel.addRange(range);
+			navigator.clipboard.writeText(sel);
+        }
+    } else if (body.createTextRange) {
+        range = body.createTextRange();
+        range.moveToElementText(el);
+        range.select();
+        document.execCommand("copy");
+		navigator.clipboard.writeText(sel);
+    }
+		var x = document.getElementById("snackbar");
+				x.innerHTML = "Copy to clipboard";
+				x.className = "show";
+				setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+		document.getElementById("sold").style.display = "none";
+		document.getElementById("reports").style.display = "block";
+
+}
+
 </script>

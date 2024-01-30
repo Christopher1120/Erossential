@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+
+<form class="form-signup" method="POST" action="/recruit/view-applicant/applicant=<%- user._id %>">
+<label for="type"><b> Interview Type : </b></label>
+<select class="form-select" id="type" name="type">
+<% if (applicant.type == "Initial Interview") { %> 
+<option value="Initial Interview" selected>Initial Interview</option>
+<option value="Final Interview">Final Interview</option>
+<% } else if (applicant.type == "Final Interview") { %>
+<option value="Final Interview" selected>Final Interview</option>
+<% } else {%>
+<option value="<%- applicant.type %>"><%- applicant.type %></option>
+<% } %>
+</select>
+<label for="attempts"><b>Call Attempts</b></label>
+<select class="form-select" id="attempts" name="attempts">
+<% if (applicant.attempts == null) { %>
+
+<option selected disabled>Call Attempts </option>
+<option value="Answered">Call Answered</option>
+<option value="1st">1st Attempt</option>
+<option value="2nd">2nd Attempt</option>
+<option value="3rd">3rd Attempt</option>
+
+<% } else if (applicant.attempts == "1st") { %>
+
+<option selected disabled>Call Attempts </option>
+<option value="Answered">Call Answered</option>
+<option value="1st" selected>1st Attempt</option>
+<option value="2nd">2nd Attempt</option>
+<option value="3rd">3rd Attempt</option>
+
+<% } else if (applicant.attempts == "2nd") { %>
+
+<option selected disabled>Call Attempts </option>
+<option value="Answered">Call Answered</option>
+<option value="1st">1st Attempt</option>
+<option value="2nd" selected>2nd Attempt</option>
+<option value="3rd">3rd Attempt</option>
+
+<% } else if (applicant.attempts == "3rd") { %>
+
+<option selected disabled>Call Attempts </option>
+<option value="Answered">Call Answered</option>
+<option value="1st">1st Attempt</option>
+<option value="2nd">2nd Attempt</option>
+<option value="3rd" selected>3rd Attempt</option>
+
+<% } else if (applicant.attempts == "Answered") { %>
+
+<option selected disabled>Call Attempts </option>
+<option value="Answered" selected>Call Answered</option>
+<option value="1st">1st Attempt</option>
+<option value="2nd">2nd Attempt</option>
+<option value="3rd">3rd Attempt</option>
+
+<% } %>
+</select>
+<% if (applicant.type == "Final Interview") { %>
+<label for="score"><b> Score : </b></label>
+<select class="form-select" id="score" name="score">
+<option disabled selected> Interview Score</option>
+<option value="Passed">Passed</option>
+<option value="Failed">Failed</option>
+<% } %>
+</select>
+
+<label for="notes"><b>Notes</b></label>
+<textarea class="form-control" id="notes" name="notes" cols="5" rows="5" placeholder="Interview Notes"><% if (applicant.note != null) { %><%- applicant.note %><% } %>
+</textarea>
+
+<br>
+<button type="submit" class="btn btn-outline-success">Submit</button>
+</form>
