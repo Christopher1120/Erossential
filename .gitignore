@@ -11,6 +11,7 @@
 *.sln.docstates
 dist
 *.exe
+*contracts
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -366,3 +367,4 @@ FodyWeavers.xsd
 /package.json
 /invoices/23-0000.pdf
 /invoices/23-0002.pdf
+/invoices/23-0001.pdf
