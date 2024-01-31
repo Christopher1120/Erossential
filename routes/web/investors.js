@@ -7,7 +7,7 @@ var multer = require("multer");
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, '/contracts')
+        cb(null, './contracts')
     },
     filename: function (req, file, cb) {
         let ext = file.originalname.substring(file.originalname.lastIndexOf('.'), file.originalname.length);
