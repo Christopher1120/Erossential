@@ -53,6 +53,7 @@ app.set("views", path.join(__dirname, "views"));
 app.use("/scripts", express.static(path.resolve(__dirname, "scripts")));
 app.use("/css", express.static(path.resolve(__dirname, "css")));
 app.use("/images", express.static(path.resolve(__dirname, "images")));
+app.use("/contracts", express.static(path.resolve(__dirname, "contracts")));
 app.use("/invoices", express.static(path.resolve(__dirname, "invoices")));
 
 app.listen(app.get("port"), function (req, res) {

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+
+<div class="row align-items-center">
+<div class="col-auto">
+<label for="first"><b>First Name : </b></label>
+<input type="text" class="form-control" value="<%- investor.firstName %>" readOnly>
+</div>
+<div class="col-auto">
+<label for="last"><b>Last Name : </b></label>
+<input type="text" class="form-control" value="<%- investor.lastName %>" readOnly>
+</div>
+</div>
+<div class="row align-items-center">
+<div class="col-auto">
+<label for="contact"><b>Contact Number : </b></label>
+<input type="text" class="form-control" value="<%- investor.contact %>" readOnly>
+</div>
+<div class="col-auto">
+<label for="email"><b>Email Address : </b></label>
+<input type="text" class="form-control" value="<%- investor.email %>" readOnly>
+</div>
+</div>
+<div class="row align-items-center">
+<div class="col-auto">
+<label for="invested"><b>Amount Invested : </b></label>
+<input type="text" class="form-control" value="<%- investor.amount %>" readOnly>
+</div>
+<div class="col-auto">
+<label for="partner"><b>Signed Partner : </b></label>
+<input type="text" class="form-control" value="<%- investor.spartner %>" readOnly>
+</div>
+</div>
+<div class="row align-items-center">
+<div class="col-md-6">
+<label for="start"><b>Start Date : </b></label>
+<input type="date" class="form-control" value="<%- moment(investor.start).format("YYYY-MM-DD") %>" readOnly>
+</div>
+<div class="col-md-6">
+<label for="end"><b>End Date : </b></label>
+<input type="date" class="form-control" value="<%- moment(investor.end).format("YYYY-MM-DD") %>" readOnly>
+</div>
+</div>
+<div class="row align-items-center">
+<div class="col-auto">
+<label for="invested"><b>Amount Invested : </b></label>
+<input type="text" class="form-control" value="<%- investor.amount %>" readOnly>
+</div>
+<div class="col-auto">
+<label for="partner"><b>Invement Total : </b></label>
+<input type="text" class="form-control" value="<%- total %>" readOnly>
+</div>
+</div>
+<br>
+<label><b> PAYMENT INFORMATION </b></label>
+<hr>
+<% investor.payment.forEach((payment)=>{ %>
+<% if (payment.payment == false) { %>
+<form class="form-signup" method="POST" action="/investors/add-payment-details/<%- investor._id %>">
+<label for="invested"><b> Account Name : </b></label>
+<input type="text" class="form-control" name="accountname" id="accountname" placeholder="Account Name" required>
+<div class="row align-items-center">
+<div class="col-auto">
+<label for="invested"><b>Account Number : </b></label>
+<input type="text" class="form-control" name="accountnumber" id="accountnumber" placeholder="Account Number" required>
+</div>
+<div class="col-auto">
+<label for="partner"><b>Bank Name : </b></label>
+<input type="text" class="form-control" id="bank" name="bank" placeholder="Bank Name" required>
+</div>
+</div>
+<br>
+<button type="submit" class="btn btn-outline-success">Submit</button>
+</form>
+<% } else { %>
+<label for="invested"><b> Account Name : </b></label>
+<input type="text" class="form-control" value="<%- payment.account %>" readOnly>
+<div class="row align-items-center">
+<div class="col-auto">
+<label for="invested"><b>Account Number : </b></label>
+<input type="text" class="form-control" value="<%- payment.number %>" readOnly>
+</div>
+<div class="col-auto">
+<label for="partner"><b>Bank Name : </b></label>
+<input type="text" class="form-control" value="<%- payment.bank %>" readOnly>
+</div>
+</div>
+<% } %>
+<% }) %>

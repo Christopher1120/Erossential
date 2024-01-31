@@ -1,4 +1,88 @@
 <%- include("../_partials/_header") %>
 <h3> Investors List </h3>
+<a href="/investors/add-investors" class="btn btn-outline-success" title="Add Investor" data-bs-toggle="modal" data-bs-target="#Frame" onclick="Get(this)"><i class="bi bi-plus-circle"></i></a> 
 <hr>
 
+<form class="form-signup" method="POST" action="/investors/search-investor">
+
+<div class="row align-items-center g-2 p-2 align-middle">
+<div class="col-auto">
+<label for="selection"><b> Type : </b></label>
+</div>
+<div class="col-auto">
+<select class="form-select" name="invest" id="invest" onchange="Change()">
+<option disabled selected>Please select investors</option>
+<option value="Approved">Approved</option>
+<option value="Pending">Pending</option>
+<option value="All">All</option>
+</select>
+</div>
+</div>
+
+</form>
+
+<div id="investor" class="border-top">
+
+</div>
+
+
+<div class="modal fade l" id="Frame" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog  modal-l">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">Investor's Management</h1>
+        <button type="button" id="cls" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="frame">
+
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button"  id="close" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+<script>
+
+function Change() {
+    var invest = document.getElementById("invest").value;
+
+    $.ajax({
+        type:"POST",
+        url:"/investors/search-investor=" + invest,
+        success:function(e) {
+        var xhttp = new XMLHttpRequest();
+            xhttp.onload = function() {
+                document.getElementById("investor").innerHTML = this.responseText;
+            }
+            xhttp.open("POST", "/investors/search-investor=" + invest);
+            xhttp.send();
+        }, 
+        error:function(e) {
+        var x = document.getElementById("snackbar");
+            x.innerHTML = "An error has occured";
+            x.className = "show";
+            setTimeout(function () { x.className = x.className.replace("show", ""); }, 3000);
+        }
+    })
+}
+
+function Get(r) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        document.getElementById("frame").innerHTML = this.responseText;
+    }
+    xhttp.open("GET", r.href);
+    xhttp.send();
+}
+</script>

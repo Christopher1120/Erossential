@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+
+<table class="table text-center align-middle">
+<tr>
+<th></th>
+<th>Name</th>
+<th>Start Date</th>
+<th>End Date</th>
+<th>Action</th>
+<% investor.forEach((investor)=>{ %>
+<tr>
+<% if (investor.status == "Pending") { %>
+<td>
+<span class="position-absolute translate-middle p-2 bg-warning border border-light rounded-circle" title="<%- investor.status %>">
+    <span class="visually-hidden">Online</span>
+  </span>
+</td>
+<% } else if (investor.status == "Approved") { %>
+<td>
+<span class="position-absolute translate-middle p-2 bg-success border border-light rounded-circle" title="<%- investor.status %>">
+    <span class="visually-hidden">Online</span>
+  </span>
+</td>
+<% } %>
+<td><a href="/investors/information/<%- investor._id %>" data-bs-toggle="modal" data-bs-target="#Frame" onclick="Get(this)"> <%- investor.full %> </a></td>
+<td><%- moment(investor.start).format("YYYY-MM-DD") %></td>
+<td><%- moment(investor.end).format("YYYY-MM-DD") %></td>
+<% if (investor.status == "Pending") { %>
+<td>
+<a href="/investors/investor=<%- investor._id %>/approved" class="btn btn-outline-success"> Approved </a>
+<a href="/investors/investor=<%- investor._id %>/approved" class="btn btn-outline-danger"> Decline </a>
+</td>
+<% } %>
+<% if (investor.status == "Approved" && investor.file == 'false' || investor.status == "Approved" && investor.file == null || investor.status == "Approved" && investor.file == "" ) { %>
+<td>
+<a href="/investors/upload-contract/investor=<%- investor._id %>" class="btn btn-outline-success" data-bs-toggle="modal" data-bs-target="#Frame" onclick="Get(this)"> Upload Contract </a>
+</td>
+<% } else if (investor.status == "Approved" && investor.file != null) {%>
+<td>
+<a href="<%- investor.file %>" target="_blank"> View Contract </a>
+</td>
+<% } %>
+</tr>
+<% }) %>
+

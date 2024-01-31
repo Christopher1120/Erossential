@@ -1,6 +1,6 @@
 {
   "name": "erossential",
-  "version": "1.0.32",
+  "version": "1.0.33",
   "description": "erossential",
   "main": "main.js",
   "author": "Christopher Cruz",
@@ -44,8 +44,8 @@
     "start": "node server.js",
     "dev": "nodemon server.js",
     "devv": "electron main.js",
-    "dist": "electron-builder --win --publish always",
-    "build:publish": "electron-builder --win --publish always"
+    "dist": "set GH_TOKEN=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 && electron-builder --win --publish always",
+    "build:publish": "set GH_TOKEN=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 && electron-builder --win --publish always"
   },
   "build": {
     "appId": "com.erossential.app",

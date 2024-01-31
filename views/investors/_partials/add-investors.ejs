@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+
+<form class="form-signup" method="POST" action="/investors/add-investors">
+
+<div class="alert alert-danger">
+<article><b>IMPORTANT NOTICE:</b></article>
+<article>All new investors will be prompted for approval of the original partners. Otherwise, investment will be returned to the investor.</article>
+</div>
+
+<div class="row align-items-center">
+<div class="col-auto">
+<label for="first"><b>First Name : </b></label>
+<input type="text" class="form-control" name="first" id="first" placeholder="First Name" required>
+</div>
+<div class="col-auto">
+<label for="last"><b>Last Name : </b></label>
+<input type="text" class="form-control" name="last" id="last" placeholder="Last Name" required>
+</div>
+</div>
+<div class="row align-items-center">
+<div class="col-auto">
+<label for="contact"><b>Contact Number : </b></label>
+<input type="text" class="form-control" name="contact" id="contact" placeholder="Contact Number" value="+63 " required>
+</div>
+<div class="col-auto">
+<label for="email"><b>Email Address : </b></label>
+<input type="email" class="form-control" name="email" id="email" placeholder="Email Address" required>
+</div>
+</div>
+<div class="row align-items-center">
+<div class="col-auto">
+<label for="invested"><b>Amount Invested : </b></label>
+<input type="text" class="form-control" name="invested" id="invested" placeholder="Amount Invested" required>
+</div>
+<div class="col-auto">
+<label for="partner"><b>Signed Partner : </b></label>
+<input type="text" class="form-control" name="partner" id="partner" placeholder="Signed Partner" required>
+</div>
+</div>
+<div class="row align-items-center">
+<div class="col-md-6">
+<label for="start"><b>Start Date : </b></label>
+<input type="date" class="form-control" name="start" id="start" placeholder="Start Date" required>
+</div>
+<div class="col-md-6">
+<label for="end"><b>End Date : </b></label>
+<input type="date" class="form-control" name="end" id="end" placeholder="End Date" required>
+</div>
+</div>
+<br>
+<button type="submit" class="btn btn-outline-success">Submit</button>
+
+</form>
+
+

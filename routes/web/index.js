@@ -28,6 +28,7 @@ router.use("/promos", require("./promos"));
 router.use("/report", require("./reports"));
 router.use("/issue", require("./issue"));
 router.use("/recruit", require("./recruit"));
+router.use("/investors", require("./investors"));
 
 
 
