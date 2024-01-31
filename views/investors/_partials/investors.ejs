@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+
+<table class="table text-center">
+<% investor.forEach((investor)=>{ %>
+<% if (investor.status == "Pending") { %>
+<tr>
+<td><%- investor.full %></td>
+<td><%- investor.spartner %></td>
+<td><%- investor.amount %></td>
+<td><%- investor.email %></td>
+<td><%- investor.contact %></td>
+<% } %>
+</tr>
+<% }) %>
+

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta lang="en">
+
+        </head>
+
+<body>
+
+<form class="form-signup" method="POST" enctype="multipart/form-data" action="/investors/upload-contract/investor=<%- investor.ident %>" id="contract">
+
+
+<div class="row align-items-center g-2">
+<div class="col-auto">
+<label for="file"><b> Contract :</b></label>
+</div>
+<div class="col-auto">
+<input type="file" name="file" id="file" class="form-control" required>
+</div>
+</div>
+<br>
+
+<button type="submit" class="btn btn-outline-success">Submit</button>
+
+</form>

@@ -101,6 +101,10 @@
     <Content Include="views\home\_partial\create-comms.ejs" />
     <Content Include="views\home\_partial\online.ejs" />
     <Content Include="views\home\_partial\register.ejs" />
+    <Content Include="views\investors\_partials\add-investors.ejs" />
+    <Content Include="views\investors\_partials\approved.ejs" />
+    <Content Include="views\investors\_partials\info.ejs" />
+    <Content Include="views\investors\_partials\investor.ejs" />
     <Content Include="views\recruit\home.ejs" />
     <Content Include="views\recruit\_partials\applicant.ejs" />
     <Content Include="views\recruit\_partials\create-offer.ejs" />
@@ -110,7 +114,6 @@
     <Content Include="views\recruit\_partials\view.ejs" />
     <Content Include="views\reports\_partial\orders.ejs" />
     <Content Include="views\reports\_partial\top-selling.ejs" />
-    <Content Include="views\investors\investor.ejs" />
     <Content Include="views\investors\investors.ejs" />
     <Content Include="views\pos\create-order.ejs" />
     <Content Include="views\pos\login.ejs" />
@@ -154,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="auth\" />
+    <Folder Include="contracts\" />
     <Folder Include="css\" />
     <Folder Include="images\" />
     <Folder Include="models\" />
@@ -167,6 +171,7 @@
     <Folder Include="views\investors\" />
     <Folder Include="views\crm\" />
     <Folder Include="views\errors\" />
+    <Folder Include="views\investors\_partials\" />
     <Folder Include="views\recruit\" />
     <Folder Include="views\recruit\_partials\" />
     <Folder Include="views\tickets\" />
