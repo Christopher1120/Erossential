@@ -135,15 +135,7 @@ autoUpdater.on('checking-for-update', () => {
 })
 
 autoUpdater.on('update-not-available', (info) => {
-    const dialogOpts = {
-        type: "info",
-        buttons: ['Ok'],
-        title: "Erossentail Business Management",
-        detail: "No Updates Available"
-    }
-    dialog.showMessageBox(dialogOpts, (response) => {
-
-    })
+    log.info(info);
 })
 
 autoUpdater.on("update-available", (_event,releaseName,releaseNotes) => {

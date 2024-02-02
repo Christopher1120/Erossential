@@ -78,12 +78,11 @@ router.post("/add-payment-details/:id", (req, res) => {
     
 })
 
-router.post("/upload-contract/investor=:id", upload.single('file'), async (req, res) => {
+router.post("/upload-contract/investor=:id", async (req, res) => {
     var investor = await Investor.findOne({ ident: req.params.id });
-    var file = req.file;
-    let ext = file.originalname.substring(file.originalname.lastIndexOf('.'), file.originalname.length);
+    var file = req.body.link;
 
-    investor.file = "/contracts/" + investor.ident + "-investment-contract" + ext;
+    investor.file = file;
 
 
     try {

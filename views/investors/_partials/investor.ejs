@@ -46,7 +46,7 @@
 </td>
 <% } else if (investor.status == "Approved" && investor.file != null) {%>
 <td>
-<a href="<%- investor.file %>" target="_blank"> View Contract </a>
+<a href="<%- investor.file %>" data-bs-toggle="modal" data-bs-target="#Frame" onclick="Get(this)"> View Contract </a>
 </td>
 <% } %>
 </tr>
