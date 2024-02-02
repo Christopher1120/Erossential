@@ -1,6 +1,6 @@
 {
   "name": "erossential",
-  "version": "1.0.37",
+  "version": "1.0.37.1",
   "description": "erossential",
   "main": "main.js",
   "author": "Christopher Cruz",
@@ -9,10 +9,10 @@
     "url": "https://github.com/Christopher1120/Erossential"
   },
   "devDependencies": {
-    "electron": "^27.1.2",
+    "electron": "^27.3.1",
     "electron-builder": "^24.9.1",
-    "eslint": "^8.21.0",
-    "webpack": "^5.89.0"
+    "eslint": "^8.56.0",
+    "webpack": "^5.90.1"
   },
   "eslintConfig": {},
   "dependencies": {
@@ -21,7 +21,7 @@
     "connect-flash": "^0.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-    "dates-between": "^5.0.0",
+    "dates-between": "^5.1.0",
     "ejs": "^3.1.9",
     "electron-is-dev": "^2.0.0",
     "electron-log": "^5.0.1",

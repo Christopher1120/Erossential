@@ -5,17 +5,6 @@ var Auth = require("../../auth/auth").ensureAuthenticated;
 var Batch = require("../../models/batch");
 var multer = require("multer");
 
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './contracts')
-    },
-    filename: function (req, file, cb) {
-        let ext = file.originalname.substring(file.originalname.lastIndexOf('.'), file.originalname.length);
-        cb(null, req.params.id + "-investment-contract" + ext);
-    }
-})
-
-const upload = multer({ storage })
 
 
 var router = express.Router();
