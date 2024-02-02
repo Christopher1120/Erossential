@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2023 Christopher Carl Cruz
+Copyright (c) 2024 Christopher Carl Cruz
 
 Permission is hereby granted to any person authorized to obtain a copy
 of this software and associated documentaiton files (the "Software"), to deal
